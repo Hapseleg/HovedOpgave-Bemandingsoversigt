@@ -1,0 +1,43 @@
+<h1>Example App: mysql</h1>
+
+<h2>create db</h2>
+<form action="createDB" method="POST">
+    <label>Database name:</label>
+    <input type="text" name="dbName">
+    <button type="submit">submit</button>
+</form>
+
+<h2>create table</h2>
+<form action="createTable" method="POST">
+    <p>bruger den db der er angivet i index.js</p>
+    <label>Table name:</label>
+    <input type="text" name="tableName">
+    <p>example: name VARCHAR(255), address VARCHAR(255)</p>
+    <label>Table columns:</label>
+    <input type="text" name="tableColumns">
+    <button type="submit">submit</button>
+</form>
+
+<h2>insert into table</h2>
+<form action="insertIntoTable" method="POST">
+    <p>bruger den db der er angivet i index.js</p>
+    <label>Table name:</label>
+    <input type="text" name="tableName">
+    <p>example: name, address</p>
+    <label>Columns:</label>
+    <input type="text" name="tableColumns">
+    <p>example: 'Company Inc', 'Highway 37'</p>
+    <label>Values:</label>
+    <input type="text" name="rowValues">
+    <button type="submit">submit</button>
+</form>
+
+<h2>create db</h2>
+<form action="selectTable" method="GET">
+    <p>bruger den db der er angivet i index.js</p>
+    <label>Table name:</label>
+    <input type="text" name="tableName">
+    <button type="submit">submit</button>
+</form>
+
+<div></div>

@@ -1,0 +1,20 @@
+<h1>Example App: Home</h1>
+
+<div id='calendar' style="width: 50%"></div>
+
+<script>
+    $(function() {
+
+  // page is now ready, initialize the calendar...
+
+  $('#calendar').fullCalendar({
+      weekends: false, // will hide Saturdays and Sundays
+      dayClick: function() {
+            alert('a day has been clicked!');
+        }
+    // put your options and callbacks here
+  })
+
+});
+</script>
+

@@ -1,0 +1,21 @@
+{
+  "name": "mysqltestproject",
+  "version": "1.0.0",
+  "description": "Test af fullCalendar node js som nok kommer til at blive brugt i hovedopgaven",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp && node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "fullcalendar": "^3.9.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
