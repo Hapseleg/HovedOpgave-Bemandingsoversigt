@@ -2,6 +2,10 @@
 
 var abc = 1;
 
-exports.publicfunc = function(){
+function publicfunc(){
     return abc;
+}
+
+module.exports = {
+    publicfunc: publicfunc,
 }
