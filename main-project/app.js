@@ -3,8 +3,9 @@ var exphbs  = require('express-handlebars')
 var bodyParser = require('body-parser')
 
 var mediator = require('./server/modules/mediator.js')
-var bemandingsoversigt = require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade.js')
-bemandingsoversigt.setup()
+require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade.js').setup()
+//require('./server/modules/database/databaseFacade').setup()
+require('./server/modules/profil/profilFacade').setup()
 
 var app = express();
 
@@ -40,13 +41,10 @@ app.use('/',function(req,res){
             break;
         }
         default:{
-            res.send('ERROR IN APP ROUTER')
+            res.send('ERROR IN APP ROUTER SWITCH')
         }
     }
-
-    
 })
-//post,put,delete
 
 
 app.listen(3000);
