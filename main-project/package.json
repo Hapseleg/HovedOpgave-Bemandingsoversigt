@@ -2,11 +2,16 @@
   "name": "tool-til-bemandingsoversigt",
   "version": "1.0.0",
   "description": "Hovedopgave for datamatiker uddannelse",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node app.js"
   },
   "author": "Nicolaj Lundtoft Jørgensen",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.0"
+  }
 }
