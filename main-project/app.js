@@ -4,8 +4,9 @@ var bodyParser = require('body-parser')
 
 var mediator = require('./server/modules/mediator.js')
 require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade.js').setup()
-//require('./server/modules/database/databaseFacade').setup()
+require('./server/modules/database/databaseFacade').setup()
 require('./server/modules/profil/profilFacade').setup()
+require('./server/modules/opgave/opgaveFacade').setup()
 
 var app = express();
 
@@ -23,12 +24,14 @@ app.use(bodyParser.json()) // parse application/json
 
 //routers
 app.use('/',function(req,res){
+    // console.log(req);
     switch(req.method){
         case 'GET':{
             mediator.publish('getView', {req,res})
             break;
         }
         case 'POST':{
+            console.log(req.body)
             mediator.publish('postView', {req,res})
             break;
         }

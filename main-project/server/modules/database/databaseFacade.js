@@ -9,12 +9,25 @@ function setup(){
     subRead()
     subUpdate()
     subDelete()
+    mysql.createConnection()
 }
 
 function subCreate(){
     mediator.subscribe('createInDB',function(arg){
+        try{
+            mysql.createInDB(arg)
+        }
+        catch(error){
+            console.log(error)
+            mediator.publish('error', error)
+        }
         
     })
+}
+
+function returnResult(result){
+    console.log(result)
+    mediator.publish('dataFromDB', result)
 }
 
 function subRead(){
@@ -37,5 +50,6 @@ function subDelete(){
 
 module.exports = {
     setup:setup,
-    publish: mediator.publish
+    publish: mediator.publish,
+    returnResult: returnResult
 }

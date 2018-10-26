@@ -1,35 +1,71 @@
 <div class="row">
     <div class="col-md">
         <div class="input-group mb-3">
-            <form>
+            <form method="POST">
                 <h1>Opret opgaveløser</h1>
                 <label>Fornavn</label>
                 <input type="text" name="fornavn">
-
+                <br>
                 <label>Efternavn</label>
                 <input type="text" name="efternavn">
-
+                <br>
                 <label>Lokation</label>
                 <select name="lokation">
                     <option value="1">Aarhus</option>
                     <option value="2">Aalborg</option>
                 </select>
+                <br>
 
                 <h2>KonsulentProfil</h2>
-                <label>Møder ind kl</label>
-                <input type="time" name="dagStart">
+                {{!-- <label>Møder ind kl</label>
+                <input type="time" name="dagStart1" value="08:00">
+                <br>
 
                 <label>Tager hjem kl</label>
-                <input type="time" name="dagSlut">
+                <input type="time" name="dagSlut1" value="15:00">
+                <br> --}}
 
                 <div>
-                    <input type="checkbox" name="mandag" value="0">
-                    <input type="checkbox" name="tirsdag" value="1">
-                    <input type="checkbox" name="onsdag" value="2">
-                    <input type="checkbox" name="torsdag" value="3">
-                    <input type="checkbox" name="fredag" value="4">
+                    <div>
+                        <label>Mandag</label>
+                        <input type="checkbox" name="mandag" value="0">
+                        <input type="time" name="dagStart0" value="08:00">
+                        <input type="time" name="dagSlut0" value="15:00">
+                    </div>
+
+                    <div>
+                        <label>Tirsdag</label>
+                        <input type="checkbox" name="tirsdag" value="1">
+                        <input type="time" name="dagStart1" value="08:00">
+                        <input type="time" name="dagSlut1" value="15:00">
+                    </div>
+
+                    <div>
+                        <label>Onsdag</label>
+                        <input type="checkbox" name="onsdag" value="2">
+                        <input type="time" name="dagStart2" value="08:00">
+                        <input type="time" name="dagSlut2" value="15:00">
+                    </div>
+
+                    <div>
+                        <label>Torsdag</label>
+                        <input type="checkbox" name="torsdag" value="3">
+                        <input type="time" name="dagStart3" value="08:00">
+                        <input type="time" name="dagSlut3" value="15:00">
+                    </div>
+
+                    <div>
+                        <label>Fredag</label>
+                        <input type="checkbox" name="fredag" value="4">
+                        <input type="time" name="dagStart4" value="08:00">
+                        <input type="time" name="dagSlut4" value="15:00">
+                    </div>
+
+                    <br>
+                    <label>arbejdstidPrUge  </label>
                     <input type="number" step="0.5" name="arbejdstidPrUge">
                 </div>
+                <br>
 
                 <input type="submit">
             </form>

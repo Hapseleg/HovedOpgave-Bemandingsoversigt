@@ -84,6 +84,7 @@ FOREIGN KEY (opgaveloserId)
 CREATE TABLE OpgaveloserKonsulentprofil (
 opgaveloserId INT UNSIGNED NOT NULL,
 konsulentProfilId INT UNSIGNED NOT NULL,
+konsulentProfilWeight INT(1) UNSIGNED NOT NULL,
 
 FOREIGN KEY (konsulentProfilId)
    REFERENCES KonsulentProfil(konsulentProfilId)
@@ -100,15 +101,15 @@ FOREIGN KEY (opgaveloserId)
 CREATE TABLE Opgave (
 opgaveId INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 opgaveNavn VARCHAR(100) NOT NULL,
-kundeId INT UNSIGNED,
-kundeansvarligId INT UNSIGNED,
-opgavestillerId INT UNSIGNED,
-opgaveStatusId INT UNSIGNED,
-opgavetypeId INT UNSIGNED,
-lokationId INT UNSIGNED,
-kontraktStatusId INT UNSIGNED,
-startDato DATE,
-slutDato DATE,
+kundeId INT UNSIGNED default NULL,
+kundeansvarligId INT UNSIGNED default NULL,
+opgavestillerId INT UNSIGNED default NULL,
+opgaveStatusId INT UNSIGNED default NULL,
+opgavetypeId INT UNSIGNED default NULL,
+lokationId INT UNSIGNED default NULL,
+kontraktStatusId INT UNSIGNED default NULL,
+startDato DATE default NULL,
+slutDato DATE default NULL,
 kommentar VARCHAR(254) DEFAULT '',
 
 FOREIGN KEY (kundeId)

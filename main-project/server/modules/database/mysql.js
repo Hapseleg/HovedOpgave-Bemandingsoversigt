@@ -1,15 +1,23 @@
-var facade = require('./databaseFacade')
+var mysql = require('mysql')
+var databaseFacade = require('./databaseFacade.js')
+
+//var facade = require('./databaseFacade')
+var config = require('./mysqlConfig.js').config
 
 var conn;
-var config = {
-    host: "localhost",
-    user: "nlj",
-    password: "password",
-    database: "mydb2"
-}
 
 function createConnection(){
-    conn = mysql.createConnection(config)
+    try{
+        conn = mysql.createConnection(config)
+        console.log('mysql connection started')
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+function closeConnection(){
+
 }
 
 // app.post('/createDB', function(req, res){
@@ -52,40 +60,87 @@ function createConnection(){
 //     res.redirect('mysql');
 // })
 
-function createInDB(arg){
-    for (let i = 0, l = arg.length; i < l; i++) {
-        
+function setupColumnsString(array){
+    let query = ''
+
+    for(let i = 0; i< array.length;i++){
+        query += array[i] + ','
     }
+    query = query.slice(0,-1)
 
-    var tableName = arg.tableName
-    var columns = arg.tableColumns
-    var values = arg.rowValues
-
-    //var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
-    var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
-    conn.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("1 record inserted");
-    });
+    return query
 }
 
+function setupValuesString(array){
+    let query = ''
 
-app.get('/selectTable?:tableName', function(req, res){
-    var tableName = req.query.tableName
+    for(let i = 0; i< array.length;i++){
+        if(isNaN(array[i]))
+            query += '"' + array[i] + '"'  
+        else
+            query += array[i]
+            
+        query += ','
+    }
+    query = query.slice(0,-1)
 
-    console.log("aaaaaaaaa " + tableName)
-    conn.query("SELECT * FROM " + tableName, function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.render('mysql', result);
-      });
-    
-    
-})
+    return query
+}
+
+function createInDB(arg){
+    for (let i = 0, l = arg.data.length; i < l; i++) {
+        let data = arg.data[i]
+
+        var tableName = data.table
+        var columns = setupColumnsString(data.columns)
+        var values = setupValuesString(data.values)
+
+        var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
+        console.log(sql)
+        conn.query(sql, function (err, result) {
+            if (err) 
+                throw err;
+            else 
+                databaseFacade.returnResult({message:'saved', result: result, origin: arg.origin}) 
+            
+        });
+    }
+}
+
+function readFromDB(arg){
+    let results = {data:[]}
+
+    for (let i = 0, l = arg.data.length; i < l; i++) {
+        let data = arg.data[i]
+
+        var tableName = data.table
+        var columns = setupColumnsString(data.columns)
+
+        var sql = "SELECT "+columns+" FROM " + tableName;
+        console.log(sql)
+
+        
+        conn.query(sql, function (err, result, fields) {
+            if (err) throw err;
+            results.data.push(result)
+          });
+    }
+
+    return results
+}
+
+function updateInDB(){
+
+}
+
+function deleteInDB(){
+
+}
 
 module.exports = {
     createInDB: createInDB,
     readFromDB: readFromDB,
     updateInDB: updateInDB,
-    deleteInDB: deleteInDB
+    deleteInDB: deleteInDB,
+    createConnection: createConnection
 }

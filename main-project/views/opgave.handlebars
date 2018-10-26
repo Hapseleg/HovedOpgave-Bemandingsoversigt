@@ -1,0 +1,80 @@
+<form method="POST">
+    <div class="row">
+
+        <div class="col-md">
+            <h1>Opgave</h1> 
+            <div class="input-group mb-3">
+                    <div class="form-group">
+                        <label for="opgaveNavn">Opgavens navn</label>
+                        <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kunde">Kunde</label>
+                        <input type="text" class="form-control" id="kunde" name="kundeId">
+                        <label for="kundeansvarlig">kundeansvarlig</label>
+                        <input type="text" class="form-control" id="kundeansvarlig" name="kundeansvarligId">
+                        <label for="opgavestiller">opgavestiller</label>
+                        <input type="text" class="form-control" id="opgavestiller" name="opgavestillerId">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lokation">lokation</label>
+                        <input type="text" class="form-control" id="lokation" name="lokationId">
+                        <label for="opgavetype">opgavetype</label>
+                        <input type="text" class="form-control" id="opgavetype" name="opgavetypeId">
+                        <label for="startDato">startDato</label>
+                        <input type="date" class="form-control" id="startDato" name="startDato">
+                        <label for="slutDato">startDato</label>
+                        <input type="date" class="form-control" id="slutDato" name="slutDato">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="opgaveStatus">opgaveStatus</label>
+                        <input type="text" class="form-control" id="opgaveStatus" name="opgaveStatusId">
+                        <label for="kontraktStatus">kontraktStatus</label>
+                        <input type="text" class="form-control" id="kontraktStatus" name="kontraktStatusId">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deadlineDato">deadlineDato</label>
+                        <input type="date" class="form-control" id="deadlineDato" name="deadlineDato">
+                        <label for="deadlineKommentar">deadlineKommentar</label>
+                        <input type="text" class="form-control" id="deadlineKommentar" name="deadlineKommentar">
+                        <button onclick="">Tilføj</button>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-group">
+                <h2>Mulige opgaveløsere</h2>
+                <label for="opgaveNavn">Opgavens navn</label>
+                <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn">
+                <button onclick="">Vælg</button>
+            </div>
+
+            <div class="form-group">
+                <h2>Deadlines</h2>
+                <label for="opgaveNavn">Opgavens navn</label>
+                <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn">
+                <button onclick="">Fjern</button>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-group">
+                <h2>Valgte opgaveløsere</h2>
+                <label for="opgaveNavn">Opgavens navn</label>
+                <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn">
+                <button onclick="">Fjern</button>
+            </div>
+
+            <div class="form-group">
+                <label for="kommentar">Kommentar</label>
+                <input type="textarea" class="form-control" id="kommentar" name="kommentar">
+            </div>
+        </div>
+    </div>
+<input type="submit">
+</form>
