@@ -13,8 +13,20 @@ var app = express();
 app.use(express.static('public'))
 
 //handlebars - view engine
-app.engine('handlebars', exphbs({defaultLayout: 'main'}))
+var hbs = exphbs.create({
+    // Specify helpers which are only registered on this instance.
+    // helpers: {
+    //     result: function () { return '' }
+    // },
+    defaultLayout: 'main'
+});
+
+//app.engine('handlebars', exphbs({defaultLayout: 'main'}))
+app.engine('handlebars', hbs.engine)
+
 app.set('view engine', 'handlebars');
+
+
 
 
 //body-parser - middleware
@@ -31,7 +43,7 @@ app.use('/',function(req,res){
             break;
         }
         case 'POST':{
-            console.log(req.body)
+            //console.log(req.body)
             mediator.publish('postView', {req,res})
             break;
         }

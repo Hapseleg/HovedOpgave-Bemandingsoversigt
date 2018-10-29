@@ -2,6 +2,7 @@ var mysql = require('mysql')
 var databaseFacade = require('./databaseFacade.js')
 
 //var facade = require('./databaseFacade')
+var joinLetters = ['b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z']
 var config = require('./mysqlConfig.js').config
 
 var conn;
@@ -60,11 +61,11 @@ function closeConnection(){
 //     res.redirect('mysql');
 // })
 
-function setupColumnsString(array){
-    let query = ''
+function setupColumnsString(array, columnLetter, columnString){
+    let query = columnString
 
     for(let i = 0; i< array.length;i++){
-        query += array[i] + ','
+            query += columnLetter + '.' + array[i] + ','
     }
     query = query.slice(0,-1)
 
@@ -87,7 +88,9 @@ function setupValuesString(array){
     return query
 }
 
-function createInDB(arg){
+function createInDB(arg, obj){
+    // console.log(databaseFacade)
+    //         console.log(obj)
     for (let i = 0, l = arg.data.length; i < l; i++) {
         let data = arg.data[i]
 
@@ -100,33 +103,56 @@ function createInDB(arg){
         conn.query(sql, function (err, result) {
             if (err) 
                 throw err;
-            else 
-                databaseFacade.returnResult({message:'saved', result: result, origin: arg.origin}) 
-            
+            //result.OkPacket.insertId = opgaveId
+            obj({message:'saved', result: result, origin: arg.origin})//TODO fix
         });
     }
 }
 
-function readFromDB(arg){
-    let results = {data:[]}
+function readFromDB(arg, obj){
+    console.log('readfromdb')
+    let results = {data:[], origin: arg.origin}
 
     for (let i = 0, l = arg.data.length; i < l; i++) {
         let data = arg.data[i]
 
         var tableName = data.table
-        var columns = setupColumnsString(data.columns)
+        var columns = setupColumnsString(data.columns, 'a', '')
+        var leftjoin = ''
 
-        var sql = "SELECT "+columns+" FROM " + tableName;
-        console.log(sql)
+        if(data.leftJoins){
+            // console.log('left join enter')
+            //select a.fornavn, b.lokationNavn from opgaveloser a left join lokation b on a.lokationId = b.lokationId
+            for (let i = 0, l = data.leftJoins.length; i < l; i++) {
+                let leftJoinData = data.leftJoins[i];
 
+                columns += ','
+                columns = setupColumnsString(leftJoinData.selectColumns,joinLetters[i],columns)
+
+                let leftTableLetter = 'a'
+                //find ud af hvilket bogstav lefttable har ved at køre dem igennem
+                for (let i = 0, l = data.leftJoins.length; i < l; i++){
+                    if(leftJoinData.leftTable == data.leftJoins[i].rightTable){
+                        leftTableLetter = joinLetters[i]
+                        break;
+                    }
+                }
+                
+                leftjoin += ' LEFT JOIN ' + leftJoinData.rightTable + ' ' + joinLetters[i] + ' ON '+leftTableLetter+'.' + leftJoinData.leftColumn + ' = ' + joinLetters[i] + '.' + leftJoinData.rightColumn
+            }
+        }
+        var sql = "SELECT "+columns+" FROM " + tableName + " a" + leftjoin;
+        // console.log(sql)
         
         conn.query(sql, function (err, result, fields) {
             if (err) throw err;
-            results.data.push(result)
-          });
-    }
 
-    return results
+            results.data.push({result: result, fields:fields})
+            if(results.data.length == arg.data.length)
+                obj(results)
+          })
+        
+    }
 }
 
 function updateInDB(){

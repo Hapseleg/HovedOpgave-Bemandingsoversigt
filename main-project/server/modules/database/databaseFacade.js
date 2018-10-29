@@ -1,5 +1,6 @@
 var mediator = require('../mediator.js')
 var mysql = require('./mysql.js')
+var promise = require('promise')
 
 var name = 'database';
 
@@ -15,24 +16,29 @@ function setup(){
 function subCreate(){
     mediator.subscribe('createInDB',function(arg){
         try{
-            mysql.createInDB(arg)
+            mysql.createInDB(arg, returnResult)//TODO returnresult skal ikke være her
         }
         catch(error){
             console.log(error)
             mediator.publish('error', error)
         }
-        
     })
 }
 
 function returnResult(result){
-    console.log(result)
+    console.log('returnResult')
+    // console.log(result)
     mediator.publish('dataFromDB', result)
 }
 
 function subRead(){
     mediator.subscribe('readFromDB',function(arg){
-        
+        try{
+            mysql.readFromDB(arg, returnResult)
+        }
+        catch(error){
+            mediator.publish('error', error)
+        }
     })
 }
 
@@ -50,6 +56,6 @@ function subDelete(){
 
 module.exports = {
     setup:setup,
-    publish: mediator.publish,
-    returnResult: returnResult
+    publish:mediator.publish,
+    returnResult:returnResult
 }
