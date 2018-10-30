@@ -30,7 +30,7 @@ app.set('view engine', 'handlebars');
 
 
 //body-parser - middleware
-app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })) // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()) // parse application/json
 
 

@@ -16,7 +16,7 @@ function setup(){
 function subCreate(){
     mediator.subscribe('createInDB',function(arg){
         try{
-            mysql.createInDB(arg, returnResult)//TODO returnresult skal ikke være her
+            mysql.createInDB(arg, returnResult, 0, undefined, undefined)//TODO returnresult skal ikke være her
         }
         catch(error){
             console.log(error)

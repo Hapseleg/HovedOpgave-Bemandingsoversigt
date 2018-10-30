@@ -10,22 +10,22 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="kunde">Kunde</label>
-                        <select name="kunde" form="opgaveform">
+                        <label for="kundeId">Kunde</label>
+                        <select name="kundeId" form="opgaveform">
                             {{#each kunde}}
                                 <option value={{this.kundeId}}>{{this.fornavn}} {{this.efternavn}}</option>
                             {{/each}}
                         </select>
                         {{!-- <input type="text" class="form-control" id="kunde" name="kundeId"> --}}
-                        <label for="kundeansvarlig">kundeansvarlig</label>
-                        <select name="kundeansvarlig"form="opgaveform">
+                        <label for="kundeansvarligId">kundeansvarlig</label>
+                        <select name="kundeansvarligId"form="opgaveform">
                             {{#each kundeansvarlig}}
                                 <option value={{this.kundeansvarligId}}>{{this.fornavn}} {{this.efternavn}}</option>
                             {{/each}}
                         </select>
                         {{!-- <input type="text" class="form-control" id="kundeansvarlig" name="kundeansvarligId"> --}}
-                        <label for="opgavestiller">opgavestiller</label>
-                        <select name="opgavestiller" form="opgaveform">
+                        <label for="opgavestillerId">opgavestiller</label>
+                        <select name="opgavestillerId" form="opgaveform">
                             {{#each opgavestiller}}
                                 <option value={{this.opgavestillerId}}>{{this.fornavn}} {{this.efternavn}}</option>
                             {{/each}}
@@ -34,16 +34,16 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="lokation">lokation</label>
+                        <label for="lokationId">lokation</label>
                         {{!-- <input type="text" class="form-control" id="lokation" name="lokationId"> --}}
-                        <select name="lokation" form="opgaveform">
+                        <select name="lokationId" form="opgaveform">
                             {{#each lokation}}
                                 <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
                             {{/each}}
                         </select>
-                        <label for="opgavetype">opgavetype</label>
+                        <label for="opgavetypeId">opgavetype</label>
                         {{!-- <input type="text" class="form-control" id="opgavetype" name="opgavetypeId"> --}}
-                        <select name="opgavetype" form="opgaveform">
+                        <select name="opgavetypeId" form="opgaveform">
                             {{#each opgavetype}}
                                 <option value={{this.opgavetypeId}}>{{this.opgavetypeNavn}}</option>
                             {{/each}}
@@ -55,15 +55,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="opgaveStatus">opgaveStatus</label>
-                        <select>
+                        <label for="opgaveStatusId">opgaveStatus</label>
+                        <select name="opgaveStatusId" form="opgaveform">
                             {{#each opgavestatus}}
                                 <option value={{this.opgaveStatusId}}>{{this.opgaveStatusNavn}}</option>
                             {{/each}}
                         </select>
                         {{!-- <input type="text" class="form-control" id="opgaveStatus" name="opgaveStatusId"> --}}
-                        <label for="kontraktStatus">kontraktStatus</label>
-                        <select>
+                        <label for="kontraktStatusId">kontraktStatus</label>
+                        <select name="kontraktStatusId" form="opgaveform">
                             {{#each kontraktstatus}}
                                 <option value={{this.kontraktStatusId}}>{{this.kontraktStatusNavn}}</option>
                             {{/each}}
@@ -96,6 +96,10 @@
                     <tbody>
                         {{#each muligeOpgaveloser}}
                             <tr id="opgaveloserRow" class="muligOpgaveloser">
+                                <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                                <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
+                                <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
+                                <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
                                 <td value={{this.opgaveloserId}}>{{this.fornavn}}</td>
                                 <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                                 <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
@@ -117,9 +121,9 @@
                     </thead>
                     <tbody>
                         {{#each deadlines}}
-                            <tr>
-                                <td value={{this.deadlineId}}>{{this.deadlineDato}}</td>
-                                <td value={{this.deadlineId}}>{{this.deadlineKommentar}}</td>
+                            <tr value={{this.deadlineId}}>
+                                <td>{{this.deadlineDato}}</td>
+                                <td>{{this.deadlineKommentar}}</td>
                             </tr>
                         {{/each}}
                     </tbody>
@@ -131,7 +135,6 @@
         <div class="col-md">
             <div class="form-group">
                 <h2>Valgte opgaveløsere</h2>
-                <input type="hidden" name="valgteOpgavelosere">
                 <table class="table table-light" id="valgteOpgavelosere">
                     <thead>
                         <tr>

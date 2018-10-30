@@ -57,7 +57,7 @@ values
     
 INSERT INTO ugetimeopgave (opgaveloserId,opgaveId,dato,timeAntal) VALUES (1,1,'2018-11-26', 10), (1,1,'2018-10-26', 10), (1,1,'2018-12-26', 5);   
 
-INSERT INTO opgaveloseropgave (opgaveloserId,opgaveId) VALUES (1,1), (1,2), (2,1);   
+INSERT INTO opgaveloseropgave (opgaveloserKonsulentProfilId,opgaveId) VALUES (1,1), (1,2), (2,1);   
 
 insert into deadline(opgaveId, deadlineDato, deadlineKommentar)
 values

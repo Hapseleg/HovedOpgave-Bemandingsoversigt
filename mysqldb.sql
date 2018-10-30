@@ -82,6 +82,7 @@ FOREIGN KEY (opgaveloserId)
 );
 
 CREATE TABLE OpgaveloserKonsulentprofil (
+opgaveloserKonsulentProfilId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 opgaveloserId INT UNSIGNED NOT NULL,
 konsulentProfilId INT UNSIGNED NOT NULL,
 konsulentProfilWeight INT(1) UNSIGNED NOT NULL,
@@ -150,14 +151,14 @@ FOREIGN KEY (opgaveId)
 );
 
 CREATE TABLE OpgaveloserOpgave (
-opgaveloserId INT UNSIGNED NOT NULL,
 opgaveId INT UNSIGNED NOT NULL,
+opgaveloserKonsulentProfilId INT UNSIGNED NOT NULL,
 
-FOREIGN KEY (opgaveloserId)
-   REFERENCES Opgaveloser(opgaveloserId)
-   ON DELETE CASCADE,
 FOREIGN KEY (opgaveId)
    REFERENCES Opgave(opgaveId)
+   ON DELETE CASCADE,
+FOREIGN KEY (opgaveloserKonsulentProfilId)
+   REFERENCES OpgaveloserKonsulentprofil(opgaveloserKonsulentProfilId)
    ON DELETE CASCADE
 );
 
