@@ -1,17 +1,24 @@
 <h1>bemandingsoversigt</h1>
 <form method="GET" action="bemandingsOversigtTid" id="tidform">
-    <select name="month" form="tidform">
+    <select name="month" id="month" form="tidform">
         <option value="1">Januar</option>
-        <option value="2">feb</option>
-        <option value="9">Oktober</option>
+        <option value="2">Februar</option>
+        <option value="3">Marts</option>
+        <option value="4">April</option>
+        <option value="5">Maj</option>
+        <option value="6">Juni</option>
+        <option value="7">Juli</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">Oktober</option>
         <option value="11">November</option>
         <option value="12">December</option>
     </select>
-    <input type="text" name="year" placeholder="år">
-    <input type="button" onclick="getData()">
+    <input type="number" name="year" id="year" placeholder="År">
+    <input type="button" id="getTimeData" value="Hent data">
 </form>
 
-<table class="table table-light" id="opgaveloser" style="max-height: 300px">
+<table class="table table-light" id="opgaveloserTable" style="max-height: 300px">
     <thead>
         <tr>
             <th scope="col">Opgaveløser id</th>
@@ -20,11 +27,11 @@
             <th scope="col">Opgave</th>
             <th scope="col">KonsulentProfil</th>
 
-            <th scope="col">40</th>
+            {{!-- <th scope="col">40</th>
             <th scope="col">41</th>
             <th scope="col">42</th>
             <th scope="col">43</th>
-            <th scope="col">44</th>
+            <th scope="col">44</th> --}}
         </tr>
     </thead>
     <tbody>
@@ -39,12 +46,9 @@
                 <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
                 <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
                 <td value={{this.opgaveloserKonsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-
-
-                
             </tr>
         {{/each}}
     </tbody>
 </table>
 
-<script src="/js/bemandingsoversigt.js"></script>
+<script src="/js/clientBemandingsoversigt.js"></script>

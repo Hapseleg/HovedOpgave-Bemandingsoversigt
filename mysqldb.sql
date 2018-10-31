@@ -137,13 +137,15 @@ FOREIGN KEY (kontraktStatusId)
 
 CREATE TABLE UgeTimeOpgave (
 ugeTimeOpgaveId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-opgaveloserId INT UNSIGNED NOT NULL,
+opgaveloserKonsulentProfilId INT UNSIGNED NOT NULL,
 opgaveId INT UNSIGNED NOT NULL,
-dato DATE NOT NULL,
+year INT(2) UNSIGNED NOT NULL,
+month INT(1) UNSIGNED NOT NULL,
+week INT(1) UNSIGNED NOT NULL,
 timeAntal int(1) UNSIGNED,
 
-FOREIGN KEY (opgaveloserId)
-   REFERENCES Opgaveloser(opgaveloserId)
+FOREIGN KEY (opgaveloserKonsulentProfilId)
+   REFERENCES OpgaveloserKonsulentprofil(opgaveloserKonsulentProfilId)
    ON DELETE CASCADE,
 FOREIGN KEY (opgaveId)
    REFERENCES Opgave(opgaveId)

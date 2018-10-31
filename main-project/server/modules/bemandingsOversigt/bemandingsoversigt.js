@@ -44,10 +44,24 @@ function getTidData(){
             {
                 table: 'OpgaveloserArbejdsTider',
                 columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
+                // leftJoins:[
+                //     {leftTable: 'OpgaveloserArbejdsTider', rightTable:'ugetimeopgave', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['opgaveId', 'dato', 'timeAntal']},
+                // ]
+            },
+            {//tilføj så man kan trække kun data ud fra et bestemt måned (dato between 1-31)
+                table: 'opgaveloserKonsulentProfil',
+                columns: ['opgaveloserKonsulentProfilId','opgaveloserId'],
                 leftJoins:[
-                    {leftTable: 'OpgaveloserArbejdsTider', rightTable:'ugetimeopgave', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['opgaveId', 'dato', 'timeAntal']},
+                    {leftTable: 'opgaveloserKonsulentProfil', rightTable:'ugetimeopgave', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['ugeTimeOpgaveId','opgaveloserKonsulentProfilId','opgaveId', 'year','month','week', 'timeAntal']},
                 ]
             }
+            // {//tilføj så man kan trække kun data ud fra et bestemt måned (dato between 1-31)
+            //     table: 'ugetimeopgave',
+            //     columns: ['ugeTimeOpgaveId','opgaveloserKonsulentProfilId','opgaveId', 'year','month','week', 'timeAntal'],
+            //     leftJoins:[
+            //         {leftTable: 'ugetimeopgave', rightTable:'opgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId']},
+            //     ]
+            // }
         ],
         origin:name
     }
@@ -120,9 +134,37 @@ function saveData(arg, publisher){
         throw 'Et af felterne var tomme'
 }
 
+
+function createUgeTimeOpgave(arg){
+    return {
+        data:[{
+                table:'UgeTimeOpgave',
+                columns: ['opgaveId', 'opgaveloserKonsulentProfilId', 'year', 'month', 'week','timeAntal'],
+                values: [[arg.opgaveId, arg.opgaveloserKonsulentProfilId, arg.year, arg.month, arg.week, arg.timeAntal]]
+            }
+        ],
+            origin: name
+    }
+}
+
+function updateUgeTimeOpgave(arg){
+    return {
+        data:[{
+                table:'UgeTimeOpgave',
+                columns: ['timeAntal'],
+                values: [arg.timeAntal],
+                where: [{column: 'ugeTimeOpgaveId', value: arg.ugeTimeOpgaveId}]
+            }
+        ],
+            origin: name
+    }
+}
+
 module.exports = {
     getView:getView,
     saveData:saveData,
     getData:getData,
-    getTidData:getTidData
+    getTidData:getTidData,
+    createUgeTimeOpgave:createUgeTimeOpgave,
+    updateUgeTimeOpgave:updateUgeTimeOpgave
 }

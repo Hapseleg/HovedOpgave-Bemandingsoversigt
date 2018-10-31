@@ -12,53 +12,13 @@ function createConnection(){
         console.log('mysql connection started')
     }
     catch(error){
-        console.log(error)
+        throw error
     }
 }
 
 function closeConnection(){
 
 }
-
-// app.post('/createDB', function(req, res){
-//     var dbName = req.body.dbName;
-
-//     conn.query("CREATE DATABASE " + dbName, function (err, result) {
-//         if (err) throw err;
-//         console.log("Database created");
-//       });
-//     res.redirect('mysql');
-// })
-
-// app.post('/createTable', function(req, res){
-//     var tableName = req.body.tableName
-//     var columns = req.body.tableColumns
-
-//     //var sql = "CREATE TABLE customers (name VARCHAR(255), address VARCHAR(255))";
-//     var sql = "CREATE TABLE "+tableName+" (" + columns + ")";
-//     console.log(sql)
-//     conn.query(sql, function (err, result) {
-//         if (err) throw err;
-//         console.log("Table created");
-//     });
-
-//     res.redirect('mysql');
-// })
-
-// app.post('/insertIntoTable', function(req, res){
-//     var tableName = req.body.tableName
-//     var columns = req.body.tableColumns
-//     var values = req.body.rowValues
-
-//     //var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
-//     var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
-//     conn.query(sql, function (err, result) {
-//         if (err) throw err;
-//         console.log("1 record inserted");
-//     });
-
-//     res.redirect('mysql');
-// })
 
 function setupColumnsString(array){
     let query = ''
@@ -107,7 +67,7 @@ function setupValuesArray(array){
     }
 }
 
-function createInDB(arg, obj, createdDone, firstId, earlierResults){
+function createInDB(arg, callback, createdDone, firstId, earlierResults){
     // console.log(arg,'createInDb arg')
     let results = {data:[], origin: arg.origin, type: 'create'}
     if(earlierResults != undefined)
@@ -134,10 +94,10 @@ function createInDB(arg, obj, createdDone, firstId, earlierResults){
 
         var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ?";
         // var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
-        // console.log(sql)
+        console.log(sql)
         // console.log(data.values)
         // console.log(insertId)
-        conn.query(sql, [data.values], function (err, result) {
+        conn.query(sql, [data.values], function (err, result, fields) {
         // conn.query(sql, function (err, result) {
             if (err) 
                 throw err;
@@ -145,17 +105,17 @@ function createInDB(arg, obj, createdDone, firstId, earlierResults){
                 insertId = result.insertId
             
             //result.OkPacket.insertId = opgaveId
-            results.data.push({result: result})
+            results.data.push({result: result, fields:{orgTable: tableName}})
 
             if(results.data.length == arg.data.length)
-                obj(results)
+            callback(results)
             else
-                createInDB(arg, obj, createdDone+1, insertId, results)
+                createInDB(arg, callback, createdDone+1, insertId, results)
         });
     // }
 }
 
-function readFromDB(arg, obj){
+function readFromDB(arg, callback){
     console.log('readfromdb')
     let results = {data:[], origin: arg.origin, type: 'read'}
 
@@ -188,21 +148,84 @@ function readFromDB(arg, obj){
             }
         }
         var sql = "SELECT "+columns+" FROM " + tableName + " a" + leftjoin;
-        // console.log(sql)
+        console.log(sql)
         
         conn.query(sql, function (err, result, fields) {
             if (err) throw err;
 
             results.data.push({result: result, fields:fields})
             if(results.data.length == arg.data.length)
-                obj(results)
+            callback(results)
           })
         
     }
 }
 
-function updateInDB(){
+function setupSetString(colArray, valArray){
+    let query = ''
+    //col = val, col = val
+    for(let i = 0; i< colArray.length;i++){
+        query += colArray[i] + '='
 
+        if(isNaN(valArray[i]))
+            query += '"' + valArray[i] + '"'  
+        else
+            query += valArray[i]
+            
+        query += ','
+        
+    }
+    query = query.slice(0,-1)
+
+    return query
+}
+
+function setupWhereString(array){
+    let query = ''
+    if(array.length>0)
+        query += ' WHERE '
+    //WHERE column = value AND id = 2
+    for(let i = 0; i< array.length;i++){
+        query += array[i].column + '='
+
+        if(isNaN(array[i].value))
+            query += '"' + array[i].value + '"'  
+        else
+            query += array[i].value
+            
+        query += ' AND '
+    }
+    query = query.slice(0,-5)
+
+    return query
+}
+
+function updateInDB(arg,callback){
+    let results = {data:[], origin: arg.origin, type: 'update'}
+    console.log('updateInDB')
+    for (let i = 0, l = arg.data.length; i < l; i++) {
+        let data = arg.data[i]
+        //console.log(data)
+
+        let tableName = data.table
+        let setValues = setupSetString(data.columns, data.values)
+        //console.log(setValues)
+        let whereValues = setupWhereString(data.where)
+
+        let sql = "UPDATE "+tableName+" SET " + setValues + whereValues
+        console.log(sql)
+        conn.query(sql, function (err, result) {
+            if (err) throw err;
+
+            // results.data.push({result: result, fields:fields})
+            // if(results.data.length == arg.data.length)
+            results.data.push({result: result, fields:{orgTable: tableName}})
+            callback(results)
+        })
+    }
+
+
+    
 }
 
 function deleteInDB(){

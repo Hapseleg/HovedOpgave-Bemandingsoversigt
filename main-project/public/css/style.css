@@ -1,3 +1,21 @@
 body {
     background-color: #3498db;
 }
+
+.availableWorkTime{
+    border-style: solid;
+    border-width: 1px;
+    text-align: center;
+}
+
+.lowWorkload{
+    background-color: green
+}
+
+.mediumWorkload{
+    background-color: yellow
+}
+
+.highWorkload{
+    background-color: red
+}

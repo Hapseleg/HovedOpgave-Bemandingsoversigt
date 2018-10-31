@@ -44,7 +44,12 @@ function subRead(){
 
 function subUpdate(){
     mediator.subscribe('updateInDB',function(arg){
-        
+        try{
+            mysql.updateInDB(arg, returnResult)
+        }
+        catch(error){
+            mediator.publish('error', error)
+        }
     })
 }
 

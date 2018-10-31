@@ -21,8 +21,16 @@ function installTo(obj){
     obj.publish = this.publish
 }
 
+function printChannels(){
+    console.log(channels)
+    // channels.channel.array.forEach(element => {
+    //     console.log(element)
+    // });
+}
+
 module.exports = {
     subscribe: subscribe,
     publish: publish,
-    installTo: installTo
+    installTo: installTo,
+    printChannels:printChannels
 }

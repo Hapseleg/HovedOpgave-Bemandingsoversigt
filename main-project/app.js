@@ -2,9 +2,12 @@ var express = require('express')
 var exphbs  = require('express-handlebars')
 var bodyParser = require('body-parser')
 
-var mediator = require('./server/modules/mediator.js')
-require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade.js').setup()
+var mediator = require('./server/modules/mediator')
 require('./server/modules/database/databaseFacade').setup()
+require('./server/modules/tidsUdregner/tidsUdregnerFacade').setup()
+require('./server/modules/errorHandler/errorFacade').setup()
+
+require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade').setup()
 require('./server/modules/profil/profilFacade').setup()
 require('./server/modules/opgave/opgaveFacade').setup()
 
@@ -36,7 +39,9 @@ app.use(bodyParser.json()) // parse application/json
 
 //routers
 app.use('/',function(req,res){
+    console.log('------------------')
     // console.log(req);
+    console.log(req.path)
     switch(req.method){
         case 'GET':{
             mediator.publish('getView', {req,res})

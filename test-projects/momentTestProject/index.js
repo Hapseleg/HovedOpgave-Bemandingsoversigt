@@ -56,9 +56,33 @@ function getWeekdaysInMonth(year,month,callback){
     })
 }
 
-getWeekdaysInMonth(2018,11,function(res){
-    console.log(res)
-})
+// getWeekdaysInMonth(2018,11,function(res){
+//     console.log(res)
+// })
+
+var time2 = moment('08:30:00', 'HHmmss')
+var time1 = moment('15:00:00', 'HHmmss')
+
+console.log(time1.diff(time2, 'h', true))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // var t = moment('2018-12-30')

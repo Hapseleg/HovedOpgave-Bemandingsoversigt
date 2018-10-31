@@ -8,22 +8,38 @@ var bemandingsoversigt = require('./bemandingsoversigt.js')
 
 var name = 'bemandingsoversigt';
 var res;
+var req;
 
 function setup(){
     console.log('setting up '+name+' facade')
     subGetView()
     subDataFromDB()
+    subPutView()
 }
 
 function subGetView(){
     mediator.subscribe('getView',function(arg){
-        console.log(arg.req.path)
         res = arg.res;
+        req = arg.req;
         if(arg.req.path == '/'+name){
             mediator.publish('readFromDB', bemandingsoversigt.getData())
         }   
-        else if(arg.req.path == '/bemandingsOversigtTid')
+        else if(arg.req.path == '/bemandingsOversigtTid'){
             mediator.publish('readFromDB', bemandingsoversigt.getTidData())
+        }
+    })
+}
+
+function subPutView(){
+    mediator.subscribe('putView',function(arg){
+        res = arg.res;
+        req = arg.req;
+        if(arg.req.path == '/bemandingsOversigtTid'){
+            if(req.body.ugeTimeOpgaveId)
+                mediator.publish('updateInDB', bemandingsoversigt.updateUgeTimeOpgave(req.body))
+            else
+                mediator.publish('createInDB', bemandingsoversigt.createUgeTimeOpgave(req.body))
+        }
     })
 }
 
@@ -32,30 +48,30 @@ function subDataFromDB(){
         if(arg.origin == name){
             try{
                 console.log('render subDataFromDB opgave here')
-                console.log(arg.type)
-                console.log(arg.data[0].fields[0])
+                //console.log(arg.type)
+                //console.log(arg.data[0])
                 let field = arg.data[0].fields[0]
-                if(arg.type == 'read')
+                if(arg.type == 'read'){
                     if(field.orgTable == 'opgaveloseropgave'){
                         res.render(name, {opgaveloser: arg.data[0].result})
                     }
                     else if(field.orgTable == 'opgaveloserarbejdstider'){
-                        res.json(arg.data[0].result)
+                        // mediator.printChannels()
+                        // console.log('calcAvailWorkTime i bemandingsoversigt')
+                        // mediator.publish('calcAvailWorkTime', {data: arg.data[0].result, date: arg.req.query, res:res})
+                        arg.date = req.query
+                        arg.res = res
+                        mediator.publish('calcAvailWorkTime', arg)
+                        //res.json(arg.data[0].result)
                     }
-
-                    //res.render(name, {opgaveloser: arg.data[0].result})
-                    // res.render(name, {
-                    //     opgaveloser: arg.data[0].result,
-                    //     opgavetype: arg.data[1].result,
-                    //     opgavestatus: arg.data[2].result,
-                    //     kontraktstatus: arg.data[3].result,
-                    //     lokation: arg.data[4].result,
-                    //     opgavestiller: arg.data[5].result,
-                    //     kundeansvarlig: arg.data[6].result,
-                    //     kunde: arg.data[7].result
-                    // })
-                else if(arg.type == 'create')
+                }
+                else if(arg.type == 'create'){
                     res.render(name)
+                }
+                else if(arg.type == 'update'){
+                    res.json({})
+                }
+                    
             }
             catch(error){
                 mediator.publish('error', error)

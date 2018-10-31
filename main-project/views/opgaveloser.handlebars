@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md">
         <div class="input-group mb-3">
-            <form method="POST">
+            <form method="POST" id="opgaveloserform">
                 <h1>Opret opgaveløser</h1>
                 <label>Fornavn</label>
                 <input type="text" name="fornavn">
@@ -10,20 +10,13 @@
                 <input type="text" name="efternavn">
                 <br>
                 <label>Lokation</label>
-                <select name="lokation">
+                <select name="lokation" form="opgaveloserform">
                     <option value="1">Aarhus</option>
                     <option value="2">Aalborg</option>
                 </select>
                 <br>
 
                 <h2>KonsulentProfil</h2>
-                {{!-- <label>Møder ind kl</label>
-                <input type="time" name="dagStart1" value="08:00">
-                <br>
-
-                <label>Tager hjem kl</label>
-                <input type="time" name="dagSlut1" value="15:00">
-                <br> --}}
 
                 <div>
                     <div>
@@ -67,16 +60,18 @@
                 </div>
                 <br>
 
-                <input type="submit">
+                <input type="button" value="submit" id="submitknap">
             </form>
         </div>
 
         
-    </div>
+    {{!-- </div>
     <div class="col-md">
       One of three columns
     </div>
     <div class="col-md">
       One of three columns
     </div>
-  </div>
+  </div> --}}
+
+ <script src="/js/clientOpgaveloser.js"></script>
