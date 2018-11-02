@@ -1,6 +1,5 @@
 var mediator = require('../mediator.js')
 var mysql = require('./mysql.js')
-var promise = require('promise')
 
 var name = 'database';
 
@@ -10,7 +9,7 @@ function setup(){
     subRead()
     subUpdate()
     subDelete()
-    mysql.createConnection()
+    mysql.initConnection()
 }
 
 function subCreate(){
@@ -27,7 +26,6 @@ function subCreate(){
 
 function returnResult(result){
     console.log('returnResult')
-    // console.log(result)
     mediator.publish('dataFromDB', result)
 }
 
@@ -60,7 +58,5 @@ function subDelete(){
 }
 
 module.exports = {
-    setup:setup,
-    publish:mediator.publish,
-    returnResult:returnResult
+    setup:setup
 }

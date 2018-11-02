@@ -6,7 +6,7 @@ var config = require('./mysqlConfig.js').config
 
 var conn;
 
-function createConnection(){
+function initConnection(){
     try{
         conn = mysql.createConnection(config)
         console.log('mysql connection started')
@@ -42,22 +42,22 @@ function setupColumnsStringWithLetter(array, columnLetter, columnString){
     return query
 }
 
-function setupValuesString(array){
-    let query = ''
+// function setupValuesString(array){
+//     let query = ''
 
-    for(let i = 0; i< array.length;i++){
-        if(isNaN(array[i]))
-            query += '"' + array[i] + '"'  
-        else
-            query += array[i]
+//     for(let i = 0; i< array.length;i++){
+//         if(isNaN(array[i]))
+//             query += '"' + array[i] + '"'  
+//         else
+//             query += array[i]
             
-        query += ','
-        console.log(query)
-    }
-    query = query.slice(0,-1)
+//         query += ','
+//         console.log(query)
+//     }
+//     query = query.slice(0,-1)
 
-    return query
-}
+//     return query
+// }
 
 function setupValuesArray(array){
 
@@ -223,9 +223,6 @@ function updateInDB(arg,callback){
             callback(results)
         })
     }
-
-
-    
 }
 
 function deleteInDB(){
@@ -237,5 +234,5 @@ module.exports = {
     readFromDB: readFromDB,
     updateInDB: updateInDB,
     deleteInDB: deleteInDB,
-    createConnection: createConnection
+    initConnection: initConnection
 }

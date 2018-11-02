@@ -15,13 +15,11 @@ function setup(){
 function subGetView(){
     mediator.subscribe('getView',function(arg){
         if(arg.req.path == '/'+name){
-            let viewName = profiler[0].getView('opgave')
+            //let viewName = profiler[0].getView('opgave')
             //arg.res.render(viewName)
             mediator.publish('readFromDB', profiler[0].getData())
             res = arg.res;
-
         }
-
     })
 }
 
