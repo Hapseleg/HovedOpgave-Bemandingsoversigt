@@ -43,13 +43,16 @@ function subDataFromDB(){
     mediator.subscribe('dataFromDB',function(arg){
         if(arg.origin == name){
             try{
-                console.log('render subDataFromDB opgave here')
+                console.log('render subDataFromDB bemandingsoversigt here')
                 let field = arg.data[0].fields[0]
+                
                 if(arg.type == 'read'){
                     if(field.orgTable == 'opgaveloseropgave'){
                         res.render(name, {opgaveloser: arg.data[0].result})
                     }
                     else if(field.orgTable == 'opgaveloserarbejdstider'){
+                        // console.log(arg.data[0].result,'0')
+                        // console.log(arg.data[1].result,'1')
                         tidsUdregner.getWeekdaysInMonth(req.query.year, req.query.month, function(weekdays){
                             tidsUdregner.calculateAvailableWorkTimeInWeeks(weekdays, arg.data, req.query.year, req.query.month, function(availableWorkTime){
                                 res.json(availableWorkTime)

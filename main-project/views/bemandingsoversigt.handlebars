@@ -26,20 +26,13 @@
             <th scope="col">Opgave id</th>
             <th scope="col">Opgave</th>
             <th scope="col">KonsulentProfil</th>
-
-            {{!-- <th scope="col">40</th>
-            <th scope="col">41</th>
-            <th scope="col">42</th>
-            <th scope="col">43</th>
-            <th scope="col">44</th> --}}
         </tr>
     </thead>
     <tbody>
         {{#each opgaveloser}}
             <tr id="opgaveloserRow" class="opgaveloser">
                 <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
-                <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                <input type="hidden" id="{{@index}}" idName="opgaveId" value={{this.opgaveId}}>
+                <input type="hidden" id="{{@index}}" idName="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}>
 
                 <td value={{this.opgaveloserId}}>{{this.opgaveloserId}}</td>
                 <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>

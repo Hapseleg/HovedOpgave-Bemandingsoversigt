@@ -57,71 +57,43 @@ function getWeekdaysInMonth(year,month,callback){
 }
 
 function calculateAvailableWorkTimeInWeeks(weekNumbers, data, year, month, callback){
-    let dagStartMoment
-    let dagSlutMoment
-
-    //console.log(data[1].result)
-
-    for(let i = 0; i<weekNumbers.length;i++){
-        var currentWeekNumber = weekNumbers[i]
+    for(let i = 0;i<weekNumbers.length;i++){
+        let currentWeekNumber = weekNumbers[i]
         currentWeekNumber.opgaveloser = []
 
-        for(let i = 0; i<data[0].result.length;i++){
+        for(let i = 0;i<data[0].result.length;i++){
             let da = data[0].result[i]
-
+            
             let opgaveloser = currentWeekNumber.opgaveloser.find(o => o.opgaveloserId === da.opgaveloserId)
 
             if(opgaveloser == undefined){//if the opgaveloser is not in the array, add it
                 opgaveloser = {opgaveloserId: da.opgaveloserId, week: currentWeekNumber.week, workDaysInWeek: [], maxAvailableWorkTime: 0, currentWorkTime: []}
                 currentWeekNumber.opgaveloser.push(opgaveloser)
             }
-
             if(currentWeekNumber.weekdays.includes(da.dag)){
                 opgaveloser.workDaysInWeek.push(da.dag)
-
+    
                 dagStartMoment = moment(da.dagStart, 'HHmmss')
                 dagSlutMoment = moment(da.dagSlut, 'HHmmss')
-
+    
                 opgaveloser.maxAvailableWorkTime += dagSlutMoment.diff(dagStartMoment, 'h', true)
             }
         }
     }
 
-    // console.log(data[1].result, 'calculateAvailableWorkTimeInWeeks currentWorkTime')
-    for(let i = 0; i<data[1].result.length;i++){
+    for(let i = 0;i<data[1].result.length;i++){
         let da = data[1].result[i]
-        //console.log(da)
-        if(da.opgaveloserKonsulentProfilId != null){
-            let workDate = moment(da.year, 'YYYY').month(da.month).isoWeek(da.week).startOf('isoWeek')
-
-
-
-        if(workDate.year() == year && workDate.month()+1 == month){
-
-            let weekNumber = workDate.isoWeek()
-            let week = weekNumbers.find(o => o.week == weekNumber)
-            let opgaveloser = week.opgaveloser.find(o => o.opgaveloserId === da.opgaveloserId)
-
-            opgaveloser.currentWorkTime.push({ugeTimeOpgaveId: da.ugeTimeOpgaveId, opgaveId: da.opgaveId, timeAntal: da.timeAntal, opgaveloserKonsulentProfilId: da.opgaveloserKonsulentProfilId})
-        }
-        }
-
         
+        if(da.ugeTimeOpgaveId != null){
+            if(da.year == year && da.month == month){
+                let currentWeekNumber = weekNumbers.find(o => o.week === da.week)
+                let opgaveloser = currentWeekNumber.opgaveloser.find(o => o.opgaveloserId === da.opgaveloserId)
+                opgaveloser.currentWorkTime.push({ugeTimeOpgaveId: da.ugeTimeOpgaveId, opgaveId: da.opgaveId, timeAntal: da.timeAntal, opgaveloserOpgaveId: da.opgaveloserOpgaveId})
+            }
+        }
     }
-
     callback(weekNumbers)
 }
-
-/*
-ugedage = hvilke dage er der i ugen = momentjs?
-arbejdsDage = hvilke dage han arbejder = databasen (OpgaveloserArbejdsTider)
-dageTilRådighed = match UGEDAGE og ARBEJDSDAGE
-
-maxTimeAntalTilRådighed = hvis han ikke arbejder på andre opgaver i den uge = dagSlut - dagStart ift dageTilRådighed
-
-timeAntalTilRådighed = hvor mange timer han reelt har til rådighed = maxTimeAntalTilRådighed - (timeAntal for de dato'er i den uge)
- */
-
 
 
 module.exports = {

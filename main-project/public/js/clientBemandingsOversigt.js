@@ -8,6 +8,21 @@ $(document).ready(function() {
 	
 	$('#getTimeData').click(populateWeeks)
 
+	$('th').click(function(){
+		var table = $(this).parents('table').eq(0)
+		var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+		this.asc = !this.asc
+		if (!this.asc){rows = rows.reverse()}
+		for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+	})
+	function comparer(index) {
+		return function(a, b) {
+			var valA = getCellValue(a, index), valB = getCellValue(b, index)
+			return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+		}
+	}
+	function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
 	function populateWeeks(){
 		let month = $('#month').val()
 		let year = $('#year').val()
@@ -43,7 +58,9 @@ $(document).ready(function() {
 			let currentRow = rows[i]
 			let rowOpgaveloserId = $(currentRow).children('[idName=opgaveloserId]').val()
 			let rowopgaveId = $(currentRow).children('[idName=opgaveId]').val()
-			let rowopgaveloserKonsulentProfilId = $(currentRow).children('[idName=opgaveloserKonsulentProfilId]').val()
+			// let rowopgaveloserKonsulentProfilId = $(currentRow).children('[idName=opgaveloserKonsulentProfilId]').val()
+
+			let rowopgaveloserOpgaveId = $(currentRow).children('[idName=opgaveloserOpgaveId]').val()
 			
 			for(let i = 0; i< result.length; i++){
 				let opgaveloser = result[i].opgaveloser.find(o => o.opgaveloserId == rowOpgaveloserId)
@@ -52,7 +69,7 @@ $(document).ready(function() {
 
 				for(let i = 0; i<opgaveloser.currentWorkTime.length;i++){
 					let currentWorkTime = opgaveloser.currentWorkTime[i]
-					if(rowopgaveId == currentWorkTime.opgaveId && rowopgaveloserKonsulentProfilId == currentWorkTime.opgaveloserKonsulentProfilId){
+					if(rowopgaveloserOpgaveId == currentWorkTime.opgaveloserOpgaveId){
 						antalTimerOpgaveloserArbejderPaaOpgaven += currentWorkTime.timeAntal
 						ugeTimeOpgaveId = currentWorkTime.ugeTimeOpgaveId
 					}
@@ -82,8 +99,7 @@ function changeAntalTimer(e){
 	
 	if(val != null && !isNaN(val)){
 		let row = $(e).parent()
-		let rowopgaveId = $(row).children('[idName=opgaveId]').val()
-		let rowopgaveloserKonsulentProfilId = $(row).children('[idName=opgaveloserKonsulentProfilId]').val()
+		let rowopgaveloserOpgaveId = $(row).children('[idName=opgaveloserOpgaveId]').val()
 
 		let month = $('#month').val()
 		let year = $('#year').val()
@@ -93,8 +109,7 @@ function changeAntalTimer(e){
 
 		let d = {
 			ugeTimeOpgaveId:ugeTimeOpgaveId,//kan være undefined
-			opgaveId:rowopgaveId,
-			opgaveloserKonsulentProfilId:rowopgaveloserKonsulentProfilId,
+			opgaveloserOpgaveId:rowopgaveloserOpgaveId,
 			year: year,
 			month: month,
 			week:weekNumber,

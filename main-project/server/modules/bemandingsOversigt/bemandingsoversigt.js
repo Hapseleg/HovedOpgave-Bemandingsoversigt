@@ -18,7 +18,7 @@ function getData(){
         data:[
             {//OpgaveloserOpgave, opgave, Opgaveloser, ugetimeopgave, OpgaveloserKonsulentprofil, Konsulentprofil
                 table:'OpgaveloserOpgave',
-                columns: ['opgaveId','opgaveloserKonsulentProfilId'],
+                columns: ['opgaveloserOpgaveId','opgaveId','opgaveloserKonsulentProfilId'],
                 leftJoins:[
                     {leftTable: 'OpgaveloserOpgave', rightTable:'Opgave', leftColumn: 'opgaveId', rightColumn: 'opgaveId', selectColumns: ['opgaveNavn', 'startDato', 'slutDato']},
                     {leftTable: 'OpgaveloserOpgave', rightTable:'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId', 'konsulentProfilId']},
@@ -26,13 +26,6 @@ function getData(){
                     {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['fornavn', 'efternavn', 'arbejdstidPrUge']},
                 ]
             },
-            // {
-            //     table: 'OpgaveloserArbejdsTider',
-            //     columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
-            //     leftJoins:[
-            //         {leftTable: 'OpgaveloserArbejdsTider', rightTable:'ugetimeopgave', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['opgaveId', 'dato', 'timeAntal']},
-            //     ]
-            // }
         ],
         origin:name
     }
@@ -44,24 +37,32 @@ function getTidData(){
             {
                 table: 'OpgaveloserArbejdsTider',
                 columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
-                // leftJoins:[
-                //     {leftTable: 'OpgaveloserArbejdsTider', rightTable:'ugetimeopgave', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['opgaveId', 'dato', 'timeAntal']},
-                // ]
             },
             {//tilføj så man kan trække kun data ud fra et bestemt måned (dato between 1-31)
                 table: 'opgaveloserKonsulentProfil',
                 columns: ['opgaveloserKonsulentProfilId','opgaveloserId'],
                 leftJoins:[
-                    {leftTable: 'opgaveloserKonsulentProfil', rightTable:'ugetimeopgave', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['ugeTimeOpgaveId','opgaveloserKonsulentProfilId','opgaveId', 'year','month','week', 'timeAntal']},
+                    {
+                        leftTable: 'opgaveloserKonsulentProfil', 
+                        rightTable:'opgaveloserOpgave', 
+                        leftColumn: 'opgaveloserKonsulentProfilId', 
+                        rightColumn: 'opgaveloserKonsulentProfilId', 
+                        selectColumns: [
+                            'opgaveloserOpgaveId',
+                            'opgaveId'
+                        ]
+                    },
+                    {
+                        leftTable: 'opgaveloserOpgave', 
+                        rightTable:'ugetimeopgave', 
+                        leftColumn: 'opgaveloserOpgaveId', 
+                        rightColumn: 'opgaveloserOpgaveId', 
+                        selectColumns: [
+                            'ugeTimeOpgaveId', 'year','month','week', 'timeAntal'
+                        ]
+                    },
                 ]
             }
-            // {//tilføj så man kan trække kun data ud fra et bestemt måned (dato between 1-31)
-            //     table: 'ugetimeopgave',
-            //     columns: ['ugeTimeOpgaveId','opgaveloserKonsulentProfilId','opgaveId', 'year','month','week', 'timeAntal'],
-            //     leftJoins:[
-            //         {leftTable: 'ugetimeopgave', rightTable:'opgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId']},
-            //     ]
-            // }
         ],
         origin:name
     }
@@ -139,8 +140,8 @@ function createUgeTimeOpgave(arg){
     return {
         data:[{
                 table:'UgeTimeOpgave',
-                columns: ['opgaveId', 'opgaveloserKonsulentProfilId', 'year', 'month', 'week','timeAntal'],
-                values: [[arg.opgaveId, arg.opgaveloserKonsulentProfilId, arg.year, arg.month, arg.week, arg.timeAntal]]
+                columns: ['opgaveloserOpgaveId', 'year', 'month', 'week','timeAntal'],
+                values: [[arg.opgaveloserOpgaveId, arg.year, arg.month, arg.week, arg.timeAntal]]
             }
         ],
             origin: name

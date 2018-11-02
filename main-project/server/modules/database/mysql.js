@@ -157,7 +157,7 @@ function readFromDB(arg, callback){
 
             results.data.push({result: result, fields:fields})
             if(results.data.length == arg.data.length)
-            callback(results)
+                callback(results)
           })
         
     }

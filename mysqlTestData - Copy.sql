@@ -56,10 +56,9 @@ values
     ("asdasd",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her'),
     ("ASD",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her');
     
+INSERT INTO ugetimeopgave (opgaveloserKonsulentProfilId,opgaveId,year,month,week,timeAntal) VALUES (1,1,2018,10,42, 10), (2,2,2018,11,46, 10), (3,1,2018,12,50, 5);   
 
 INSERT INTO opgaveloseropgave (opgaveloserKonsulentProfilId,opgaveId) VALUES (1,1), (1,2), (2,1), (3,2);   
-
-INSERT INTO ugetimeopgave (opgaveloserOpgaveId,year,month,week,timeAntal) VALUES (1,2018,10,42, 10), (2,2018,11,46, 10), (3,2018,12,50, 5);   
 
 insert into deadline(opgaveId, deadlineDato, deadlineKommentar)
 values
