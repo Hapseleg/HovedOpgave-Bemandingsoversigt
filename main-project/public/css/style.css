@@ -6,16 +6,29 @@ body {
     border-style: solid;
     border-width: 1px;
     text-align: center;
+    cursor: pointer
 }
 
 .lowWorkload{
-    background-color: green
+    background-color: #2ecc71
 }
 
 .mediumWorkload{
-    background-color: yellow
+    background-color: #f1c40f
 }
 
 .highWorkload{
-    background-color: red
+    background-color: #e74c3c
+}
+
+th{
+    text-align: center
+}
+
+.selectedForRemoval{
+    background-color: #e74c3c
+}
+
+.scrollTable{
+    overflow: auto;
 }

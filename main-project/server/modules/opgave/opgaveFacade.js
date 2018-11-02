@@ -18,7 +18,7 @@ function subGetView(){
             //let viewName = profiler[0].getView('opgave')
             //arg.res.render(viewName)
             mediator.publish('readFromDB', profiler[0].getData())
-            res = arg.res;
+            res = arg.res
         }
     })
 }

@@ -93,6 +93,8 @@ function createInDB(arg, callback, createdDone, firstId, earlierResults){
         }
 
         var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ?";
+        console.log(insertId, 'insertId')
+        console.log(data.values)
         // var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
         console.log(sql)
         // console.log(data.values)
@@ -108,7 +110,7 @@ function createInDB(arg, callback, createdDone, firstId, earlierResults){
             results.data.push({result: result, fields:{orgTable: tableName}})
 
             if(results.data.length == arg.data.length)
-            callback(results)
+                callback(results)
             else
                 createInDB(arg, callback, createdDone+1, insertId, results)
         });

@@ -11,21 +11,21 @@
 
                     <div class="form-group">
                         <label for="kundeId">Kunde</label>
-                        <select name="kundeId" form="opgaveform">
+                        <select name="kundeId" form="opgaveform" class="form-control">
                             {{#each kunde}}
                                 <option value={{this.kundeId}}>{{this.fornavn}} {{this.efternavn}}</option>
                             {{/each}}
                         </select>
                         {{!-- <input type="text" class="form-control" id="kunde" name="kundeId"> --}}
                         <label for="kundeansvarligId">kundeansvarlig</label>
-                        <select name="kundeansvarligId"form="opgaveform">
+                        <select name="kundeansvarligId"form="opgaveform" class="form-control">
                             {{#each kundeansvarlig}}
                                 <option value={{this.kundeansvarligId}}>{{this.fornavn}} {{this.efternavn}}</option>
                             {{/each}}
                         </select>
                         {{!-- <input type="text" class="form-control" id="kundeansvarlig" name="kundeansvarligId"> --}}
                         <label for="opgavestillerId">opgavestiller</label>
-                        <select name="opgavestillerId" form="opgaveform">
+                        <select name="opgavestillerId" form="opgaveform" class="form-control">
                             {{#each opgavestiller}}
                                 <option value={{this.opgavestillerId}}>{{this.fornavn}} {{this.efternavn}}</option>
                             {{/each}}
@@ -84,34 +84,37 @@
         <div class="col-md">
             <div class="form-group">
                 <h2>Mulige opgaveløsere</h2>
-                <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
-                    <thead>
-                        <tr>
-                            <th scope="col">Navn</th>
-                            <th scope="col">Konsulentprofil</th>
-                            <th scope="col">Lokation</th>
-                            {{!-- <th scope="col">Status</th> --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each muligeOpgaveloser}}
-                            <tr id="opgaveloserRow" class="muligOpgaveloser">
-                                <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                                <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
-                                <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
-                                <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
-                                <td value={{this.opgaveloserId}}>{{this.fornavn}}</td>
-                                <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                                <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                <div class="scrollTable">
+                    <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
+                        <thead>
+                            <tr>
+                                <th scope="col">Navn</th>
+                                <th scope="col">Konsulentprofil</th>
+                                <th scope="col">Lokation</th>
+                                {{!-- <th scope="col">Status</th> --}}
                             </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {{#each muligeOpgaveloser}}
+                                <tr id="opgaveloserRow" class="muligOpgaveloser">
+                                    <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                                    <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
+                                    <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
+                                    <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
+                                    <td value={{this.opgaveloserId}}>{{this.fornavn}}</td>
+                                    <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                                    <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="form-group">
                 <h2>Deadlines</h2>
-                <table class="table table-light" id="deadlines" style="max-height: 300px">
+                <div class="scrollTable">
+                    <table class="table table-light" id="deadlines" style="max-height: 300px">
                     <thead>
                         <tr>
                             <th scope="col">Dato</th>
@@ -128,14 +131,17 @@
                         {{/each}}
                     </tbody>
                 </table>
-                <button type="button">Fjern deadline</button>
+                </div>
+                
+                <button type="button" onclick="removeDeadlines()">Fjern valgte deadlines</button>
             </div>
         </div>
 
         <div class="col-md">
             <div class="form-group">
                 <h2>Valgte opgaveløsere</h2>
-                <table class="table table-light" id="valgteOpgavelosere">
+                <div class="scrollTable">
+                    <table class="table table-light" id="valgteOpgavelosere">
                     <thead>
                         <tr>
                             {{!-- <th scope="col">Id</th> --}}
@@ -149,6 +155,9 @@
 
                     </tbody>
                 </table>
+
+                </div>
+                
                 {{!-- <label for="opgaveNavn">Opgavens navn</label>
                 <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn"> --}}
             </div>

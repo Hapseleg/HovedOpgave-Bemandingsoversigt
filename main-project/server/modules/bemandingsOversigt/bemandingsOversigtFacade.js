@@ -1,10 +1,6 @@
 var mediator = require('../mediator.js')
 var bemandingsoversigt = require('./bemandingsoversigt.js')
-
-// var facade = require('../facade.js')
-
-// var f = {name: 'bemandingsoversigt'}
-// facade.installTo(f)
+var tidsUdregner = require('./tidsUdregner.js')
 
 var name = 'bemandingsoversigt';
 var res;
@@ -21,7 +17,7 @@ function subGetView(){
     mediator.subscribe('getView',function(arg){
         res = arg.res;
         req = arg.req;
-        if(arg.req.path == '/'+name){
+        if(arg.req.path == '/'+name || arg.req.path == '/'){
             mediator.publish('readFromDB', bemandingsoversigt.getData())
         }   
         else if(arg.req.path == '/bemandingsOversigtTid'){
@@ -48,21 +44,17 @@ function subDataFromDB(){
         if(arg.origin == name){
             try{
                 console.log('render subDataFromDB opgave here')
-                //console.log(arg.type)
-                //console.log(arg.data[0])
                 let field = arg.data[0].fields[0]
                 if(arg.type == 'read'){
                     if(field.orgTable == 'opgaveloseropgave'){
                         res.render(name, {opgaveloser: arg.data[0].result})
                     }
                     else if(field.orgTable == 'opgaveloserarbejdstider'){
-                        // mediator.printChannels()
-                        // console.log('calcAvailWorkTime i bemandingsoversigt')
-                        // mediator.publish('calcAvailWorkTime', {data: arg.data[0].result, date: arg.req.query, res:res})
-                        arg.date = req.query
-                        arg.res = res
-                        mediator.publish('calcAvailWorkTime', arg)
-                        //res.json(arg.data[0].result)
+                        tidsUdregner.getWeekdaysInMonth(req.query.year, req.query.month, function(weekdays){
+                            tidsUdregner.calculateAvailableWorkTimeInWeeks(weekdays, arg.data, req.query.year, req.query.month, function(availableWorkTime){
+                                res.json(availableWorkTime)
+                            })
+                        })
                     }
                 }
                 else if(arg.type == 'create'){
@@ -81,6 +73,5 @@ function subDataFromDB(){
 }
 
 module.exports = {
-    setup:setup,
-    publish: mediator.publish
+    setup:setup
 }

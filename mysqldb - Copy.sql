@@ -135,10 +135,24 @@ FOREIGN KEY (kontraktStatusId)
 
 
 
+CREATE TABLE UgeTimeOpgave (
+ugeTimeOpgaveId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+opgaveloserKonsulentProfilId INT UNSIGNED NOT NULL,
+opgaveId INT UNSIGNED NOT NULL,
+year INT(2) UNSIGNED NOT NULL,
+month INT(1) UNSIGNED NOT NULL,
+week INT(1) UNSIGNED NOT NULL,
+timeAntal int(1) UNSIGNED,
 
+FOREIGN KEY (opgaveloserKonsulentProfilId)
+   REFERENCES OpgaveloserKonsulentprofil(opgaveloserKonsulentProfilId)
+   ON DELETE CASCADE,
+FOREIGN KEY (opgaveId)
+   REFERENCES Opgave(opgaveId)
+   ON DELETE CASCADE
+);
 
 CREATE TABLE OpgaveloserOpgave (
-opgaveloserOpgaveId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 opgaveId INT UNSIGNED NOT NULL,
 opgaveloserKonsulentProfilId INT UNSIGNED NOT NULL,
 
@@ -147,19 +161,6 @@ FOREIGN KEY (opgaveId)
    ON DELETE CASCADE,
 FOREIGN KEY (opgaveloserKonsulentProfilId)
    REFERENCES OpgaveloserKonsulentprofil(opgaveloserKonsulentProfilId)
-   ON DELETE CASCADE
-);
-
-CREATE TABLE UgeTimeOpgave (
-ugeTimeOpgaveId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-opgaveloserOpgaveId INT UNSIGNED NOT NULL,
-year INT(2) UNSIGNED NOT NULL,
-month INT(1) UNSIGNED NOT NULL,
-week INT(1) UNSIGNED NOT NULL,
-timeAntal int(1) UNSIGNED,
-
-FOREIGN KEY (opgaveloserOpgaveId)
-   REFERENCES OpgaveloserOpgave(opgaveloserOpgaveId)
    ON DELETE CASCADE
 );
 

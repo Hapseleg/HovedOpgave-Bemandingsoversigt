@@ -34,7 +34,7 @@ $(document).ready(function() {
         let deadlineDato = $('#deadlineDato').val()
         let deadlineKommentar = $('#deadlineKommentar').val()
         $('#deadlines tr:last').after(
-            '<tr onclick="removeDeadline(this)" id="deadlineRow">'+
+            '<tr onclick="markForRemoval(this)" id="deadlineRow">'+
                 '<input type="hidden" name="deadlines['+deadlineCount+'][deadlineDato]" value="'+deadlineDato+'">'+
                 '<input type="hidden" name="deadlines['+deadlineCount+'][deadlineKommentar]" value="'+deadlineKommentar+'">'+
                 '<td>'+deadlineDato+'</td>' +
@@ -42,10 +42,16 @@ $(document).ready(function() {
             '</tr>');
         deadlineCount++;
     })
-
-    
 })
 
-function removeDeadline(e){
-    $(e).remove()
+function markForRemoval(e){
+    if($(e).hasClass('selectedForRemoval'))
+        $(e).removeClass('selectedForRemoval')
+    else
+        $(e).addClass('selectedForRemoval')
+}
+
+function removeDeadlines(){
+    //$(e).remove()
+    $('.selectedForRemoval').remove()
 }

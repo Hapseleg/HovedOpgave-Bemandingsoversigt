@@ -78,37 +78,39 @@ $(document).ready(function() {
 })
 
 function changeAntalTimer(e){
-	let row = $(e).parent()
-	let rowopgaveId = $(row).children('[idName=opgaveId]').val()
-	let rowopgaveloserKonsulentProfilId = $(row).children('[idName=opgaveloserKonsulentProfilId]').val()
-
-	let month = $('#month').val()
-	let year = $('#year').val()
-
-	let weekNumber = $(e).attr('week')
-	let ugeTimeOpgaveId = $(e).attr('ugeTimeOpgaveId')
-
 	let val = prompt("Indtast time antal")
+	
+	if(val != null && !isNaN(val)){
+		let row = $(e).parent()
+		let rowopgaveId = $(row).children('[idName=opgaveId]').val()
+		let rowopgaveloserKonsulentProfilId = $(row).children('[idName=opgaveloserKonsulentProfilId]').val()
 
-	let d = {
-		ugeTimeOpgaveId:ugeTimeOpgaveId,//kan være undefined
-		opgaveId:rowopgaveId,
-		opgaveloserKonsulentProfilId:rowopgaveloserKonsulentProfilId,
-		year: year,
-		month: month,
-		week:weekNumber,
-		timeAntal:val
-	}
-	//console.log(d)
+		let month = $('#month').val()
+		let year = $('#year').val()
 
-	$.ajax({
-		url: '/bemandingsOversigtTid',
-		data: d,
-		type: 'PUT',
-		success: function(result) {
-			$(e).text(val)
+		let weekNumber = $(e).attr('week')
+		let ugeTimeOpgaveId = $(e).attr('ugeTimeOpgaveId')
 
-			//insertAvailableWorkTime(result)
+		let d = {
+			ugeTimeOpgaveId:ugeTimeOpgaveId,//kan være undefined
+			opgaveId:rowopgaveId,
+			opgaveloserKonsulentProfilId:rowopgaveloserKonsulentProfilId,
+			year: year,
+			month: month,
+			week:weekNumber,
+			timeAntal:val
 		}
-	});
+		//console.log(d)
+
+		$.ajax({
+			url: '/bemandingsOversigtTid',
+			data: d,
+			type: 'PUT',
+			success: function(result) {
+				$(e).text(val)
+
+				//insertAvailableWorkTime(result)
+			}
+		});
+	}
 }
