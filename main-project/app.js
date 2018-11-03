@@ -11,6 +11,7 @@ require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade').setup()
 require('./server/modules/profil/profilFacade').setup()
 require('./server/modules/opgave/opgaveFacade').setup()
 
+
 var app = express();
 
 app.use(express.static('public'))
