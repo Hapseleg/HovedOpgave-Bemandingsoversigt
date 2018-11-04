@@ -156,7 +156,9 @@ opgaveloserOpgaveId INT UNSIGNED NOT NULL,
 year INT(2) UNSIGNED NOT NULL,
 month INT(1) UNSIGNED NOT NULL,
 week INT(1) UNSIGNED NOT NULL,
-timeAntal int(1) UNSIGNED,
+timeAntal int(1) UNSIGNED NOT NULL,
+
+UNIQUE KEY ugeTimeOpgaveId (opgaveloserOpgaveId,year,month,week),
 
 FOREIGN KEY (opgaveloserOpgaveId)
    REFERENCES OpgaveloserOpgave(opgaveloserOpgaveId)

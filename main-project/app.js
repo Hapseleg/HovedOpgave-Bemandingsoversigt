@@ -3,9 +3,10 @@ var exphbs  = require('express-handlebars')
 var bodyParser = require('body-parser')
 
 var mediator = require('./server/modules/mediator')
+require('./server/modules/errorHandler/errorFacade').setup()//set up error first
+
 require('./server/modules/database/databaseFacade').setup()
 //require('./server/modules/tidsUdregner/tidsUdregnerFacade').setup()
-require('./server/modules/errorHandler/errorFacade').setup()
 
 require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade').setup()
 require('./server/modules/profil/profilFacade').setup()
