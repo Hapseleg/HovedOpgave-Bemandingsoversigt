@@ -15,18 +15,13 @@ function setup(){
 function subCreate(){
     mediator.subscribe('createInDB',function(arg){
         try{
-            mysql.createInDB(arg, 0, undefined, undefined, returnResult, throwError)//TODO returnresult skal ikke være her
+            mysql.createInDB(arg, returnResult, 0, undefined, undefined)//TODO returnresult skal ikke være her
         }
         catch(error){
             console.log(error)
             mediator.publish('error', error)
         }
     })
-}
-
-function throwError(error){
-    console.log('throwError')
-    mediator.publish('error', error)
 }
 
 function returnResult(result){
@@ -37,7 +32,7 @@ function returnResult(result){
 function subRead(){
     mediator.subscribe('readFromDB',function(arg){
         try{
-            mysql.readFromDB(arg, returnResult, throwError)
+            mysql.readFromDB(arg, returnResult)
         }
         catch(error){
             mediator.publish('error', error)
@@ -48,7 +43,7 @@ function subRead(){
 function subUpdate(){
     mediator.subscribe('updateInDB',function(arg){
         try{
-            mysql.updateInDB(arg, returnResult, throwError)
+            mysql.updateInDB(arg, returnResult)
         }
         catch(error){
             mediator.publish('error', error)

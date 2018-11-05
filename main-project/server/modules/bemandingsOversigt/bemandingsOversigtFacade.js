@@ -44,13 +44,16 @@ function subDataFromDB(){
         if(arg.origin == name){
             try{
                 console.log('render subDataFromDB bemandingsoversigt here')
-                let field = arg.data[0].fields[0]
+                //console.log(arg.data[0])
+                let field = arg.data[0].fields
+                //console.log(field)
+                //console.log(arg.type)
                 
                 if(arg.type == 'read'){
-                    if(field.orgTable == 'opgaveloseropgave'){
+                    if(field.orgTable == 'OpgaveloserOpgave'){
                         res.render(name, {opgaveloser: arg.data[0].result})
                     }
-                    else if(field.orgTable == 'opgaveloserarbejdstider'){
+                    else if(field.orgTable == 'OpgaveloserArbejdsTider'){
                         // console.log(arg.data[0].result,'0')
                         // console.log(arg.data[1].result,'1')
                         tidsUdregner.getWeekdaysInMonth(req.query.year, req.query.month, function(weekdays){
@@ -65,6 +68,9 @@ function subDataFromDB(){
                 }
                 else if(arg.type == 'update'){
                     res.json({})
+                }
+                else{
+                    res.send('error')
                 }
                     
             }

@@ -1,7 +1,7 @@
 module.exports = {
     config: {
         host: "localhost",
-        user: "root",
+        user: "nlj",
         password: "password",
         database: "mydb2"
     }

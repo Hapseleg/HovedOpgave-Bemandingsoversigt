@@ -1,4 +1,4 @@
-var mysql = require('mysql')
+var mysql = require('promise-mysql')
 
 //var facade = require('./databaseFacade')
 var joinLetters = ['b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z']
@@ -8,7 +8,7 @@ var conn;
 
 function initConnection(){
     try{
-        conn = mysql.createConnection(config)
+        conn = mysql.createPool(config)
         console.log('mysql connection started')
     }
     catch(error){
@@ -67,57 +67,58 @@ function setupValuesArray(array){
     }
 }
 
-function createInDB(arg, callback, createdDone, firstId, earlierResults){
-    // console.log(arg,'createInDb arg')
+async function createInDB(arg, createdDone, firstId, earlierResults, callback, errorCallback){
+    //console.log('createdDone', createdDone)
     let results = {data:[], origin: arg.origin, type: 'create'}
     if(earlierResults != undefined)
         results = earlierResults
 
     let insertId = firstId;
 
-    // for (let i = 0, l = arg.data.length; i < l; i++) {
-        // let data = arg.data[i]
-        let data = arg.data[createdDone]
-        // console.log(data.values,'createdindb')
+    let data = arg.data[createdDone]
 
-        var tableName = data.table
-        var columns = setupColumnsString(data.columns)
+    var tableName = data.table
+    var columns = setupColumnsString(data.columns)
 
-        for(let i = 0; i< data.values.length;i++)
-            setupValuesArray(data.values[i])
+    for(let i = 0; i< data.values.length;i++)
+        setupValuesArray(data.values[i])
 
-        if(data.useIdFromFirstInsert){
-            for(let i = 0; i<data.values.length;i++){
-                data.values[i].push(insertId)
-            }
+    if(data.useIdFromFirstInsert){
+        for(let i = 0; i<data.values.length;i++){
+            data.values[i].push(insertId)
         }
+    }
 
-        var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ?";
-        console.log(insertId, 'insertId')
-        console.log(data.values)
-        // var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
-        console.log(sql)
-        // console.log(data.values)
-        // console.log(insertId)
-        conn.query(sql, [data.values], function (err, result, fields) {
-        // conn.query(sql, function (err, result) {
-            if (err) 
-                throw err;
-            if (tableName == arg.idFromFirstInsert)
-                insertId = result.insertId
-            
-            //result.OkPacket.insertId = opgaveId
-            results.data.push({result: result, fields:{orgTable: tableName}})
+    var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ?";
+    //console.log(insertId, 'insertId')
+    console.log(data.values)
+    // var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
+    console.log(sql)
+    // console.log(data.values)
+    // console.log(insertId)
 
-            if(results.data.length == arg.data.length)
-                callback(results)
-            else
-                createInDB(arg, callback, createdDone+1, insertId, results)
-        });
-    // }
+    //conn.query(sql, [data.values], function (err, result) {
+    await conn.query(sql, [data.values])
+    .then(function(result){
+        //console.log(result,'result')
+        if (tableName == arg.idFromFirstInsert)
+            insertId = result.insertId
+
+        results.data.push({result: result, fields:{orgTable: tableName}})
+
+        if(results.data.length == arg.data.length)
+            callback(results)
+        else
+            createInDB(arg, createdDone+1, insertId, results, callback, errorCallback)
+    })
+    .catch(function(err){
+        errorCallback(err)
+        return
+    })
 }
 
-function readFromDB(arg, callback){
+async function readFromDB(arg, callback, errorCallback){
+
     console.log('readfromdb')
     let results = {data:[], origin: arg.origin, type: 'read'}
 
@@ -152,15 +153,17 @@ function readFromDB(arg, callback){
         var sql = "SELECT "+columns+" FROM " + tableName + " a" + leftjoin;
         console.log(sql)
         
-        conn.query(sql, function (err, result, fields) {
-            if (err) throw err;
-
-            results.data.push({result: result, fields:fields})
+        await conn.query(sql)
+        .then(function(result){
+            results.data.push({result: result, fields:{orgTable: tableName}})
             if(results.data.length == arg.data.length)
                 callback(results)
-          })
-        
+        }) 
+        .catch(function(err){
+            errorCallback(err)
+        })    
     }
+
 }
 
 function setupSetString(colArray, valArray){
@@ -202,7 +205,8 @@ function setupWhereString(array){
     return query
 }
 
-function updateInDB(arg,callback){
+async function updateInDB(arg,callback, errorCallback){
+
     let results = {data:[], origin: arg.origin, type: 'update'}
     console.log('updateInDB')
     for (let i = 0, l = arg.data.length; i < l; i++) {
@@ -216,19 +220,24 @@ function updateInDB(arg,callback){
 
         let sql = "UPDATE "+tableName+" SET " + setValues + whereValues
         console.log(sql)
-        conn.query(sql, function (err, result) {
-            if (err) throw err;
-
-            // results.data.push({result: result, fields:fields})
-            // if(results.data.length == arg.data.length)
+        await conn.query(sql)
+        .then(function(result){
             results.data.push({result: result, fields:{orgTable: tableName}})
             callback(results)
         })
+        .catch(function(err){
+            errorCallback(err)
+        }) 
     }
 }
 
 function deleteInDB(){
+    try{
 
+    }
+    catch(err){
+        throw err
+    }
 }
 
 module.exports = {

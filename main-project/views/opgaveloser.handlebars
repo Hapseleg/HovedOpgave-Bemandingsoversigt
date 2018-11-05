@@ -5,7 +5,7 @@
             <h2>Information</h2>
             <div class="input-group mb-3">
                 
-                <div class="form-group">
+                <div class="form-group formArea">
                     <label for="fornavn">Fornavn</label>
                     <input type="text" class="form-control" id="fornavn" name="fornavn">
 
@@ -25,7 +25,7 @@
             <h2>Arbejdsdage</h2>
             <div class="input-group mb-3">
                 
-                <div class="form-group" id="arbejdsdage">
+                <div class="form-group formArea" id="arbejdsdage">
                     {{#each days}}
                          <div>
                             <label>{{this.name}}</label>
@@ -92,7 +92,7 @@
             </div>
         </div> --}}
     </div>
-    <div class="row">
+    <div class="row formArea">
         <div class="col-md"> 
             <h2>KonsulentProfil</h2>
             <div class="input-group mb-3">
@@ -134,11 +134,14 @@
 
         </div>
     </div>
-    <button type="button" id="submitknap">submit</button>
+    <div class="form-group">
+        <button type="button" id="submitknap" class="btn btn-success">Opret Opgaveløser</button>
+    </div>
+    
 </form>
 
 
 
 
 
- <script src="/js/clientOpgaveloser.js"></script>
+ <script src="/js/clientopgaveloser.js"></script>

@@ -116,7 +116,9 @@ $(document).ready(function() {
 					'availableWorkTime': availableWorkTime, 
 					'week': currentWeek, 
 					'ugeTimeOpgaveId': ugeTimeOpgaveId, 
-					'text': timeAntalForOpgave
+					'text': timeAntalForOpgave,
+					'data-toggle': 'tooltip', 
+					'title':'', 
 				})
 
 				//changeWorkLoad(td)
@@ -163,6 +165,7 @@ function calcWeekAvailableworktime(){
 				
 				let availableWorkTime = $(this).attr('maxAvailableWorkTime') - opgaveloserWeek.availableWorkTime
 				$(this).attr('availableworktime', availableWorkTime)
+				$(this).attr('title', availableWorkTime)
 				changeWorkLoad($(this))
 			})
 			
@@ -198,7 +201,7 @@ function changeAntalTimer(e){
 			url: '/bemandingsOversigtTid',
 			data: d,
 			type: 'PUT',
-			success: function(result) {
+			success: function(result) {//TODO hvis jeg vælger en med 0 først og så den samme uden at refresh crasher den fordi den <td> ikke har nogen "ugeTimeOpgaveId"
 				$(e).text(val)
 				$(e).attr('timeAntalForOpgave', val)
 				let availableWorkTime = $(e).attr('maxAvailableWorkTime') - val

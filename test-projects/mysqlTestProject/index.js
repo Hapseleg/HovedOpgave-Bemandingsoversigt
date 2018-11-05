@@ -1,7 +1,7 @@
 var express = require('express')
 var exphbs  = require('express-handlebars')
 var bodyParser = require('body-parser')
-var mysql = require('mysql')
+var mysql = require('promise-mysql')
 
 var app = express();
 
@@ -10,15 +10,15 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}))
 app.set('view engine', 'handlebars');
 
 //body-parser - middleware
-app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })) // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()) // parse application/json
 
 //mysql
-var con = mysql.createConnection({
+var con = mysql.createPool({
     host: "localhost",
     user: "nlj",
     password: "password",
-    database: "mydb"
+    database: "mydb2"
 });
 
 //routers
@@ -90,4 +90,61 @@ app.get('/selectTable?:tableName', function(req, res){
       });
 });*/
 
+app.get('/provinces/:id', async (req, res) => {
+
+    try {
+  
+      // get a connection from the pool
+      //const con = await pool.createConnection();
+        //console.log(con)
+
+  
+        // retrieve the list of provinces from the database
+        console.log('before')
+        await con.query('SELECT a FROM OpgaveloserArbejdsTider')
+        .then(function(result){
+            console.log('result')
+            res.send(result)
+        })
+        .catch(function(err){
+            console.log('error')
+            throw err
+        })
+        console.log('after')
+        // console.log('before if throw')
+        // //console.log(provinces)
+        // if (!provinces.length)
+        //   throw provinces
+        // console.log('after throwwwwwwwwwwwwwwwwww')
+        // const province = provinces[0];
+  
+        // retrieve the associated country from the database
+        // const sql_c = `SELECT c.code, c.name
+        //                FROM countries c
+        //                WHERE c.id = 1
+        //                LIMIT 1`;
+        // const countries = await con.query(sql_c, province.country_id);
+        // if (!countries.length)
+        //   throw countries
+  
+        // province.country = countries[0];
+  
+        // res.send({ province });
+  
+
+  
+    } catch (err) {
+        console.error('catch')
+        //console.error(err._callSite)
+        //console.error(err._callSite)
+        //var a = err._callSite
+        res.status(404).send({ message: err.message });
+        //res.redirect('/')
+    //   if (err instanceof Errors.NotFound)
+    //     res.status(HttpStatus.NOT_FOUND).send({ message: err.message }); // 404
+    //   console.log(err);
+    //   res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ error: err, message: err.message }); // 500
+    }
+});
+console.log('-------------------------------------------------------')
 app.listen(3000);
