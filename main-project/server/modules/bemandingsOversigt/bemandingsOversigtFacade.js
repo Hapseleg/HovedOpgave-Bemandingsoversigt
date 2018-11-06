@@ -64,9 +64,11 @@ function subDataFromDB(){
                     }
                 }
                 else if(arg.type == 'create'){
-                    res.render(name)
+                    console.log('create',arg)
+                    res.json({'insertId': arg.data[0].result.insertId})
                 }
                 else if(arg.type == 'update'){
+                    console.log('update',arg)
                     res.json({})
                 }
                 else{

@@ -1,3 +1,10 @@
+CREATE TABLE Kunde (
+kundeId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+fornavn VARCHAR(30) NOT NULL,
+efternavn VARCHAR(30) NOT NULL,
+firma VARCHAR(50)
+);
+
 CREATE TABLE KontraktStatus (
 kontraktStatusId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 kontraktStatusNavn VARCHAR(50) NOT NULL
@@ -23,12 +30,7 @@ konsulentProfilId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 konsulentProfilNavn VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Kunde (
-kundeId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-fornavn VARCHAR(30) NOT NULL,
-efternavn VARCHAR(30) NOT NULL,
-firma VARCHAR(50)
-);
+
 
 CREATE TABLE Opgaveloser (
 opgaveloserId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -74,8 +76,6 @@ dagStart TIME NOT NULL,
 dagSlut TIME NOT NULL,
 opgaveloserId INT UNSIGNED NOT NULL,
 
-UNIQUE KEY arbejdstiderId (dag,opgaveloserId),
-
 FOREIGN KEY (opgaveloserId)
    REFERENCES Opgaveloser(opgaveloserId)
    ON DELETE CASCADE
@@ -86,8 +86,6 @@ opgaveloserKonsulentProfilId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 opgaveloserId INT UNSIGNED NOT NULL,
 konsulentProfilId INT UNSIGNED NOT NULL,
 konsulentProfilWeight INT(1) UNSIGNED NOT NULL,
-
-UNIQUE KEY opgaveloserKonsulentProfilId (opgaveloserId,konsulentProfilId),
 
 FOREIGN KEY (konsulentProfilId)
    REFERENCES KonsulentProfil(konsulentProfilId)
@@ -144,8 +142,6 @@ opgaveloserOpgaveId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 opgaveId INT UNSIGNED NOT NULL,
 opgaveloserKonsulentProfilId INT UNSIGNED NOT NULL,
 
-UNIQUE KEY opgaveloserOpgaveId (opgaveId,opgaveloserKonsulentProfilId),
-
 FOREIGN KEY (opgaveId)
    REFERENCES Opgave(opgaveId)
    ON DELETE CASCADE,
@@ -160,7 +156,7 @@ opgaveloserOpgaveId INT UNSIGNED NOT NULL,
 year INT(2) UNSIGNED NOT NULL,
 month INT(1) UNSIGNED NOT NULL,
 week INT(1) UNSIGNED NOT NULL,
-timeAntal DECIMAL(4,1) UNSIGNED NOT NULL,
+timeAntal int(1) UNSIGNED NOT NULL,
 
 UNIQUE KEY ugeTimeOpgaveId (opgaveloserOpgaveId,year,month,week),
 

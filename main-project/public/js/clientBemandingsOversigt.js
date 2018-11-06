@@ -22,7 +22,7 @@ $(document).ready(function() {
 			})
 		}
 		else{
-			$(t).text('Se timer til rådighed')
+			$(t).text('Se timer til rådighed for uge')
 			$(t).removeClass('toggledAvail')
 			$(t).addClass('toggledUsed')
 
@@ -81,7 +81,7 @@ $(document).ready(function() {
 		}
 	}
 
-	function insertAvailableWorkTime(result){
+	function insertAvailableWorkTime(weekDays){
 		$('.availableWorkTime').remove()
 		var rows = $('tbody tr')
 		for(let i = 0; i< rows.length; i++){
@@ -90,9 +90,10 @@ $(document).ready(function() {
 			let rowopgaveloserOpgaveId = $(currentRow).children('[idName=opgaveloserOpgaveId]').val()
 			
 
-			for(let i = 0; i< result.length; i++){
-				let currentWeek = result[i].week
-				let opgaveloser = result[i].opgaveloser.find(o => o.opgaveloserId == rowOpgaveloserId)
+			for(let i = 0; i< weekDays.length; i++){
+				let currentWeek = weekDays[i].week
+				let opgaveloser = weekDays[i].opgaveloser.find(o => o.opgaveloserId == rowOpgaveloserId)
+				//console.log(opgaveloser)
 				let timeAntalForOpgave = 0
 				let ugeTimeOpgaveId
 				let availableWorkTime = opgaveloser.maxAvailableWorkTime
@@ -119,6 +120,8 @@ $(document).ready(function() {
 					'text': timeAntalForOpgave,
 					'data-toggle': 'tooltip', 
 					'title':'', 
+					'workDaysInWeek': opgaveloser.workDaysInWeek.length,
+					'workDaysInMonth': 0
 				})
 
 				//changeWorkLoad(td)
@@ -127,56 +130,140 @@ $(document).ready(function() {
 		}
 
 		calcWeekAvailableworktime()
+		setWorkHoursUsed()
 	}
 })
 
-function calcWeekAvailableworktime(){
+function calcWeekAvailableworktime(){//TODO dårlig performance.. refactor
 	let rows = $('tbody tr')
-	let realAvailableWorkTime = []//TODO dårlig performance.. refactor
-		for(let i = 0; i< rows.length; i++){//TODO dårlig performance.. refactor
-			let currentRow = rows[i]
-			let rowOpgaveloserId = $(currentRow).children('[idName=opgaveloserId]').val()
+	let realAvailableWorkTime = []
 
-			let opgaveloser = realAvailableWorkTime.find(o => o.opgaveloserId == rowOpgaveloserId)
-			if(opgaveloser == undefined){
-				opgaveloser = {'opgaveloserId': rowOpgaveloserId, 'weeks': []}
-				realAvailableWorkTime.push(opgaveloser)
-			}
-				
-			$(currentRow).children('.availableWorkTime').each(function(){
-				let week = $(this).attr('week')
-				let opgaveloserWeek = opgaveloser.weeks.find(o => o.week == week)
-				if(opgaveloserWeek == undefined){
-					opgaveloserWeek = {'week': week, 'availableWorkTime': 0}
-					opgaveloser.weeks.push(opgaveloserWeek)
-				}
-				opgaveloserWeek.availableWorkTime += parseInt($(this).attr('timeAntalForOpgave'),10)
-			})
+	//regn ud hvor mange timer hver opgaveløser har i hver uge i den valgte måned
+	for(let i = 0; i< rows.length; i++){//TODO dårlig performance.. refactor
+		let currentRow = rows[i]
+		let rowOpgaveloserId = $(currentRow).children('[idName=opgaveloserId]').val()
 
-		}//dårlig performance..
-		for(let i = 0; i< rows.length; i++){//TODO dårlig performance.. refactor
-			let currentRow = rows[i]
-			let rowOpgaveloserId = $(currentRow).children('[idName=opgaveloserId]').val()
-			let opgaveloser = realAvailableWorkTime.find(o => o.opgaveloserId == rowOpgaveloserId)
-
-			$(currentRow).children('.availableWorkTime').each(function(){
-				let week = $(this).attr('week')
-				let opgaveloserWeek = opgaveloser.weeks.find(o => o.week == week)
-				
-				let availableWorkTime = $(this).attr('maxAvailableWorkTime') - opgaveloserWeek.availableWorkTime
-				$(this).attr('availableworktime', availableWorkTime)
-				$(this).attr('title', availableWorkTime)
-				changeWorkLoad($(this))
-			})
+		let opgaveloser = realAvailableWorkTime.find(o => o.opgaveloserId == rowOpgaveloserId)
+		if(opgaveloser == undefined){
+			opgaveloser = {'opgaveloserId': rowOpgaveloserId, 'weeks': []}
+			realAvailableWorkTime.push(opgaveloser)
+		}
 			
-		}//dårlig performance..//TODO dårlig performance.. refactor
+		$(currentRow).children('.availableWorkTime').each(function(){
+			let week = $(this).attr('week')
+			let opgaveloserWeek = opgaveloser.weeks.find(o => o.week == week)
+			if(opgaveloserWeek == undefined){
+				opgaveloserWeek = {'week': week, 'availableWorkTime': 0, 'workDaysInMonth':0}
+				opgaveloser.weeks.push(opgaveloserWeek)
+			}
+			opgaveloserWeek.availableWorkTime += parseFloat($(this).attr('timeAntalForOpgave'))
+			opgaveloserWeek.workDaysInMonth =  parseInt($(this).attr('workDaysInWeek'),10)
+		})
 
+	}//dårlig performance..
+	//ændre availableworktime for hver uge til hvor mange timer de har til rådighed i den uge
+	for(let i = 0; i< rows.length; i++){//TODO dårlig performance.. refactor
+		let currentRow = rows[i]
+		let rowOpgaveloserId = $(currentRow).children('[idName=opgaveloserId]').val()
+		let opgaveloser = realAvailableWorkTime.find(o => o.opgaveloserId == rowOpgaveloserId)
+
+		$(currentRow).children('.availableWorkTime').each(function(){
+			let week = $(this).attr('week')
+			let opgaveloserWeek = opgaveloser.weeks.find(o => o.week == week)
+			
+			let availableWorkTime = $(this).attr('maxAvailableWorkTime') - opgaveloserWeek.availableWorkTime
+			$(this).attr('usedWorkHoursInWeek', opgaveloserWeek.availableWorkTime)
+			$(this).attr('workDaysInMonth', opgaveloserWeek.workDaysInMonth)
+			$(this).attr('availableworktime', availableWorkTime)
+			$(this).attr('title', availableWorkTime)
+			changeWorkLoad($(this))
+		})
+		
+	}//dårlig performance..//TODO dårlig performance.. refactor
+}
+
+function setWorkDaysInMonth(){//dårlig performance..//TODO dårlig performance.. refactor
+	let workDaysInMonthOpgavelosere = []
+
+	$('tbody tr').each(function(){
+		let rowOpgaveloserId = $(this).children('[idName=opgaveloserId]').val()
+		let opgaveloser = workDaysInMonthOpgavelosere.find(o => o.opgaveloserId == rowOpgaveloserId)
+		if(opgaveloser == undefined){
+			opgaveloser = {'opgaveloserId': rowOpgaveloserId, 'workDaysInMonth': 0}
+			$(this).children('.availableWorkTime').each(function(){
+				opgaveloser.workDaysInMonth += parseInt($(this).attr('workDaysInWeek'), 10)
+			})
+			workDaysInMonthOpgavelosere.push(opgaveloser)
+		}
+	})
+
+	$('tbody tr').each(function(){
+		let rowOpgaveloserId = $(this).children('[idName=opgaveloserId]').val()
+		let workDaysInMonthOpgaveloser = workDaysInMonthOpgavelosere.find(o => o.opgaveloserId == rowOpgaveloserId)
+
+		$(this).children('.availableWorkTime').each(function(){
+			$(this).attr('workDaysInMonth', workDaysInMonthOpgaveloser.workDaysInMonth)
+		})
+	})
+}
+
+function setWorkHoursUsed(){
+	setWorkDaysInMonth()
+	/* 
+	ARBEJDEPROCENT = (32 - 0,5*arbejdsdage i ugen)/34,5 = procent arbejder ift 37 timer
+	ARBEJDEPROCENT = (32 - 0,5*5)/34,5 = 0,86 * 100 = 86%
+
+	ARBEJDSTIMER_FOR_MÅNED = max arbejdsdage i måned * 6,9 (rundet op)
+	ARBEJDSTIMER_FOR_MÅNED = 23 * 6,9 = 159 (rundet op)
+
+	BRUGETIMER_FOR_MÅNED = sum af alle opgaver for opgaveløser
+
+
+	BRUGETIMER_FOR_MÅNED / (ARBEJDSTIMER_FOR_MÅNED * ARBEJDEPROCENT)
+	(1+2+3+4+5+6+7) / ( (23 * 6,9) * ((37 - 0,5*5)/34,5) )
+	*/
 	
+
+	//get total workhours and 
+	let workHoursInMonth = []
+
+	$('tbody tr').each(function(){
+		let rowOpgaveloserId = $(this).children('[idName=opgaveloserId]').val()
+		let opgaveloser = workHoursInMonth.find(o => o.opgaveloserId == rowOpgaveloserId)
+		if(opgaveloser == undefined){
+			opgaveloser = {'opgaveloserId': rowOpgaveloserId, 'hoursUsedInMonth': 0, 'maxAvailableWorkTime': 0}
+			$(this).children('.availableWorkTime').each(function(){
+				opgaveloser.hoursUsedInMonth += parseFloat($(this).attr('usedworkhoursinweek'))
+				opgaveloser.workDaysInWeek = $(this).attr('workDaysInWeek')//workDaysInWeek
+				
+			})
+			workHoursInMonth.push(opgaveloser)
+		}
+		//ARBEJDEPROCENT = (32 - 0,5*arbejdsdage i ugen)/34,5 = procent arbejder ift 37 timer
+		let workPercent = (32 - 0.5 * parseInt(opgaveloser.workDaysInWeek, 10)) / 34.5
+
+		//ARBEJDSTIMER_FOR_MÅNED = max arbejdsdage i måned * 6,9 (rundet op)
+		let firstTD = $(this).children('.availableWorkTime')[0]
+		let maxWorkHoursForMonth = parseInt($(firstTD).attr('workDaysInMonth'), 10) * 6.9
+
+		//BRUGETIMER_FOR_MÅNED = sum af alle opgaver for opgaveløser
+		//opgaveloser.hoursUsedInMonth
+
+		//BRUGETIMER_FOR_MÅNED / (ARBEJDSTIMER_FOR_MÅNED * ARBEJDEPROCENT)
+		let worksHoursUsedInMonthInPercent = opgaveloser.hoursUsedInMonth / (maxWorkHoursForMonth * workPercent) * 100
+
+		//console.log(workPercent)
+		//console.log(opgaveloser)
+
+		$(this).children('.usedHoursPercent').text(worksHoursUsedInMonthInPercent.toFixed(0) + '%')
+	})
+
+	//usedHoursPercent
 }
 
 function changeAntalTimer(e){
 	let val = prompt("Indtast time antal")
-	
+	console.log(val)
 	if(val != null && !isNaN(val)){
 		let row = $(e).parent()
 		let rowopgaveloserOpgaveId = $(row).children('[idName=opgaveloserOpgaveId]').val()
@@ -195,13 +282,14 @@ function changeAntalTimer(e){
 			week:weekNumber,
 			timeAntal:val
 		}
-		//console.log(d)
+		console.log(d)
 
 		$.ajax({
 			url: '/bemandingsOversigtTid',
 			data: d,
 			type: 'PUT',
-			success: function(result) {//TODO hvis jeg vælger en med 0 først og så den samme uden at refresh crasher den fordi den <td> ikke har nogen "ugeTimeOpgaveId"
+			success: function(result) {
+			$(e).attr('ugeTimeOpgaveId', result.insertId)
 				$(e).text(val)
 				$(e).attr('timeAntalForOpgave', val)
 				let availableWorkTime = $(e).attr('maxAvailableWorkTime') - val
@@ -209,6 +297,7 @@ function changeAntalTimer(e){
 				
 				changeWorkLoad($(e))
 				calcWeekAvailableworktime()
+				setWorkHoursUsed()
 
 				//insertAvailableWorkTime(result)
 			}
