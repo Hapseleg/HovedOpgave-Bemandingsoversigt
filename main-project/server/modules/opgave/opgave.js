@@ -12,7 +12,6 @@ function getView(path){
         return ''
 }
 
-
 function getData(){
     return {
         data:[

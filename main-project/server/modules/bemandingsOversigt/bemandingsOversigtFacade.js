@@ -1,6 +1,6 @@
 var mediator = require('../mediator.js')
 var bemandingsoversigt = require('./bemandingsoversigt.js')
-var tidsUdregner = require('./tidsUdregner.js')
+var tidsUdregner = require('./tidsudregner.js')
 
 var name = 'bemandingsoversigt';
 var res;

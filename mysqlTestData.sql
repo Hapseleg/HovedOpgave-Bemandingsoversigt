@@ -16,23 +16,39 @@ values
 insert into Lokation(lokationNavn)
 values
 	("Aarhus"),
-    ("Aalborg");
+    ("Aalborg"),
+    ("Silkeborg"),
+    ("Kolding");
     
 insert into KontraktStatus(kontraktStatusNavn)
 values
 	("Backlog"),
-    ("Proposal");
+    ("Proposal"),
+    ("Presale"),
+    ("Agreed");
     
 insert into OpgaveStatus(opgaveStatusNavn)
 values
-	("Confirmed"),
+    ("I gang"),
+    ("Afventer"),
+    ("Under godkendelse"),
+    ("Godkendt"),
+    ("Confirmed"),
     ("Early Warning");
     
 insert into KonsulentProfil(KonsulentProfilNavn)
 values
 	("Testspecialist"),
     ("Testanalytiker"),
-    ("Testautomatiseringsspecialist");
+    ("Testautomatiseringsspecialist"),
+    ("Dataanalytiker"),
+    ("Digitalisering/Konverteringsspecialist"),
+    ("Supportspecialist"),
+    ("Softwareanalytiker"),
+    ("Programmør/Udvikler"),
+    ("Softwarearkitekt"),
+    ("Testmanager"),
+    ("Projektleder");
     
 INSERT INTO Kunde (fornavn,efternavn,firma) VALUES ('john','travolta','HMG'), ('benjamin','buttons','asdasd');
 
