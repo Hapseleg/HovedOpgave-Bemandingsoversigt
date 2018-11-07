@@ -10,7 +10,8 @@ function setup(){
 function subErrors(){
     mediator.subscribe('error',function(arg){
         console.log('------------ error -----------')
-        console.error(arg)
+        console.error(arg.error)
+        arg.res.send(arg.error)
     })
 }
 

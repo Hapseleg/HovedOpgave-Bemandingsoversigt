@@ -49,7 +49,9 @@ function insertData(table,columns,values, data, useIdFromFirstInsert, callback){
 }
 
 function saveData(arg, callback){
-    if(arg.fornavn != '' || arg.efternavn != '' || arg.lokation != '' || arg.arbejdstidPrUge != ''){//tilføj de andre ting senere
+    if(arg.fornavn == '' || arg.efternavn == '' || arg.lokation == '' || arg.arbejdstidPrUge == '' || arg.dage == undefined || arg.konsulentProfiler == undefined)
+        throw 'Et af felterne var tomme'
+    else{
         let data = {
             data:[
                 {
@@ -61,15 +63,13 @@ function saveData(arg, callback){
                 origin: name,
                 idFromFirstInsert: 'Opgaveloser'
         }
-        
+
         insertData('OpgaveloserArbejdsTider',['dag','dagStart','dagSlut','opgaveloserId'],arg.dage, data.data, true, function(){
             insertData('OpgaveloserKonsulentprofil',['konsulentProfilId','konsulentProfilWeight', 'opgaveloserId'],arg.konsulentProfiler, data.data, true, function(){
                 callback(data)
             })
         })
     }
-    else
-        throw 'Et af felterne var tomme'
 }
 
 module.exports = {

@@ -59,7 +59,7 @@ function subDataFromDB(){
         if(arg.origin == 'opgave'){
             try{
                 console.log('render subDataFromDB opgave here')
-                console.log(arg.type)
+                //console.log(arg.type)
 
                 if(arg.type == 'read')
                     res.render('opgave', {

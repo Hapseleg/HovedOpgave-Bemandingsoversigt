@@ -91,7 +91,7 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
 
     var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ?";
     //console.log(insertId, 'insertId')
-    console.log(data.values)
+    //console.log(data.values)
     // var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
     console.log(sql)
     // console.log(data.values)

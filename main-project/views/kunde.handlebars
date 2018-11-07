@@ -1,0 +1,33 @@
+<form method="POST" id="profilform">
+    <div class="row">
+        <div class="col-lg"> 
+            <h1>{{viewName}}</h1>
+            <h2>Information</h2>
+            <div class="input-group mb-3">
+                
+                <div class="form-group formArea">
+                    <label for="fornavn">Fornavn</label>
+                    <input type="text" class="form-control" id="fornavn" name="fornavn">
+
+                    <label for="efternavn">Efternavn</label>
+                    <input type="text" class="form-control" id="efternavn" name="efternavn">
+
+                    <label for="efternavn">Firma</label>
+                    <input type="text" class="form-control" id="firma" name="firma">
+
+                    {{!-- <label for="lokationId">lokation</label>
+                    <select name="lokationId" form="{{viewName}}form">
+                        {{#each lokation}}
+                            <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
+                        {{/each}}
+                    </select> --}}
+                </div>
+            </div> 
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" id="submitknap" class="btn btn-success">Opret {{viewName}}</button>
+    </div>
+</form>
+
+<script src="/js/clientkunde.js"></script>

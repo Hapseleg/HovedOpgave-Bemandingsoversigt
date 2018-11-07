@@ -1,7 +1,7 @@
-<form method="POST" id="opgaveloserform">
+<form method="POST" id="profilform">
     <div class="row">
         <div class="col-lg"> 
-            <h1>Opret Opgaveløser</h1>
+            <h1>Opret {{viewName}}</h1>
             <h2>Information</h2>
             <div class="input-group mb-3">
                 
@@ -13,7 +13,7 @@
                     <input type="text" class="form-control" id="efternavn" name="efternavn">
 
                     <label for="lokationId">lokation</label>
-                    <select name="lokationId" form="opgaveloserform">
+                    <select name="lokationId" form="profilform">
                         {{!-- <option value="1">Aarhus</option> --}}
                         {{#each lokation}}
                             <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
@@ -29,82 +29,37 @@
                     {{#each days}}
                          <div>
                             <label>{{this.name}}</label>
-                            <input type="checkbox" id="{{this.name}}" value="1">
+                            <input type="checkbox" id="{{this.name}}" value="{{this.id}}">
                             <input type="time" id="dagStart" value="08:00">
                             <input type="time" id="dagSlut" value="15:00">
 
-                            {{!-- <input type="hidden" id="dagHidden" name="dage[0][dag]" value="1">
-                            <input type="hidden" id="dagStartHidden" name="dage[0][dagStart]" value="08:00">
-                            <input type="hidden" id="dagSlutHidden" name="dage[0][dagSlut]" value="15:00"> --}}
+
                             <input type="hidden" id="dagHidden">
                             <input type="hidden" id="dagStartHidden">
                             <input type="hidden" id="dagSlutHidden">
                         </div>
                     {{/each}}
 
-                    {{!-- <div>
-                        <label>Mandag</label>
-                        <input type="checkbox" id="mandag" value="1">
-                        <input type="time" id="dagStart" value="08:00">
-                        <input type="time" id="dagSlut" value="15:00">
-                    </div>
-
-                    <div>
-                        <label>Tirsdag</label>
-                        <input type="checkbox" id="tirsdag" value="2">
-                        <input type="time" id="dagStart" value="08:00">
-                        <input type="time" id="dagSlut" value="15:00">
-                    </div>
-
-                    <div>
-                        <label>Onsdag</label>
-                        <input type="checkbox" id="onsdag" value="3">
-                        <input type="time" id="dagStart" value="08:00">
-                        <input type="time" id="dagSlut" value="15:00">
-                    </div>
-
-                    <div>
-                        <label>Torsdag</label>
-                        <input type="checkbox" id="torsdag" value="4">
-                        <input type="time" id="dagStart" value="08:00">
-                        <input type="time" id="dagSlut" value="15:00">
-                    </div>
-
-                    <div>
-                        <label>Fredag</label>
-                        <input type="checkbox" id="fredag" value="5">
-                        <input type="time" id="dagStart" value="08:00">
-                        <input type="time" id="dagSlut" value="15:00">
-                    </div> --}}
-
                     <label for="arbejdstidPrUge">arbejdstidPrUge</label>
                     <input type="number" step="0.5" name="arbejdstidPrUge">
                 </div>
             </div>
-
-            
         </div>
 
-        {{!-- <div class="col-md"> 
-            <div class="input-group mb-3">
-                <h3>Valgte profiler</h3>
-                
-            </div>
-        </div> --}}
     </div>
     <div class="row formArea">
         <div class="col-md"> 
             <h2>KonsulentProfil</h2>
             <div class="input-group mb-3">
                 <div class="form-group">
-                    <select name="konsulentProfilId" form="opgaveloserform" id="konsulentProfil">
+                    <select id="konsulentProfil" form="profilform">
                         {{!-- <option value="1">navn</option> --}}
-                    {{#each konsulentProfiler}}
-                        <option value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</option>
-                    {{/each}}
-                </select>
-                <label for="konsulentProfilWeight">Arbejde med 1-100</label>
-                <input type="number" step="10" class="form-control" id="konsulentProfilWeight" name="konsulentProfilWeight">
+                        {{#each konsulentProfiler}}
+                            <option value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</option>
+                        {{/each}}
+                    </select>
+                    <label for="konsulentProfilWeight">Arbejde med 1-100</label>
+                    <input type="number" step="10" class="form-control" id="konsulentProfilWeight">
                 </div>
             </div>
             <button type="button" id="addKonsulentProfil">Tilføj</button>
@@ -117,7 +72,6 @@
                         <tr>
                             <th scope="col">Konsulentprofil</th>
                             <th scope="col">1-100%</th>
-                            {{!-- <th scope="col">Status</th> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -135,7 +89,7 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="button" id="submitknap" class="btn btn-success">Opret Opgaveløser</button>
+        <button type="button" id="submitknap" class="btn btn-success">Opret {{viewName}}</button>
     </div>
     
 </form>
