@@ -98,9 +98,9 @@
                             {{#each muligeOpgaveloser}}
                                 <tr id="opgaveloserRow" class="muligOpgaveloser">
                                     <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                                    <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
-                                    <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
-                                    <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
+                                    {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}> --}}
+                                    {{!-- <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
+                                    <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}> --}}
                                     <td value={{this.opgaveloserId}}>{{this.fornavn}}</td>
                                     <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                                     <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
@@ -168,7 +168,7 @@
             </div>
         </div>
     </div>
-<input type="submit">
+<button type="button" id="submitknap" class="btn btn-success">Opret Opgave</button>
 </form>
 
 <script src="/js/clientopgave.js"></script>

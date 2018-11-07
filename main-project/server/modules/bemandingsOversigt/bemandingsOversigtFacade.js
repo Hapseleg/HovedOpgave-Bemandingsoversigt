@@ -30,11 +30,16 @@ function subPutView(){
     mediator.subscribe('putView',function(arg){
         res = arg.res;
         req = arg.req;
-        if(arg.req.path == '/bemandingsOversigtTid'){
-            if(req.body.ugeTimeOpgaveId)
-                mediator.publish('updateInDB', bemandingsoversigt.updateUgeTimeOpgave(req.body))
-            else
-                mediator.publish('createInDB', bemandingsoversigt.createUgeTimeOpgave(req.body))
+        try{
+            if(arg.req.path == '/bemandingsOversigtTid'){
+                if(req.body.ugeTimeOpgaveId)
+                    mediator.publish('updateInDB', bemandingsoversigt.updateUgeTimeOpgave(req.body))
+                else
+                    mediator.publish('createInDB', bemandingsoversigt.createUgeTimeOpgave(req.body))
+            }
+        }
+        catch(error){
+            mediator.publish('error', error)
         }
     })
 }
@@ -72,7 +77,7 @@ function subDataFromDB(){
                     res.json({})
                 }
                 else{
-                    res.send('error')
+                    throw 'wrong type in bemandingsoversigt'
                 }
                     
             }

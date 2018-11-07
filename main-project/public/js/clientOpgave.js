@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    $('#submitknap').click(function(){
+        console.log($('form').serializeArray())
+        $('#opgaveform').submit()
+    })
+    
     $("tr").click(function(){
         let clicked = $(this)
         let hiddenInputs = clicked.children('input')

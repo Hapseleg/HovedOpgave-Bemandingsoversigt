@@ -57,12 +57,31 @@ function getData(){
     }
 }
 
-function saveData(arg, publisher){
-    console.log(arg,'OPGAVE SAVEDATA--')
-    
-    //opgave
-    if(arg.opgavenNavn != ''){//tilføj de andre ting senere
-        var data = {
+function insertData(table,columns,values, data, useIdFromFirstInsert, callback){
+    let toBeInserted = {
+        table:table,
+        columns: columns,
+        values: [],
+        useIdFromFirstInsert: useIdFromFirstInsert
+    }
+
+    for(let i = 0; i<values.length;i++){
+        let da = values[i]
+        let arr = []
+        for(let i = 0;i<Object.keys(da).length;i++){
+            arr.push(da[Object.keys(da)[i]])
+        }
+        toBeInserted.values.push(arr)
+    }
+    data.push(toBeInserted)
+    callback(data)
+}
+
+function saveData(arg,callback){
+    if(arg.opgavenNavn == '')
+        throw 'opgave navn er tomt'
+    else{
+        let data = {
             data:[{
                     table:'Opgave',
                     columns: ['opgaveNavn', 'kundeId', 'kundeansvarligId','opgavestillerId','opgaveStatusId','opgavetypeId','lokationId','kontraktStatusId','startDato','slutDato','kommentar'],
@@ -73,55 +92,12 @@ function saveData(arg, publisher){
                 idFromFirstInsert: 'Opgave'
         }
 
-        var toBeInsertedDeadline = {
-            table:'Deadline',
-            columns:['deadlineDato', 'deadlineKommentar', 'opgaveId'],
-            values:[],
-            useIdFromFirstInsert: true
-        }
-
-        for(let i = 0; i<arg.deadlines.length;i++){
-            // console.log(i,'for deadline')
-            toBeInsertedDeadline.values.push([arg.deadlines[i].deadlineDato, arg.deadlines[i].deadlineKommentar])
-            // console.log(data.data.length,'for deadline')
-            if(i == arg.deadlines.length -1)//TODO grimt "callback" hack!
-                data.data.push(toBeInsertedDeadline)
-        }
-
-        var toBeInsertedOpgaveloserOpgave = {
-            table:'OpgaveloserOpgave',
-            columns:['opgaveloserKonsulentProfilId', 'opgaveId'],
-            values:[],
-            useIdFromFirstInsert: true
-        }
-        for(let i = 0; i<arg.opgaveloser.length;i++){
-            console.log(i,'i opgaveloseropgave')
-            toBeInsertedOpgaveloserOpgave.values.push([arg.opgaveloser[i].opgaveloserKonsulentProfilId])
-            console.log(data.data.length,'data length opgaveloser')
-            if(i == arg.opgaveloser.length -1)//TODO grimt "callback" hack!
-                data.data.push(toBeInsertedOpgaveloserOpgave)
-            console.log(i)
-            console.log(data.data.length)
-        }
-        //data.data.push(toBeInserted)
-
-        //console.log(data)
-        //publisher(data)
-
-        while(true){ //TODO grimt "callback" hack!
-            // console.log(data.data.length,'while')
-            if(data.data.length == 3){
-                publisher(data)
-                break;
-            }
-                
-                //return data
-        }
-
-        //return data   
+        insertData('Deadline',['deadlineDato', 'deadlineKommentar', 'opgaveId'],arg.deadlines, data.data, true, function(){
+            insertData('OpgaveloserOpgave',['opgaveloserKonsulentProfilId', 'opgaveId'],arg.opgaveloser, data.data, true, function(){
+                callback(data)
+            })
+        })
     }
-    else
-        throw 'Et af felterne var tomme'
 }
 
 module.exports = {

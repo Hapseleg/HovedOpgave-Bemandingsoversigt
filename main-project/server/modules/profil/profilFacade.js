@@ -34,7 +34,7 @@ function subGetView(){
             }
         }
         catch(error){
-            mediator.publish('error', {'error':error, 'res':res})
+            mediator.publish('error', error)
         }
 
     })
@@ -61,7 +61,7 @@ function subPostView(){
                 }
             }
             catch(error){
-                mediator.publish('error', {'error':error, 'res':res})
+                mediator.publish('error', error)                
             }
         }
     })
@@ -98,7 +98,7 @@ function subDataFromDB(){
             }
         }
         catch(error){
-            mediator.publish('error', {'error':error, 'res':res})
+            mediator.publish('error', error)
         }
     })
 }
