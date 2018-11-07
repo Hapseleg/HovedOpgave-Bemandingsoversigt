@@ -11,7 +11,7 @@ require('./server/modules/database/databaseFacade').setup()
 require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade').setup()
 require('./server/modules/profil/profilFacade').setup()
 require('./server/modules/opgave/opgaveFacade').setup()
-
+require('./server/modules/opgaveOversigt/opgaveoversigtfacade').setup()
 
 var app = express();
 

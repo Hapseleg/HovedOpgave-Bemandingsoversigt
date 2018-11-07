@@ -150,7 +150,12 @@ async function readFromDB(arg, callback, errorCallback){
                 leftjoin += ' LEFT JOIN ' + leftJoinData.rightTable + ' ' + joinLetters[i] + ' ON '+leftTableLetter+'.' + leftJoinData.leftColumn + ' = ' + joinLetters[i] + '.' + leftJoinData.rightColumn
             }
         }
-        var sql = "SELECT "+columns+" FROM " + tableName + " a" + leftjoin;
+        let whereValues = ''
+        if(data.where){
+            whereValues = setupWhereString(data.where)
+        }
+
+        var sql = "SELECT "+columns+" FROM " + tableName + " a" + leftjoin + whereValues;
         console.log(sql)
         
         await conn.query(sql)
