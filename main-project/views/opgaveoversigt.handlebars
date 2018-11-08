@@ -29,6 +29,12 @@
         <tr>
             <th>Opgave id</th>
             <th>Opgave</th>
+            <th>Lokation</th>
+            <th>Kontrakt Status</th>
+            <th>Start</th>
+            <th>Slut</th>
+            <th>Deadlines</th>
+
 
         </tr>
     </thead>
@@ -36,37 +42,49 @@
         {{#each opgaver}}
             <tr id="opgaveloserRow" class="opgaveloser">
                 <input type="hidden" id="{{@index}}" idName="opgaveId" value={{this.opgaveId}}>
+
                 <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
                 <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
                 <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
                 <td value={{this.opgaveStatusId}}>{{this.kontraktStatusNavn}}</td>
+                <td class="date">{{this.startDato}}</td>
+                <td class="date">{{this.slutDato}}</td>
+
                 <td class="seDeadlines">Tryk for at se deadlines</td>
-                
-                
-                
             </tr>
         {{/each}}
     </tbody>
 </table>
 
-<button id="click">test</button>
+{{!-- <button id="click">test</button> --}}
 <script>
-$(document).ready(function() {
-    $('.seDeadlines').click(function(){
-        let opgaveId = $(this).parent().children('[idName=opgaveId]').val()
+    $(document).ready(function() {
+        $('.seDeadlines').click(function(){
+            let opgaveId = $(this).parent().children('[idName=opgaveId]').val()
 
-        $.ajax({
-			url: '/opgaveoversigt/deadlines',
-			data: {'opgaveId': opgaveId},
-			type: 'GET',
-			success: function(result) {
-                alert(result[0].deadlineKommentar + ' - ' + result[0].deadlineDato)
-                console.log(result)
-				
-			}
-		});
+            $.ajax({
+                url: '/opgaveoversigt/deadlines',
+                data: {'opgaveId': opgaveId},
+                type: 'GET',
+                success: function(result) {
+                    let deadlines = ''
+                    $(result).each(function(index){
+                        deadlines += result[index].deadlineKommentar + ' - ' + convertDate(result[index].deadlineDato) + '\n'
+                    })
+                    alert(deadlines)
+                    
+                }
+            });
+        })
+
+        $('.date').each(function(){
+            $(this).text(convertDate($(this).text()))
+        })
     })
-})
-</script>
 
-{{!-- <script src="/js/clientbemandingsoversigt.js"></script> --}}
+    function convertDate(dateString){
+        let date = new Date(dateString)
+        let month = parseInt(date.getMonth(),10)+1
+        return date.getDate() + '-' + month + '-' + date.getFullYear()
+    }
+</script>
