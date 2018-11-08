@@ -107,7 +107,8 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
         results.data.push({result: result, fields:{orgTable: tableName}})
 
         if(results.data.length == arg.data.length)
-            callback(results)
+            callback(Object.assign(arg,results))
+            //callback(results)
         else
             createInDB(arg, createdDone+1, insertId, results, callback, errorCallback)
     })
@@ -162,7 +163,8 @@ async function readFromDB(arg, callback, errorCallback){
         .then(function(result){
             results.data.push({result: result, fields:{orgTable: tableName}})
             if(results.data.length == arg.data.length)
-                callback(results)
+                callback(Object.assign(arg,results))
+                //callback(results)
         }) 
         .catch(function(err){
             errorCallback(err)
@@ -228,7 +230,8 @@ async function updateInDB(arg,callback, errorCallback){
         await conn.query(sql)
         .then(function(result){
             results.data.push({result: result, fields:{orgTable: tableName}})
-            callback(results)
+            callback(Object.assign(arg,results))
+            //callback(results)
         })
         .catch(function(err){
             errorCallback(err)

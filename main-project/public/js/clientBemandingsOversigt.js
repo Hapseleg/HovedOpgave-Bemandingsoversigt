@@ -231,31 +231,57 @@ function setWorkHoursUsed(){
 		let rowOpgaveloserId = $(this).children('[idName=opgaveloserId]').val()
 		let opgaveloser = workHoursInMonth.find(o => o.opgaveloserId == rowOpgaveloserId)
 		if(opgaveloser == undefined){
-			opgaveloser = {'opgaveloserId': rowOpgaveloserId, 'hoursUsedInMonth': 0, 'maxAvailableWorkTime': 0}
+			opgaveloser = {'opgaveloserId': rowOpgaveloserId, 'hoursUsedInMonth': 0, 'maxavailableworktimeThisMonth': 0}
 			$(this).children('.availableWorkTime').each(function(){
+				opgaveloser.maxavailableworktimeThisMonth += parseFloat($(this).attr('maxAvailableWorkTime'))
 				opgaveloser.hoursUsedInMonth += parseFloat($(this).attr('usedworkhoursinweek'))
 				opgaveloser.workDaysInWeek = $(this).attr('workDaysInWeek')//workDaysInWeek
 				
 			})
 			workHoursInMonth.push(opgaveloser)
 		}
-		//ARBEJDEPROCENT = (32 - 0,5*arbejdsdage i ugen)/34,5 = procent arbejder ift 37 timer
-		let workPercent = (32 - 0.5 * parseInt(opgaveloser.workDaysInWeek, 10)) / 34.5
 
-		//ARBEJDSTIMER_FOR_MÅNED = max arbejdsdage i måned * 6,9 (rundet op)
 		let firstTD = $(this).children('.availableWorkTime')[0]
-		let maxWorkHoursForMonth = parseInt($(firstTD).attr('workDaysInMonth'), 10) * 6.9
 
-		//BRUGETIMER_FOR_MÅNED = sum af alle opgaver for opgaveløser
-		//opgaveloser.hoursUsedInMonth
+		let pauseTimeInMonth = parseInt($(firstTD).attr('workDaysInMonth'), 10) * 0.5
+		let maxWorkHoursForMonthWithBreak = opgaveloser.maxavailableworktimeThisMonth - pauseTimeInMonth
+		let maxWorkHoursForMonth = opgaveloser.maxavailableworktimeThisMonth
 
-		//BRUGETIMER_FOR_MÅNED / (ARBEJDSTIMER_FOR_MÅNED * ARBEJDEPROCENT)
-		let worksHoursUsedInMonthInPercent = opgaveloser.hoursUsedInMonth / (maxWorkHoursForMonth * workPercent) * 100
+		// console.log('maxWorkHoursForMonth uden pause: ' + opgaveloser.maxavailableworktimeThisMonth)
+		// console.log('maxWorkHoursForMonth med pause: ' + maxWorkHoursForMonth)
 
-		//console.log(workPercent)
-		//console.log(opgaveloser)
+		let worksHoursUsedInMonthInPercent = opgaveloser.hoursUsedInMonth / maxWorkHoursForMonth * 100
+		let worksHoursUsedInMonthInPercentWithBreak = opgaveloser.hoursUsedInMonth / maxWorkHoursForMonthWithBreak * 100
 
-		$(this).children('.usedHoursPercent').text(worksHoursUsedInMonthInPercent.toFixed(0) + '%')
+		$(this).children('.usedHoursPercentNoBreak').text(worksHoursUsedInMonthInPercent.toFixed(0) + '%')
+		$(this).children('.usedHoursPercentWithBreak').text(worksHoursUsedInMonthInPercentWithBreak.toFixed(0) + '%')
+
+		
+		//maxavailableworktime
+
+
+		//ARBEJDEPROCENT = (32 - 0,5*arbejdsdage i ugen)/34,5 = procent arbejder ift 37 - (5*0,5) pga pauser = 34,5
+		// let workPercent = (32 - 0.5 * parseInt(opgaveloser.workDaysInWeek, 10)) / 34.5
+		// console.log('workPercent ',workPercent)
+
+		// //ARBEJDSTIMER_FOR_MÅNED = max arbejdsdage i måned * 6,9 (rundet op)
+		// let firstTD = $(this).children('.availableWorkTime')[0]
+		// let workDaysInMonth = parseInt($(firstTD).attr('workDaysInMonth'), 10) 
+		// let maxWorkHoursForMonth = workDaysInMonth * 6.9
+		// console.log('workDaysInMonth', workDaysInMonth)
+		// console.log('maxWorkHoursForMonth ',maxWorkHoursForMonth)
+
+		// //BRUGETIMER_FOR_MÅNED = sum af alle opgaver for opgaveløser
+		// console.log('hoursUsedInMonth ', opgaveloser.hoursUsedInMonth)
+
+		// //BRUGETIMER_FOR_MÅNED / (ARBEJDSTIMER_FOR_MÅNED * ARBEJDEPROCENT)
+		// let worksHoursUsedInMonthInPercent = opgaveloser.hoursUsedInMonth / (maxWorkHoursForMonth * workPercent) * 100
+		// console.log('worksHoursUsedInMonthInPercent ', worksHoursUsedInMonthInPercent)
+
+		// //console.log(workPercent)
+		// //console.log(opgaveloser)
+
+		// $(this).children('.usedHoursPercent').text(worksHoursUsedInMonthInPercent.toFixed(0) + '%')
 	})
 
 	//usedHoursPercent

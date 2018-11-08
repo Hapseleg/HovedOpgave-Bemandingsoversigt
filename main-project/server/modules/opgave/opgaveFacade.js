@@ -3,7 +3,7 @@ var opgave = require('./opgave.js')
 
 var name = 'opgave';
 var profiler = [opgave]
-var res;
+//var res;
 
 function setup(){
     console.log('setting up '+name+' facade')
@@ -17,8 +17,8 @@ function subGetView(){
         if(arg.req.path == '/'+name){
             //let viewName = profiler[0].getView('opgave')
             //arg.res.render(viewName)
-            mediator.publish('readFromDB', profiler[0].getData())
-            res = arg.res
+            mediator.publish('readFromDB', Object.assign(arg, profiler[0].getData()))
+            //res = arg.res
         }
     })
 }
@@ -28,9 +28,9 @@ function subPostView(){
         if(arg.req.path == '/'+name){
             try{
                 // console.log(arg.req.body)
-                res = arg.res
+                //res = arg.res
                 opgave.saveData(arg.req.body, function(data){
-                    mediator.publish('createInDB', data)
+                    mediator.publish('createInDB', Object.assign(arg, data))
                 })
                 // if(!data.error)
                 //     mediator.publish('createInDB', data)          
@@ -62,7 +62,7 @@ function subDataFromDB(){
                 //console.log(arg.type)
 
                 if(arg.type == 'read')
-                    res.render('opgave', {
+                    arg.res.render('opgave', {
                         muligeOpgaveloser: arg.data[0].result,
                         opgavetype: arg.data[1].result,
                         opgavestatus: arg.data[2].result,
@@ -73,7 +73,7 @@ function subDataFromDB(){
                         kunde: arg.data[7].result
                     })
                 else if(arg.type == 'create')
-                    res.render('opgave')
+                    arg.res.render('opgave')
             }
             catch(error){
                 mediator.publish('error', error)

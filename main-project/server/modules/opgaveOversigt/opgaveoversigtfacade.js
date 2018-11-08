@@ -13,14 +13,15 @@ function setup(){
 
 function subGetView(){
     mediator.subscribe('getView',function(arg){
-        res = arg.res;
+        //res = arg.res;
         //req = arg.req;
         if(arg.req.path == '/'+name){
-            mediator.publish('readFromDB', opgaveoversigt.getData())
+            
+            mediator.publish('readFromDB', Object.assign(arg, opgaveoversigt.getData()))
         }   
         else if(arg.req.path == '/'+name+'/deadlines'){
             //console.log(arg.req.query)
-            mediator.publish('readFromDB', opgaveoversigt.getDeadlines(arg.req.query.opgaveId))
+            mediator.publish('readFromDB', Object.assign(arg, opgaveoversigt.getDeadlines(arg.req.query.opgaveId)))
         }
     })
 }
@@ -50,12 +51,12 @@ function subDataFromDB(){
                 console.log('render subDataFromDB '+arg.origin+' here')
                 if(arg.type == 'read'){
                     //console.log(arg.data[0].result)
-                    res.render(name, {opgaver: arg.data[0].result})
+                    arg.res.render(name, {opgaver: arg.data[0].result})
                 }
             }
             else if(arg.origin == name + 'deadlines')
             {
-                res.json(arg.data[0].result)
+                arg.res.json(arg.data[0].result)
             }
         }
         catch(error){

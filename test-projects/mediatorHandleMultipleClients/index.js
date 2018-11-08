@@ -86,20 +86,28 @@ var arr = []
 
 var resTest = undefined
 app.use('/',function(req,res){
-    console.log('-------------' + req.path + '-------------')
-    let sub = mediator.subscribe('renderView',function(arg){
-        //console.log(arg)
-        console.log('samme res: ', arg.res == res)
-        if(arg.res == res){
-            res.send('ok')
-            //console.log('i sub ',sub)
-            this.unsubscribe('renderView', sub)
-        }
-            
-    })
-    //console.log('i use ',sub)
+    const object2 = Object.assign(bla(), req,res);
 
-    mediator.publish('getView', {req,res})
+    let b = blabla({req,res})
+    console.log(Object.assign(bla(), req,res).res == res)
+    console.log(b.req == req)
+
+
+
+    // console.log('-------------' + req.path + '-------------')
+    // let sub = mediator.subscribe('renderView',function(arg){
+    //     //console.log(arg)
+    //     console.log('samme res: ', arg.res == res)
+    //     if(arg.res == res){
+    //         res.send('ok')
+    //         //console.log('i sub ',sub)
+    //         this.unsubscribe('renderView', sub)
+    //     }
+            
+    // })
+    // //console.log('i use ',sub)
+
+    // mediator.publish('getView', {req,res})
 
     
     
@@ -111,6 +119,14 @@ app.use('/',function(req,res){
 
 })
 
+function blabla(arg){
+    const object2 = Object.assign(bla(), arg);
+    return object2
+}
+
+function bla(){
+    return {a:1,b:2}
+}
 
 
 app.listen(3000);

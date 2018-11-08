@@ -23,7 +23,7 @@
 <table class="table table-light" id="opgaveloserTable">
     <thead>
         <tr id="firstHead">
-            <th colspan="6"></th>
+            <th colspan="7"></th>
             <th colspan="6" id="thMonth">Januar</th>
         </tr>
         <tr id="secondHead">
@@ -32,7 +32,8 @@
             <th>Opgave id</th>
             <th>Opgave</th>
             <th>KonsulentProfil</th>
-            <th>Timer brugt for måned</th>
+            <th>Uden pause</th>
+            <th>Med pause</th>
         </tr>
     </thead>
     <tbody>
@@ -46,7 +47,8 @@
                 <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
                 <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
                 <td value={{this.opgaveloserKonsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                <td class="usedHoursPercent">%</td>
+                <td class="usedHoursPercentNoBreak">%</td>
+                <td class="usedHoursPercentWithBreak">%</td>
             </tr>
         {{/each}}
     </tbody>
