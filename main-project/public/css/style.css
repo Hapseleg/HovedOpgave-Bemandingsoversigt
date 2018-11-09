@@ -11,10 +11,18 @@ nav a {
     font-weight: 500;
 } */
 
+.container-fluid{
+    width:95%;
+}
+
 .formArea{
     background-color: rgba(255, 255, 255, 0.6);
     border-radius: 25px;
     padding: 1em;
+}
+
+.scrollTable{
+    cursor: pointer
 }
 
 .btn-success{

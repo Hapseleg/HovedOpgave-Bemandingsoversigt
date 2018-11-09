@@ -60,7 +60,7 @@ function subDataFromDB(){
             }
         }
         catch(error){
-            mediator.publish('error', error)
+            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
         }
 
         // if(arg.origin == name){

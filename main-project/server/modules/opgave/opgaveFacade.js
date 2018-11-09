@@ -36,7 +36,7 @@ function subPostView(){
                 //     mediator.publish('createInDB', data)          
             }
             catch(error){
-                mediator.publish('error', error)
+                mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
             }
         }
 
@@ -73,10 +73,10 @@ function subDataFromDB(){
                         kunde: arg.data[7].result
                     })
                 else if(arg.type == 'create')
-                    arg.res.render('opgave')
+                    arg.res.redirect('bemandingsoversigt')
             }
             catch(error){
-                mediator.publish('error', error)
+                mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
             }
         }
     })

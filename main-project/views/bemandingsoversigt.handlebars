@@ -19,39 +19,41 @@
 </form>
 
 <button type="button" id="toggleWeeks" class="toggledUsed">Se timer til rådighed for uge</button>
-
-<table class="table table-light" id="opgaveloserTable">
-    <thead>
-        <tr id="firstHead">
-            <th colspan="7"></th>
-            <th colspan="6" id="thMonth">Januar</th>
-        </tr>
-        <tr id="secondHead">
-            <th>Opgaveløser id</th>
-            <th>Opgaveløser</th>
-            <th>Opgave id</th>
-            <th>Opgave</th>
-            <th>KonsulentProfil</th>
-            <th>Uden pause</th>
-            <th>Med pause</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each opgaveloser}}
-            <tr id="opgaveloserRow" class="opgaveloser">
-                <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
-                <input type="hidden" id="{{@index}}" idName="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}>
-
-                <td value={{this.opgaveloserId}}>{{this.opgaveloserId}}</td>
-                <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
-                <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
-                <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
-                <td value={{this.opgaveloserKonsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                <td class="usedHoursPercentNoBreak">%</td>
-                <td class="usedHoursPercentWithBreak">%</td>
+<div>
+    <table class="table table-light" id="opgaveloserTable">
+        <thead>
+            <tr id="firstHead">
+                <th colspan="7"></th>
+                <th colspan="6" id="thMonth">Januar</th>
             </tr>
-        {{/each}}
-    </tbody>
-</table>
+            <tr id="secondHead">
+                <th>Opgaveløser id</th>
+                <th>Opgaveløser</th>
+                <th>Opgave id</th>
+                <th>Opgave</th>
+                <th>KonsulentProfil</th>
+                <th>Uden pause</th>
+                <th>Med pause</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each opgaveloser}}
+                <tr id="opgaveloserRow" class="opgaveloser">
+                    <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
+                    <input type="hidden" id="{{@index}}" idName="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}>
+
+                    <td value={{this.opgaveloserId}}>{{this.opgaveloserId}}</td>
+                    <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
+                    <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
+                    <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
+                    <td value={{this.opgaveloserKonsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                    <td class="usedHoursPercentNoBreak">%</td>
+                    <td class="usedHoursPercentWithBreak">%</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
 
 <script src="/js/clientbemandingsoversigt.js"></script>

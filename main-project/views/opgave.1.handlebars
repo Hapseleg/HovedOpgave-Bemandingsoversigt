@@ -1,0 +1,178 @@
+<form method="POST" id="opgaveform">
+    <div class="row">
+
+        <div class="col-md">
+            <h1>Opgave</h1> 
+            <div class="form-group formArea">
+                
+            </div>
+
+            <div class="input-group mb-3">
+                    <div class="form-group">
+                        <label for="opgaveNavn">Opgavens navn</label>
+                        <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kundeId">Kunde</label>
+                        <select name="kundeId" form="opgaveform" class="form-control">
+                            {{#each kunde}}
+                                <option value={{this.kundeId}}>{{this.fornavn}} {{this.efternavn}}</option>
+                            {{/each}}
+                        </select>
+                        {{!-- <input type="text" class="form-control" id="kunde" name="kundeId"> --}}
+                        <label for="kundeansvarligId">kundeansvarlig</label>
+                        <select name="kundeansvarligId"form="opgaveform" class="form-control">
+                            {{#each kundeansvarlig}}
+                                <option value={{this.kundeansvarligId}}>{{this.fornavn}} {{this.efternavn}}</option>
+                            {{/each}}
+                        </select>
+                        {{!-- <input type="text" class="form-control" id="kundeansvarlig" name="kundeansvarligId"> --}}
+                        <label for="opgavestillerId">opgavestiller</label>
+                        <select name="opgavestillerId" form="opgaveform" class="form-control">
+                            {{#each opgavestiller}}
+                                <option value={{this.opgavestillerId}}>{{this.fornavn}} {{this.efternavn}}</option>
+                            {{/each}}
+                        </select>
+                        {{!-- <input type="text" class="form-control" id="opgavestiller" name="opgavestillerId"> --}}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lokationId">lokation</label>
+                        {{!-- <input type="text" class="form-control" id="lokation" name="lokationId"> --}}
+                        <select name="lokationId" form="opgaveform">
+                            {{#each lokation}}
+                                <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
+                            {{/each}}
+                        </select>
+                        <label for="opgavetypeId">opgavetype</label>
+                        {{!-- <input type="text" class="form-control" id="opgavetype" name="opgavetypeId"> --}}
+                        <select name="opgavetypeId" form="opgaveform">
+                            {{#each opgavetype}}
+                                <option value={{this.opgavetypeId}}>{{this.opgavetypeNavn}}</option>
+                            {{/each}}
+                        </select>
+                        <label for="startDato">startDato</label>
+                        <input type="date" class="form-control" id="startDato" name="startDato">
+                        <label for="slutDato">startDato</label>
+                        <input type="date" class="form-control" id="slutDato" name="slutDato">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="opgaveStatusId">opgaveStatus</label>
+                        <select name="opgaveStatusId" form="opgaveform">
+                            {{#each opgavestatus}}
+                                <option value={{this.opgaveStatusId}}>{{this.opgaveStatusNavn}}</option>
+                            {{/each}}
+                        </select>
+                        {{!-- <input type="text" class="form-control" id="opgaveStatus" name="opgaveStatusId"> --}}
+                        <label for="kontraktStatusId">kontraktStatus</label>
+                        <select name="kontraktStatusId" form="opgaveform">
+                            {{#each kontraktstatus}}
+                                <option value={{this.kontraktStatusId}}>{{this.kontraktStatusNavn}}</option>
+                            {{/each}}
+                        </select>
+                        {{!-- <input type="text" class="form-control" id="kontraktStatus" name="kontraktStatusId"> --}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deadlineDato">deadlineDato</label>
+                        <input type="date" class="form-control" id="deadlineDato">
+                        <label for="deadlineKommentar">deadlineKommentar</label>
+                        <input type="text" class="form-control" id="deadlineKommentar">
+                        <button type="button" id="addDeadline">Tilføj</button>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-group">
+                <h2>Mulige opgaveløsere</h2>
+                <div class="scrollTable">
+                    <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
+                        <thead>
+                            <tr>
+                                <th scope="col">Navn</th>
+                                <th scope="col">Konsulentprofil</th>
+                                <th scope="col">Lokation</th>
+                                {{!-- <th scope="col">Status</th> --}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each muligeOpgaveloser}}
+                                <tr id="opgaveloserRow" class="muligOpgaveloser">
+                                    <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                                    {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}> --}}
+                                    {{!-- <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
+                                    <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}> --}}
+                                    <td value={{this.opgaveloserId}}>{{this.fornavn}}</td>
+                                    <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                                    <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h2>Deadlines</h2>
+                <div class="scrollTable">
+                    <table class="table table-light" id="deadlines" style="max-height: 300px">
+                    <thead>
+                        <tr>
+                            <th scope="col">Dato</th>
+                            <th scope="col">Kommentar</th>
+                            {{!-- <th scope="col">Status</th> --}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each deadlines}}
+                            <tr value={{this.deadlineId}}>
+                                <td>{{this.deadlineDato}}</td>
+                                <td>{{this.deadlineKommentar}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                </div>
+                
+                <button type="button" onclick="removeDeadlines()">Fjern valgte deadlines</button>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-group">
+                <h2>Valgte opgaveløsere</h2>
+                <div class="scrollTable">
+                    <table class="table table-light" id="valgteOpgavelosere">
+                    <thead>
+                        <tr>
+                            {{!-- <th scope="col">Id</th> --}}
+                            <th scope="col">Navn</th>
+                            <th scope="col">Konsulentprofil</th>
+                            <th scope="col">Lokation</th>
+                            {{!-- <th scope="col">Status</th> --}}
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                </div>
+                
+                {{!-- <label for="opgaveNavn">Opgavens navn</label>
+                <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn"> --}}
+            </div>
+
+            <div class="form-group">
+                <label for="kommentar">Kommentar</label>
+                <input type="textarea" class="form-control" id="kommentar" name="kommentar">
+            </div>
+        </div>
+    </div>
+<button type="button" id="submitknap" class="btn btn-success">Opret Opgave</button>
+</form>
+
+<script src="/js/clientopgave.js"></script>

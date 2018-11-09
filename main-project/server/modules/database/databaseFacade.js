@@ -18,15 +18,15 @@ function subCreate(){
             mysql.createInDB(arg, 0, undefined, undefined, returnResult, throwError)//TODO returnresult skal ikke være her
         }
         catch(error){
-            console.log(error)
-            mediator.publish('error', error)
+            //console.log(error)
+            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
         }
     })
 }
 
-function throwError(error){
+function throwError(arg){
     console.log('throwError')
-    mediator.publish('error', error)
+    mediator.publish('error', {'res':arg.res, 'error':arg.error, 'origin': name})
 }
 
 function returnResult(result){
@@ -40,7 +40,7 @@ function subRead(){
             mysql.readFromDB(arg, returnResult, throwError)
         }
         catch(error){
-            mediator.publish('error', error)
+            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
         }
     })
 }
@@ -51,7 +51,7 @@ function subUpdate(){
             mysql.updateInDB(arg, returnResult, throwError)
         }
         catch(error){
-            mediator.publish('error', error)
+            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
         }
     })
 }
