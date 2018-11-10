@@ -2,7 +2,7 @@ var mysql = require('promise-mysql')
 
 //var facade = require('./databaseFacade')
 var joinLetters = ['b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z']
-var config = require('./mysqlConfig.js').config
+var config = require('./mysqlconfig.js').config
 
 var conn;
 

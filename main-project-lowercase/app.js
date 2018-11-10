@@ -3,15 +3,15 @@ var exphbs  = require('express-handlebars')
 var bodyParser = require('body-parser')
 
 var mediator = require('./server/modules/mediator')
-require('./server/modules/errorHandler/errorFacade').setup()//set up error first
+require('./server/modules/errorhandler/errorfacade').setup()//set up error first
 
-require('./server/modules/database/databaseFacade').setup()
-//require('./server/modules/tidsUdregner/tidsUdregnerFacade').setup()
+require('./server/modules/database/databasefacade').setup()
+//require('./server/modules/tidsUdregner/tidsUdregnerfacade').setup()
 
-require('./server/modules/bemandingsOversigt/bemandingsOversigtFacade').setup()
-require('./server/modules/profil/profilFacade').setup()
-require('./server/modules/opgave/opgaveFacade').setup()
-require('./server/modules/opgaveOversigt/opgaveoversigtfacade').setup()
+require('./server/modules/bemandingsoversigt/bemandingsoversigtfacade').setup()
+require('./server/modules/profil/profilfacade').setup()
+require('./server/modules/opgave/opgavefacade').setup()
+require('./server/modules/opgaveoversigt/opgaveoversigtfacade').setup()
 
 var app = express();
 
