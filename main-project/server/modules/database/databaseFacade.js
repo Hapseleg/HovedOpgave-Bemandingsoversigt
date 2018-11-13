@@ -1,5 +1,5 @@
 var mediator = require('../mediator.js')
-var mysql = require('./mysql.js')
+var mysql = require('./mysqlhandler.js')
 
 var name = 'database';
 

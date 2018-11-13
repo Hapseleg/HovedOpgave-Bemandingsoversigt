@@ -66,11 +66,11 @@ INSERT INTO OpgaveloserArbejdsTider (dag,dagStart,dagSlut,opgaveloserId) VALUES 
 INSERT INTO OpgaveloserKonsulentprofil (opgaveloserId,konsulentprofilId,konsulentProfilWeight) VALUES (1,1, 30), (1,3, 70), (2,1,100), (3,3,100);    
 
 
-insert into Opgave(opgaveNavn, kundeId, kundeAnsvarligId,opgavestillerId,opgaveStatusId,opgavetypeId,lokationId,kontraktStatusId,startDato,slutDato,kommentar)
+insert into Opgave(opgaveNavn, kundeId, kundeAnsvarligId,opgavestillerId,opgaveStatusId,opgavetypeId,lokationId,kontraktStatusId,startDato,slutDato,kommentar,estimeretTimetal,aktiv)
 values
-	("HMG",1,1,1,1,1,1,1,'2018-10-26','2018-12-26','kommentar her'),
-    ("asdasd",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her'),
-    ("ASD",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her');
+	("HMG",1,1,1,1,1,1,1,'2018-10-26','2018-12-26','kommentar her',200,true),
+    ("asdasd",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her',150,true),
+    ("ASD",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her',100,false);
     
 
 INSERT INTO OpgaveloserOpgave (opgaveloserKonsulentProfilId,opgaveId) VALUES (1,1), (1,2), (2,1), (3,2);   

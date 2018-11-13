@@ -1,6 +1,11 @@
 $(document).ready(function() {
     $('#submitknap').click(function(){
-        console.log($('form').serializeArray())
+        // console.log($('form').serializeArray())
+        if($('#aktiv')[0].checked == true){
+            $('#aktiv').val(1)
+        }
+        
+        //console.log(aktiv)
         $('#opgaveform').submit()
     })
     

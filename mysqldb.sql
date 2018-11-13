@@ -114,6 +114,8 @@ kontraktStatusId INT UNSIGNED default NULL,
 startDato DATE default NULL,
 slutDato DATE default NULL,
 kommentar VARCHAR(254) DEFAULT '',
+estimeretTimetal INT(2) UNSIGNED default 0,
+aktiv BOOLEAN default false,
 
 FOREIGN KEY (kundeId)
    REFERENCES Kunde(kundeId)
