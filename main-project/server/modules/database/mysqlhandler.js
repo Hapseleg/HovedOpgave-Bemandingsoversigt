@@ -113,7 +113,8 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
                 createInDB(arg, createdDone + 1, insertId, results, callback, errorCallback)
         })
         .catch(function (error) {
-            errorCallback(Object.assign(arg, error))
+            //console.log(Object.keys(error))
+            errorCallback(Object.assign(arg, {error}))
             return
         })
 }
@@ -167,7 +168,7 @@ async function readFromDB(arg, callback, errorCallback) {
                 //callback(results)
             })
             .catch(function (error) {
-                errorCallback(Object.assign(arg, error))
+                errorCallback(Object.assign(arg, {error}))
             })
     }
 
@@ -234,7 +235,7 @@ async function updateInDB(arg, callback, errorCallback) {
                 //callback(results)
             })
             .catch(function (error) {
-                errorCallback(Object.assign(arg, error))
+                errorCallback(Object.assign(arg, {error}))
             })
     }
 }

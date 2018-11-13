@@ -12,7 +12,10 @@ function subErrors(){
         console.log('------------ error -----------')
         console.error(arg.error)
         if(arg.res != undefined)
-            arg.res.send(arg.origin + ' -------- '+ arg.error.toString())
+            if(arg.origin == 'database')
+            arg.res.send(arg.origin + ' -------- '+ arg.error +'---'+arg.error.sql)
+            else
+                arg.res.send(arg.origin + ' -------- '+ arg.error)
     })
 
     //sub to views to get res so it always can send the error to the connected client

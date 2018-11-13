@@ -26,6 +26,7 @@ function subCreate(){
 
 function throwError(arg){
     console.log('throwError')
+    //console.log(Object.keys(arg))
     mediator.publish('error', {'res':arg.res, 'error':arg.error, 'origin': name})
 }
 

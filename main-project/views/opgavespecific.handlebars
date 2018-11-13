@@ -1,0 +1,289 @@
+<h1>Opret ny opgave</h1>
+<div class="row">
+    {{!-- col 1 --}}
+    <div class="col">
+        <div class="form-group row">
+            <label for="opgaveNavn" class="col-sm-3 col-form-label">Opgavens navn</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="opgaveNavn" name="opgaveNavn" value="{{opgaveInfo.opgaveNavn}}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="kundeId">Kunde</label>
+            <div class="col-sm-5">
+                <select name="kundeId" form="opgaveform" class="form-control">
+                    {{#each kunde}}
+                    <option value={{this.kundeId}}>{{this.fornavn}} {{this.efternavn}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="kundeansvarligId">kundeansvarlig</label>
+            <div class="col-sm-5">
+                <select name="kundeansvarligId" form="opgaveform" class="form-control">
+                    {{#each kundeansvarlig}}
+                    <option value={{this.kundeansvarligId}}>{{this.fornavn}} {{this.efternavn}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="opgavestillerId">opgavestiller</label>
+            <div class="col-sm-5">
+                <select name="opgavestillerId" form="opgaveform" class="form-control">
+                    {{#each opgavestiller}}
+                    <option value={{this.opgavestillerId}}>{{this.fornavn}} {{this.efternavn}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
+            <div class="col-sm-5">
+                <select name="lokationId" form="opgaveform">
+                    <option value={{opgaveInfo.lokationId}}>{{opgaveInfo.lokationNavn}}</option>
+                    {{!-- {{#each lokation}}
+                    <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
+                    {{/each}} --}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="opgavetypeId">opgavetype</label>
+            <div class="col-sm-5">
+                <select name="opgavetypeId" form="opgaveform">
+                    <option value={{opgaveInfo.opgavetypeId}}>{{opgaveInfo.opgavetypeNavn}}</option>
+                    {{!-- {{#each opgavetype}}
+                    <option value={{this.opgavetypeId}}>{{this.opgavetypeNavn}}</option>
+                    {{/each}} --}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="startDato">startDato</label>
+            <div class="col-sm-5">
+                <input type="date" class="form-control" id="startDato" name="startDato">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="slutDato">slutDato</label>
+            <div class="col-sm-5">
+                <input type="date" class="form-control" id="slutDato" name="slutDato">
+            </div>
+        </div>
+
+
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="opgaveStatusId">opgaveStatus</label>
+            <div class="col-sm-5">
+                <select name="opgaveStatusId" form="opgaveform">
+                    <option value={{opgaveInfo.opgaveStatusId}}>{{opgaveInfo.opgaveStatusNavn}}</option>
+                    {{!-- {{#each opgavestatus}}
+                    <option value={{this.opgaveStatusId}}>{{this.opgaveStatusNavn}}</option>
+                    {{/each}} --}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="kontraktStatusId">kontraktStatus</label>
+            <div class="col-sm-5">
+                <select name="kontraktStatusId" form="opgaveform">
+                    <option value={{opgaveInfo.kontraktStatusId}}>{{opgaveInfo.kontraktStatusNavn}}</option>
+                    {{!-- {{#each kontraktstatus}}
+                    <option value={{this.kontraktStatusId}}>{{this.kontraktStatusNavn}}</option>
+                    {{/each}} --}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="estimeretTimetal">Estimeret timetal</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="{{opgaveInfo.estimeretTimetal}}">
+            </div>
+        </div>
+
+        {{!-- <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="aktiv">Aktiv opgave</label>
+            <div class="col-sm-5">
+                <input type="checkbox" class="form-control" id="aktiv" name="aktiv">
+            </div>
+        </div> --}}
+
+        {{!-- <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="deadlineDato">deadlineDato</label>
+            <div class="col-sm-5">
+                <input type="date" class="form-control" id="deadlineDato">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="deadlineKommentar">deadlineKommentar</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="deadlineKommentar">
+
+            </div>
+        </div> --}}
+
+        {{!-- <div class="form-group row">
+            <label class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-5">
+                <button type="button" id="addDeadline">Tilføj deadline</button>
+            </div>
+        </div> --}}
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="aktiv" name="aktiv" value="{{opgaveInfo.aktiv}}">
+            <label class="form-check-label" for="aktiv">
+                Opgave er aktiv
+            </label>
+        </div>
+
+        {{!-- <div class="form-group row">
+            <button type="button" id="submitknap" class="btn btn-success">Opret Opgave</button>
+        </div> --}}
+
+    </div>
+
+    {{!-- col 2 --}}
+    <div class="col">
+
+        {{!-- <div class="form-group row">
+            <h2>Mulige opgaveløsere</h2>
+        </div>
+        <div class="form-control row">
+            <div class="scrollTable">
+                <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
+                    <thead>
+                        <tr>
+                            <th scope="col">Navn</th>
+                            <th scope="col">Konsulentprofil</th>
+                            <th scope="col">Lokation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each muligeOpgaveloser}}
+                        <tr id="opgaveloserRow" class="muligOpgaveloser">
+                            <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+     
+                            <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
+                            <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                            <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div> --}}
+
+        <div class="form-group row">
+            <h2>Deadlines</h2>
+        </div>
+        <div class="form-control row">
+            <div class="scrollTable">
+                <table class="table table-light" id="deadlines" style="max-height: 300px">
+                    <thead>
+                        <tr>
+                            <th scope="col">Dato</th>
+                            <th scope="col">Kommentar</th>
+                            {{!-- <th scope="col">Status</th> --}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each deadlines}}
+                        <tr value={{this.deadlineId}}>
+                            <td>{{this.deadlineDato}}</td>
+                            <td>{{this.deadlineKommentar}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{!-- <div class="form-group row">
+            <button type="button" onclick="removeDeadlines()">Fjern valgte deadlines</button>
+        </div> --}}
+    </div>
+
+    {{!-- col 3 --}}
+    <div class="col">
+        <div class="form-group row">
+            <h2>Valgte opgaveløsere</h2>
+        </div>
+        <div class="form-control row">
+            <div class="scrollTable">
+                <table class="table table-light" id="valgteOpgavelosere">
+                    <thead>
+                        <tr>
+                            {{!-- <th scope="col">Id</th> --}}
+                            <th scope="col">Navn</th>
+                            <th scope="col">Konsulentprofil</th>
+                            <th scope="col">Lokation</th>
+                            {{!-- <th scope="col">Status</th> --}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each opgavelosere}}
+                        <tr value={{this.opgaveloserKonsulentProfilId}}>
+                            <td value="{{this.opgaveloserId}}">{{this.fornavn}} {{this.efternavn}}</td>
+                            <td value="{{this.konsulentProfilId}}">{{this.konsulentProfilNavn}}</td>
+                            <td value="{{this.lokationId}}">{{this.lokationNavn}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <h2>Kommentar</h2>
+        </div>
+        <div class="form-control row">
+            <textarea class="form-control" form="opgaveform" name="kommentar" id="kommentar" wrap="soft" rows="5">{{opgaveInfo.kommentar}}</textarea>
+            {{!-- <input type="textarea" class="form-control" id="kommentar" name="kommentar" rows="3"> --}}
+        </div>
+    </div>
+
+
+</div>
+
+
+{{!--
+<script src="/js/clientopgave.js"></script> --}}
+
+<script>
+    $(document).ready(function () {
+        function makeDate(date){
+            var d = new Date(date)
+            var year = d.getFullYear()
+            var month = d.getMonth()+1
+            var day = d.getDate()
+
+            if(month<10)
+                month = '0' + month
+            if(day<10)
+                day = '0'+day
+
+            return year + '-' + month + '-' + day
+        }
+
+
+        var startDato = new Date("{{opgaveInfo.startDato}}")
+        var slutDato = new Date("{{opgaveInfo.slutDato}}")
+        //console.log(makeDate(startDato))
+        $('#startDato').val(makeDate(startDato))
+        $('#slutDato').val(makeDate(slutDato))
+        //console.log(startDato.getFullYear() + '-' + 0+ (startDato.getMonth() + 1) + '-' + startDato.getDate())
+        //$('#startDato').val(startDato.getFullYear() + '-' + (startDato.getMonth() + 1)  + '-' + startDato.getDate())
+    })
+</script>

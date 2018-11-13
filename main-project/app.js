@@ -40,7 +40,7 @@ app.use('/',function(req,res){
     console.log('-------------' + req.path + '-------------')
 
     // console.log(req);
-    console.log(req.body)
+    //console.log(req.body)
     //console.log(req.query)
     
     switch(req.method){

@@ -24,7 +24,8 @@ function getData(){
                     {leftTable: 'OpgaveloserOpgave', rightTable:'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId', 'konsulentProfilId']},
                     {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Konsulentprofil', leftColumn: 'konsulentProfilId', rightColumn: 'konsulentProfilId', selectColumns: ['konsulentProfilNavn']},
                     {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['fornavn', 'efternavn', 'arbejdstidPrUge']},
-                ]
+                ],
+                where: [{ column: 'aktiv', value: 1 }]
             },
         ],
         origin:name

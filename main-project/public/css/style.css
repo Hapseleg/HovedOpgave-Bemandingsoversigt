@@ -15,6 +15,8 @@ nav a {
     width:95%;
 }
 
+
+
 .formArea{
     background-color: rgba(255, 255, 255, 0.6);
     border-radius: 25px;
@@ -43,6 +45,8 @@ nav a {
     cursor: pointer
 }
 
+
+
 .lowWorkload{
     background-color: #2ecc71
 }
@@ -65,4 +69,8 @@ th{
 
 .scrollTable{
     overflow: auto;
+}
+
+.firstInMonth {
+    border-left-width: 3px
 }

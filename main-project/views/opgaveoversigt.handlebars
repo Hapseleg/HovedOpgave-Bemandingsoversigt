@@ -27,64 +27,82 @@
             <th colspan="6" id="thMonth">Januar</th>
         </tr> --}}
         <tr>
-            <th>Opgave id</th>
+            {{!-- <th>Opgave id</th> --}}
             <th>Opgave</th>
             <th>Lokation</th>
             <th>Kontrakt Status</th>
             <th>Start</th>
             <th>Slut</th>
             <th>Deadlines</th>
-
+            <th>Estimeret</th>
+            {{!-- farv estimeret 08:35
+            rød- flere timer i kalenderen end estimeret
+            gul- mangler timer
+            grøn- 0 timer tilbage af estimeret --}}
 
         </tr>
     </thead>
     <tbody>
         {{#each opgaver}}
-            <tr id="opgaveloserRow" class="opgaveloser">
-                <input type="hidden" id="{{@index}}" idName="opgaveId" value={{this.opgaveId}}>
 
-                <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
-                <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
-                <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
-                <td value={{this.opgaveStatusId}}>{{this.kontraktStatusNavn}}</td>
-                <td class="date">{{this.startDato}}</td>
-                <td class="date">{{this.slutDato}}</td>
+        <tr class="opgaveRow">
+            <input type="hidden" id="{{@index}}" idName="opgaveId" value={{this.opgaveId}}>
 
-                <td class="seDeadlines">Tryk for at se deadlines</td>
-            </tr>
+            {{!-- <td value={{this.opgaveId}}>{{this.opgaveId}}</td> --}}
+            <td class="opgaveTd" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
+            <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+            <td value={{this.opgaveStatusId}}>{{this.kontraktStatusNavn}}</td>
+            <td class="date">{{this.startDato}}</td>
+            <td class="date">{{this.slutDato}}</td>
+            <td class="seDeadlines">Tryk for at se deadlines</td>
+            <td class="estimeretTimetal" value="{{this.estimeretTimetal}}" usedHours="{{this.timerBrugt}}">{{this.estimeretTimetal}}</td>
+        </tr>
         {{/each}}
     </tbody>
 </table>
 
 {{!-- <button id="click">test</button> --}}
 <script>
-    $(document).ready(function() {
-        $('.seDeadlines').click(function(){
+    $(document).ready(function () {
+        $('.seDeadlines').click(function () {
             let opgaveId = $(this).parent().children('[idName=opgaveId]').val()
 
             $.ajax({
                 url: '/opgaveoversigt/deadlines',
-                data: {'opgaveId': opgaveId},
+                data: { 'opgaveId': opgaveId },
                 type: 'GET',
-                success: function(result) {
+                success: function (result) {
                     let deadlines = ''
-                    $(result).each(function(index){
+                    $(result).each(function (index) {
                         deadlines += result[index].deadlineKommentar + ' - ' + convertDate(result[index].deadlineDato) + '\n'
                     })
                     alert(deadlines)
-                    
                 }
             });
         })
 
-        $('.date').each(function(){
+        $('.opgaveTd').click(function () {
+            window.location.href = '/opgave?opgaveId=' + $(this).attr('value')
+        })
+
+        $('.date').each(function () {
             $(this).text(convertDate($(this).text()))
         })
+
+
+        $('.opgaveRow').each(function () {
+            let estimeret = $(this).children('.estimeretTimetal')
+            console.log($(estimeret))
+            console.log($(estimeret).attr('value'))
+            console.log($(estimeret).attr('usedHours'))
+            console.log($(estimeret).val() - $(estimeret).attr('usedHours'))
+        })
+
     })
 
-    function convertDate(dateString){
+    function convertDate(dateString) {
         let date = new Date(dateString)
-        let month = parseInt(date.getMonth(),10)+1
+        let month = parseInt(date.getMonth(), 10) + 1
         return date.getDate() + '-' + month + '-' + date.getFullYear()
     }
 </script>

@@ -15,7 +15,7 @@
         <option value="12">December</option>
     </select>
     <input type="number" name="year" id="year" placeholder="År">
-    <input type="button" id="getTimeData" value="Hent data">
+    {{!-- <input type="button" id="getTimeData" value="Hent data"> --}}
 </form>
 
 <button type="button" id="toggleWeeks" class="toggledUsed">Se timer til rådighed for uge</button>
@@ -23,17 +23,18 @@
     <table class="table table-light" id="opgaveloserTable">
         <thead>
             <tr id="firstHead">
-                <th colspan="7"></th>
-                <th colspan="6" id="thMonth">Januar</th>
+                <th colspan="3"></th>
+                {{!-- <th colspan="6" id="thMonth1">Januar</th>
+                <th colspan="6" id="thMonth2">Januar</th> --}}
             </tr>
             <tr id="secondHead">
-                <th>Opgaveløser id</th>
+                {{!-- <th>Opgaveløser id</th> --}}
                 <th>Opgaveløser</th>
-                <th>Opgave id</th>
+                {{!-- <th>Opgave id</th> --}}
                 <th>Opgave</th>
                 <th>KonsulentProfil</th>
-                <th>Uden pause</th>
-                <th>Med pause</th>
+                {{!-- <th>Uden pause</th>
+                <th>Med pause</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -42,13 +43,13 @@
                     <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
                     <input type="hidden" id="{{@index}}" idName="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}>
 
-                    <td value={{this.opgaveloserId}}>{{this.opgaveloserId}}</td>
+                    {{!-- <td value={{this.opgaveloserId}}>{{this.opgaveloserId}}</td> --}}
                     <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
-                    <td value={{this.opgaveId}}>{{this.opgaveId}}</td>
-                    <td value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
+                    {{!-- <td value={{this.opgaveId}}>{{this.opgaveId}}</td> --}}
+                    <td class="opgaveTd" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
                     <td value={{this.opgaveloserKonsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                    <td class="usedHoursPercentNoBreak">%</td>
-                    <td class="usedHoursPercentWithBreak">%</td>
+                    {{!-- <td class="usedHoursPercentNoBreak">%</td>
+                    <td class="usedHoursPercentWithBreak">%</td> --}}
                 </tr>
             {{/each}}
         </tbody>

@@ -4,107 +4,47 @@ var opgaveoversigt = require('./opgaveoversigt.js')
 var name = 'opgaveoversigt';
 var res;
 
-function setup(){
-    console.log('setting up '+name+' facade')
+function setup() {
+    console.log('setting up ' + name + ' facade')
     subGetView()
     subDataFromDB()
-    //subPutView()
 }
 
-function subGetView(){
-    mediator.subscribe('getView',function(arg){
-        //res = arg.res;
-        //req = arg.req;
-        if(arg.req.path == '/'+name){
-            
+function subGetView() {
+    mediator.subscribe('getView', function (arg) {
+        if (arg.req.path == '/' + name) {
             mediator.publish('readFromDB', Object.assign(arg, opgaveoversigt.getData()))
-        }   
-        else if(arg.req.path == '/'+name+'/deadlines'){
-            //console.log(arg.req.query)
+        }
+        else if (arg.req.path == '/' + name + '/deadlines') {
             mediator.publish('readFromDB', Object.assign(arg, opgaveoversigt.getDeadlines(arg.req.query.opgaveId)))
         }
     })
 }
 
-// function subPutView(){
-//     mediator.subscribe('putView',function(arg){
-//         res = arg.res;
-//         //req = arg.req;
-//         try{
-//             if(arg.req.path == '/bemandingsOversigtTid'){
-//                 if(req.body.ugeTimeOpgaveId)
-//                     mediator.publish('updateInDB', bemandingsoversigt.updateUgeTimeOpgave(req.body))
-//                 else
-//                     mediator.publish('createInDB', bemandingsoversigt.createUgeTimeOpgave(req.body))
-//             }
-//         }
-//         catch(error){
-//             mediator.publish('error', error)
-//         }
-//     })
-// }
+function subDataFromDB() {
+    mediator.subscribe('dataFromDB', function (arg) {
+        try {
+            if (arg.origin == name) {
+                console.log('render subDataFromDB ' + arg.origin + ' here')
+                if (arg.type == 'read') {
+                    //calculate used time
+                    opgaveoversigt.calculateUsedTimeForOpgave(arg.data, function(data){
+                        arg.res.render(name, {opgaver: data})
+                    })
 
-function subDataFromDB(){
-    mediator.subscribe('dataFromDB',function(arg){
-        try{
-            if(arg.origin == name){
-                console.log('render subDataFromDB '+arg.origin+' here')
-                if(arg.type == 'read'){
-                    //console.log(arg.data[0].result)
-                    arg.res.render(name, {opgaver: arg.data[0].result})
+                    // arg.res.render(name, { opgaver: arg.data[0].result, 'usedTimeForOpgaver': opgaveoversigt.calculateUsedTimeForOpgave(arg.data[1].result) })
                 }
             }
-            else if(arg.origin == name + 'deadlines')
-            {
+            else if (arg.origin == name + 'deadlines') {
                 arg.res.json(arg.data[0].result)
             }
         }
-        catch(error){
-            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
+        catch (error) {
+            mediator.publish('error', { 'res': arg.res, 'error': error, 'origin': name })
         }
-
-        // if(arg.origin == name){
-        //     try{
-        //         console.log('render subDataFromDB bemandingsoversigt here')
-        //         //console.log(arg.data[0])
-        //         let field = arg.data[0].fields
-        //         //console.log(field)
-        //         //console.log(arg.type)
-                
-        //         if(arg.type == 'read'){
-        //             if(field.orgTable == 'OpgaveloserOpgave'){
-        //                 res.render(name, {opgaveloser: arg.data[0].result})
-        //             }
-        //             else if(field.orgTable == 'OpgaveloserArbejdsTider'){
-        //                 // console.log(arg.data[0].result,'0')
-        //                 // console.log(arg.data[1].result,'1')
-        //                 tidsUdregner.getWeekdaysInMonth(req.query.year, req.query.month, function(weekdays){
-        //                     tidsUdregner.calculateAvailableWorkTimeInWeeks(weekdays, arg.data, req.query.year, req.query.month, function(availableWorkTime){
-        //                         res.json(availableWorkTime)
-        //                     })
-        //                 })
-        //             }
-        //         }
-        //         else if(arg.type == 'create'){
-        //             console.log('create',arg)
-        //             res.json({'insertId': arg.data[0].result.insertId})
-        //         }
-        //         else if(arg.type == 'update'){
-        //             console.log('update',arg)
-        //             res.json({})
-        //         }
-        //         else{
-        //             throw 'wrong type in bemandingsoversigt'
-        //         }
-                    
-        //     }
-        //     catch(error){
-        //         mediator.publish('error', error)
-        //     }
-        // }
     })
 }
 
 module.exports = {
-    setup:setup
+    setup: setup
 }
