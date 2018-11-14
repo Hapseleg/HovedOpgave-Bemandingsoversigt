@@ -42,33 +42,15 @@ function setupColumnsStringWithLetter(array, columnLetter, columnString) {
     return query
 }
 
-// function setupValuesString(array){
-//     let query = ''
-
-//     for(let i = 0; i< array.length;i++){
-//         if(isNaN(array[i]))
-//             query += '"' + array[i] + '"'  
-//         else
-//             query += array[i]
-
-//         query += ','
-//         console.log(query)
-//     }
-//     query = query.slice(0,-1)
-
-//     return query
-// }
-
 function setupValuesArray(array) {
-
-    for (let i = 0; i < array.length; i++) {
-        if (!isNaN(array[i]))
+    for (let i = 0; i < array.length; i++)
+        if (!isNaN(array[i]) && array[i] != "" && array[i] != undefined)
             array[i] = parseInt(array[i], 10)
-    }
+        else if(array[i] == "null" || array[i] == "")
+            array[i] = null
 }
 
 async function createInDB(arg, createdDone, firstId, earlierResults, callback, errorCallback) {
-    //console.log('createdDone', createdDone)
     let results = { data: [], origin: arg.origin, type: 'create' }
     if (earlierResults != undefined)
         results = earlierResults
@@ -90,17 +72,10 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
     }
 
     var sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES ?";
-    //console.log(insertId, 'insertId')
-    //console.log(data.values)
-    // var sql = "INSERT INTO "+tableName+" ("+columns+") VALUES ("+values+")";
     console.log(sql)
-    // console.log(data.values)
-    // console.log(insertId)
 
-    //conn.query(sql, [data.values], function (err, result) {
     await conn.query(sql, [data.values])
         .then(function (result) {
-            //console.log(result,'result')
             if (tableName == arg.idFromFirstInsert)
                 insertId = result.insertId
 
@@ -108,13 +83,11 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
 
             if (results.data.length == arg.data.length)
                 callback(Object.assign(arg, results))
-            //callback(results)
             else
                 createInDB(arg, createdDone + 1, insertId, results, callback, errorCallback)
         })
         .catch(function (error) {
-            //console.log(Object.keys(error))
-            errorCallback(Object.assign(arg, {error}))
+            errorCallback(Object.assign(arg, { error }))
             return
         })
 }
@@ -168,7 +141,7 @@ async function readFromDB(arg, callback, errorCallback) {
                 //callback(results)
             })
             .catch(function (error) {
-                errorCallback(Object.assign(arg, {error}))
+                errorCallback(Object.assign(arg, { error }))
             })
     }
 
@@ -235,7 +208,7 @@ async function updateInDB(arg, callback, errorCallback) {
                 //callback(results)
             })
             .catch(function (error) {
-                errorCallback(Object.assign(arg, {error}))
+                errorCallback(Object.assign(arg, { error }))
             })
     }
 }

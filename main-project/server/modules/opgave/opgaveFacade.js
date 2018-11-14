@@ -82,15 +82,16 @@ function subDataFromDB() {
                 else if (arg.type == 'create')
                     arg.res.redirect('bemandingsoversigt')
             }
-            else if(arg.origin == name + 'specific'){
+            else if (arg.origin == name + 'specific') {
+
                 //console.log(arg.data[0].result[0])
-                arg.res.render('opgavespecific',{
-                    'opgaveInfo':arg.data[0].result[0],
-                    'kunde':arg.data[1].result,
-                    'kundeansvarlig':arg.data[2].result,
-                    'opgavestiller':arg.data[3].result,
-                    'deadlines':arg.data[4].result,
-                    'opgavelosere':arg.data[5].result
+                arg.res.render('opgavespecific', {
+                    'opgaveInfo': arg.data[0].result[0],
+                    'kunde': arg.data[1].result,
+                    'kundeansvarlig': arg.data[2].result,
+                    'opgavestiller': arg.data[3].result,
+                    'deadlines': arg.data[4].result,
+                    'opgavelosere': arg.data[5].result
                 })
             }
         }

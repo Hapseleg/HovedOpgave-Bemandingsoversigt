@@ -14,6 +14,7 @@
                 <label class="col-sm-3 col-form-label" for="kundeId">Kunde</label>
                 <div class="col-sm-5">
                     <select name="kundeId" form="opgaveform" class="form-control">
+                        <option value=null></option>
                         {{#each kunde}}
                         <option value={{this.kundeId}}>{{this.fornavn}} {{this.efternavn}}</option>
                         {{/each}}
@@ -25,6 +26,7 @@
                 <label class="col-sm-3 col-form-label" for="kundeansvarligId">kundeansvarlig</label>
                 <div class="col-sm-5">
                     <select name="kundeansvarligId" form="opgaveform" class="form-control">
+                        <option value=null></option>
                         {{#each kundeansvarlig}}
                         <option value={{this.kundeansvarligId}}>{{this.fornavn}} {{this.efternavn}}</option>
                         {{/each}}
@@ -36,6 +38,7 @@
                 <label class="col-sm-3 col-form-label" for="opgavestillerId">opgavestiller</label>
                 <div class="col-sm-5">
                     <select name="opgavestillerId" form="opgaveform" class="form-control">
+                        <option value=null></option>
                         {{#each opgavestiller}}
                         <option value={{this.opgavestillerId}}>{{this.fornavn}} {{this.efternavn}}</option>
                         {{/each}}
@@ -47,6 +50,7 @@
                 <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
                 <div class="col-sm-5">
                     <select name="lokationId" form="opgaveform">
+                        <option value=null></option>
                         {{#each lokation}}
                         <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
                         {{/each}}
@@ -58,6 +62,7 @@
                 <label class="col-sm-3 col-form-label" for="opgavetypeId">opgavetype</label>
                 <div class="col-sm-5">
                     <select name="opgavetypeId" form="opgaveform">
+                        <option value=null></option>
                         {{#each opgavetype}}
                         <option value={{this.opgavetypeId}}>{{this.opgavetypeNavn}}</option>
                         {{/each}}
@@ -68,14 +73,28 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="startDato">startDato</label>
                 <div class="col-sm-5">
-                    <input type="date" class="form-control" id="startDato" name="startDato">
+                    <input type="date" class="form-control" id="startDato" name="startDato" value="null">
+                    <div class="form-check">
+                        <input type="hidden" form="opgaveform" name="fixedStartDato" value="0">
+                        <input class="form-check-input" form="opgaveform" type="checkbox" id="fixedStartDato" value="0">
+                        <label class="form-check-label" for="fixedStartDato">
+                            fixedStartDato
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="slutDato">slutDato</label>
                 <div class="col-sm-5">
-                    <input type="date" class="form-control" id="slutDato" name="slutDato">
+                    <input type="date" class="form-control" id="slutDato" name="slutDato" value="null">
+                    <div class="form-check">
+                        <input type="hidden" form="opgaveform" name="fixedSlutDato" value="0">
+                        <input class="form-check-input" form="opgaveform" type="checkbox" id="fixedSlutDato" value="0">
+                        <label class="form-check-label" for="fixedSlutDato">
+                            fixedSlutDato
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -83,6 +102,7 @@
                 <label class="col-sm-3 col-form-label" for="opgaveStatusId">opgaveStatus</label>
                 <div class="col-sm-5">
                     <select name="opgaveStatusId" form="opgaveform">
+                        <option value=null></option>
                         {{#each opgavestatus}}
                         <option value={{this.opgaveStatusId}}>{{this.opgaveStatusNavn}}</option>
                         {{/each}}
@@ -94,6 +114,7 @@
                 <label class="col-sm-3 col-form-label" for="kontraktStatusId">kontraktStatus</label>
                 <div class="col-sm-5">
                     <select name="kontraktStatusId" form="opgaveform">
+                        <option value=null></option>
                         {{#each kontraktstatus}}
                         <option value={{this.kontraktStatusId}}>{{this.kontraktStatusNavn}}</option>
                         {{/each}}
@@ -104,7 +125,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="estimeretTimetal">Estimeret timetal</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="estimeretTimetal" name="estimeretTimetal">
+                    <input type="text" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="0">
                 </div>
             </div>
 
@@ -138,7 +159,8 @@
             </div>
 
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="aktiv" name="aktiv" value="0">
+                <input type="hidden" form="opgaveform" name="aktiv" value="0">
+                <input class="form-check-input" form="opgaveform" type="checkbox" id="aktiv" value="0">
                 <label class="form-check-label" for="aktiv">
                     Opgave er aktiv
                 </label>
@@ -157,7 +179,7 @@
                 <h2>Mulige opgaveløsere</h2>
             </div>
             <div class="form-control row">
-                <div class="scrollTable">
+                <div>
                     <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
                         <thead>
                             <tr>
@@ -169,7 +191,7 @@
                         </thead>
                         <tbody>
                             {{#each muligeOpgaveloser}}
-                            <tr id="opgaveloserRow" class="muligOpgaveloser">
+                            <tr id="opgaveloserRow" class="muligOpgaveloser pointer">
                                 <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
                                 {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
                                 --}}
@@ -190,7 +212,7 @@
                 <h2>Deadlines</h2>
             </div>
             <div class="form-control row">
-                <div class="scrollTable">
+                <div>
                     <table class="table table-light" id="deadlines" style="max-height: 300px">
                         <thead>
                             <tr>
@@ -201,7 +223,7 @@
                         </thead>
                         <tbody>
                             {{#each deadlines}}
-                            <tr value={{this.deadlineId}}>
+                            <tr value={{this.deadlineId}} class="pointer">
                                 <td>{{this.deadlineDato}}</td>
                                 <td>{{this.deadlineKommentar}}</td>
                             </tr>
@@ -221,7 +243,7 @@
                 <h2>Valgte opgaveløsere</h2>
             </div>
             <div class="form-control row">
-                <div class="scrollTable">
+                <div>
                     <table class="table table-light" id="valgteOpgavelosere">
                         <thead>
                             <tr>
@@ -232,7 +254,7 @@
                                 {{!-- <th scope="col">Status</th> --}}
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="pointer">
 
                         </tbody>
                     </table>
@@ -243,7 +265,7 @@
                 <h2>Kommentar</h2>
             </div>
             <div class="form-control row">
-                <textarea class="form-control" form="opgaveform" name="kommentar" id="kommentar" wrap="soft" rows="5"></textarea>
+                <textarea class="form-control" form="opgaveform" name="kommentar" id="kommentar" wrap="soft" rows="5" value=""></textarea>
                 {{!-- <input type="textarea" class="form-control" id="kommentar" name="kommentar" rows="3"> --}}
             </div>
         </div>
@@ -253,3 +275,27 @@
 </form>
 
 <script src="/js/clientopgave.js"></script>
+
+
+<button id="testbutton">SET TEST VALUES</button>
+<script>
+    $(document).ready(function () {
+        $('#testbutton').click(function () {
+            $('select').each(function () {//set all dropdowns
+                $(this).val($(this).children("option:last").val())
+            })
+
+            $('input[type="text"],textarea').each(function(){//set all text boxes
+                $(this).val('some text')
+            })
+
+            $('input[type="date"]').each(function(){//all dates
+            $(this).val('2019-10-10')
+            })
+
+
+            $('#estimeretTimetal').val(100)
+        })
+    })
+
+</script>

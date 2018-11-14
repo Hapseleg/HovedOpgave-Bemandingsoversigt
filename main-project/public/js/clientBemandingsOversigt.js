@@ -153,7 +153,7 @@ $(document).ready(function () {
 
 				let td = $('<td>', {
 					'onclick': 'changeAntalTimer(this)',
-					'class': 'availableWorkTime',
+					'class': 'availableWorkTime pointer',
 					'maxAvailableWorkTime': opgaveloser.maxAvailableWorkTime,
 					'timeAntalForOpgave': timeAntalForOpgave,
 					'availableWorkTime': availableWorkTime,
@@ -231,16 +231,25 @@ function calcWeekAvailableworktime() {//TODO dårlig performance.. refactor
 	}//dårlig performance..//TODO dårlig performance.. refactor
 }
 
+
+//sætter workDaysInMonth på alle uger i tabellen
 function setWorkDaysInMonth() {//dårlig performance..//TODO dårlig performance.. refactor
 	let workDaysInMonthOpgavelosere = []
 
-	$('tbody tr').each(function () {
+	$('tbody tr').each(function () {//gå igennem alle rows
 		let rowOpgaveloserId = $(this).children('[idName=opgaveloserId]').val()
 		let opgaveloser = workDaysInMonthOpgavelosere.find(o => o.opgaveloserId == rowOpgaveloserId)
-		if (opgaveloser == undefined) {
-			opgaveloser = { 'opgaveloserId': rowOpgaveloserId, 'workDaysInMonth': 0 }
+
+		if (opgaveloser == undefined) {//opgaveløseren findes ikke endnu i mit array
+			opgaveloser = { 'opgaveloserId': rowOpgaveloserId, 'workDaysInMonth': [] }
 			$(this).children('.availableWorkTime').each(function () {
-				opgaveloser.workDaysInMonth += parseInt($(this).attr('workDaysInWeek'), 10)
+				var month = $(this).attr('month')
+				let currentMonth = opgaveloser.workDaysInMonth.find(o => o.month == month)//tjek om månedet findes
+				if(currentMonth == undefined){//hvis ikke opret det
+					currentMonth = {'month':month, 'days': 0}
+					opgaveloser.workDaysInMonth.push(currentMonth)
+				}
+				currentMonth.days += parseInt($(this).attr('workDaysInWeek'), 10)//tilføj dage
 			})
 			workDaysInMonthOpgavelosere.push(opgaveloser)
 		}
@@ -248,10 +257,13 @@ function setWorkDaysInMonth() {//dårlig performance..//TODO dårlig performance
 
 	$('tbody tr').each(function () {
 		let rowOpgaveloserId = $(this).children('[idName=opgaveloserId]').val()
-		let workDaysInMonthOpgaveloser = workDaysInMonthOpgavelosere.find(o => o.opgaveloserId == rowOpgaveloserId)
+		let opgaveloser = workDaysInMonthOpgavelosere.find(o => o.opgaveloserId == rowOpgaveloserId)
 
 		$(this).children('.availableWorkTime').each(function () {
-			$(this).attr('workDaysInMonth', workDaysInMonthOpgaveloser.workDaysInMonth)
+			var month = $(this).attr('month')
+			let currentMonth = opgaveloser.workDaysInMonth.find(o => o.month == month)
+
+			$(this).attr('workDaysInMonth', currentMonth.days)
 		})
 	})
 }

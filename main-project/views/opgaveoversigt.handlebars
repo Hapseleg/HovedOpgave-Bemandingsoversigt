@@ -35,10 +35,7 @@
             <th>Slut</th>
             <th>Deadlines</th>
             <th>Estimeret</th>
-            {{!-- farv estimeret 08:35
-            rød- flere timer i kalenderen end estimeret
-            gul- mangler timer
-            grøn- 0 timer tilbage af estimeret --}}
+           
 
         </tr>
     </thead>
@@ -49,13 +46,13 @@
             <input type="hidden" id="{{@index}}" idName="opgaveId" value={{this.opgaveId}}>
 
             {{!-- <td value={{this.opgaveId}}>{{this.opgaveId}}</td> --}}
-            <td class="opgaveTd" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
+            <td class="opgaveTd pointer" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
             <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
             <td value={{this.opgaveStatusId}}>{{this.kontraktStatusNavn}}</td>
             <td class="date">{{this.startDato}}</td>
             <td class="date">{{this.slutDato}}</td>
             <td class="seDeadlines">Tryk for at se deadlines</td>
-            <td class="estimeretTimetal" value="{{this.estimeretTimetal}}" usedHours="{{this.timerBrugt}}">{{this.estimeretTimetal}}</td>
+            <td class="estimeretTimetal" estimeret="{{this.estimeretTimetal}}" usedHours="{{this.timerBrugt}}">{{this.estimeretTimetal}}</td>
         </tr>
         {{/each}}
     </tbody>
@@ -89,13 +86,26 @@
             $(this).text(convertDate($(this).text()))
         })
 
-
+        //sæt 
         $('.opgaveRow').each(function () {
             let estimeret = $(this).children('.estimeretTimetal')
-            console.log($(estimeret))
-            console.log($(estimeret).attr('value'))
-            console.log($(estimeret).attr('usedHours'))
-            console.log($(estimeret).val() - $(estimeret).attr('usedHours'))
+
+            let manglendeTimer = parseFloat($(estimeret).attr('estimeret')) - parseFloat($(estimeret).attr('usedHours'))
+
+             /*farv estimeret 08:35
+            rød- flere timer i kalenderen end estimeret
+            gul- mangler timer
+            grøn- 0 timer tilbage af estimeret*/
+            if (manglendeTimer > 0)
+                $(estimeret).addClass('lowWorkload')
+            else if (manglendeTimer == 0)
+                $(estimeret).addClass('mediumWorkload')
+            else
+                $(estimeret).addClass('highWorkload')
+
+
+
+            $(estimeret).text(manglendeTimer)
         })
 
     })

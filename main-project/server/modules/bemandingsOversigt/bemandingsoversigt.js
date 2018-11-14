@@ -63,7 +63,7 @@ function getTidData(){
                         ]
                     },
                 ]
-            }
+            },
         ],
         origin:name
     }

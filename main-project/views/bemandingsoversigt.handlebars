@@ -29,10 +29,10 @@
             </tr>
             <tr id="secondHead">
                 {{!-- <th>Opgaveløser id</th> --}}
-                <th>Opgaveløser</th>
+                <th class="pointer">Opgaveløser</th>
                 {{!-- <th>Opgave id</th> --}}
-                <th>Opgave</th>
-                <th>KonsulentProfil</th>
+                <th class="pointer">Opgave</th>
+                <th class="pointer">KonsulentProfil</th>
                 {{!-- <th>Uden pause</th>
                 <th>Med pause</th> --}}
             </tr>
@@ -42,11 +42,12 @@
                 <tr id="opgaveloserRow" class="opgaveloser">
                     <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
                     <input type="hidden" id="{{@index}}" idName="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}>
+                    <input type="hidden" id="{{@index}}" idName="arbejdstidPrUge" value={{this.arbejdstidPrUge}}>
 
                     {{!-- <td value={{this.opgaveloserId}}>{{this.opgaveloserId}}</td> --}}
                     <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
                     {{!-- <td value={{this.opgaveId}}>{{this.opgaveId}}</td> --}}
-                    <td class="opgaveTd" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
+                    <td class="opgaveTd pointer" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
                     <td value={{this.opgaveloserKonsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                     {{!-- <td class="usedHoursPercentNoBreak">%</td>
                     <td class="usedHoursPercentWithBreak">%</td> --}}

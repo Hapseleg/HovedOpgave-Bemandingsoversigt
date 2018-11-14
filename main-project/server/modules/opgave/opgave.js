@@ -62,7 +62,7 @@ function getOpgaveById(opgaveId) {
         data: [
             {
                 table: 'Opgave',
-                columns: ['opgaveNavn', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'slutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
+                columns: ['opgaveNavn', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'fixedStartDato', 'slutDato', 'fixedSlutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
                 leftJoins: [
                     { leftTable: 'Opgave', rightTable: 'OpgaveStatus', leftColumn: 'opgaveStatusId', rightColumn: 'opgaveStatusId', selectColumns: ['opgaveStatusNavn'] },
                     { leftTable: 'Opgave', rightTable: 'Opgavetype', leftColumn: 'opgavetypeId', rightColumn: 'opgavetypeId', selectColumns: ['opgavetypeNavn'] },
@@ -117,22 +117,25 @@ function getOpgaveById(opgaveId) {
 }
 
 function insertData(table, columns, values, data, useIdFromFirstInsert, callback) {
-    let toBeInserted = {
-        table: table,
-        columns: columns,
-        values: [],
-        useIdFromFirstInsert: useIdFromFirstInsert
-    }
-
-    for (let i = 0; i < values.length; i++) {
-        let da = values[i]
-        let arr = []
-        for (let i = 0; i < Object.keys(da).length; i++) {
-            arr.push(da[Object.keys(da)[i]])
+    if(values != undefined){
+        let toBeInserted = {
+            table: table,
+            columns: columns,
+            values: [],
+            useIdFromFirstInsert: useIdFromFirstInsert
         }
-        toBeInserted.values.push(arr)
+    
+        for (let i = 0; i < values.length; i++) {
+            let da = values[i]
+            let arr = []
+            for (let i = 0; i < Object.keys(da).length; i++) {
+                arr.push(da[Object.keys(da)[i]])
+            }
+            toBeInserted.values.push(arr)
+        }
+        data.push(toBeInserted)
     }
-    data.push(toBeInserted)
+    
     callback(data)
 }
 
@@ -143,8 +146,8 @@ function saveData(arg, callback) {
         let data = {
             data: [{
                 table: 'Opgave',
-                columns: ['opgaveNavn', 'kundeId', 'kundeansvarligId', 'opgavestillerId', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'slutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
-                values: [[arg.opgaveNavn, arg.kundeId, arg.kundeansvarligId, arg.opgavestillerId, arg.opgaveStatusId, arg.opgavetypeId, arg.lokationId, arg.kontraktStatusId, arg.startDato, arg.slutDato, arg.kommentar, arg.estimeretTimetal, arg.aktiv]]
+                columns: ['opgaveNavn', 'kundeId', 'kundeansvarligId', 'opgavestillerId', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'fixedStartDato', 'slutDato', 'fixedSlutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
+                values: [[arg.opgaveNavn, arg.kundeId, arg.kundeansvarligId, arg.opgavestillerId, arg.opgaveStatusId, arg.opgavetypeId, arg.lokationId, arg.kontraktStatusId, arg.startDato, arg.fixedStartDato, arg.slutDato, arg.fixedSlutDato, arg.kommentar, arg.estimeretTimetal, arg.aktiv]]
             }
             ],
             origin: name,

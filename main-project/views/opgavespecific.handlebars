@@ -1,4 +1,4 @@
-<h1>Opret ny opgave</h1>
+<h1>Opgave</h1>
 <div class="row">
     {{!-- col 1 --}}
     <div class="col">
@@ -70,6 +70,10 @@
             <label class="col-sm-3 col-form-label" for="startDato">startDato</label>
             <div class="col-sm-5">
                 <input type="date" class="form-control" id="startDato" name="startDato">
+                <input class="form-check-input" form="opgaveform" type="checkbox" id="fixedStartDato" value={{opgaveInfo.fixedStartDato}}>
+                <label class="form-check-label" for="fixedStartDato">
+                    fixedStartDato
+                </label>
             </div>
         </div>
 
@@ -77,10 +81,12 @@
             <label class="col-sm-3 col-form-label" for="slutDato">slutDato</label>
             <div class="col-sm-5">
                 <input type="date" class="form-control" id="slutDato" name="slutDato">
+                <input class="form-check-input" form="opgaveform" type="checkbox" id="fixedslutDato" value={{opgaveInfo.fixedSlutDato}}>
+                <label class="form-check-label" for="fixedslutDato">
+                    fixedslutDato
+                </label>
             </div>
         </div>
-
-
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="opgaveStatusId">opgaveStatus</label>
@@ -175,7 +181,7 @@
                         {{#each muligeOpgaveloser}}
                         <tr id="opgaveloserRow" class="muligOpgaveloser">
                             <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-     
+
                             <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
                             <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                             <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
@@ -263,27 +269,27 @@
 
 <script>
     $(document).ready(function () {
-        function makeDate(date){
+        function makeDate(date) {
             var d = new Date(date)
             var year = d.getFullYear()
-            var month = d.getMonth()+1
+            var month = d.getMonth() + 1
             var day = d.getDate()
 
-            if(month<10)
+            if (month < 10)
                 month = '0' + month
-            if(day<10)
-                day = '0'+day
+            if (day < 10)
+                day = '0' + day
 
             return year + '-' + month + '-' + day
         }
-
-
         var startDato = new Date("{{opgaveInfo.startDato}}")
         var slutDato = new Date("{{opgaveInfo.slutDato}}")
-        //console.log(makeDate(startDato))
         $('#startDato').val(makeDate(startDato))
         $('#slutDato').val(makeDate(slutDato))
-        //console.log(startDato.getFullYear() + '-' + 0+ (startDato.getMonth() + 1) + '-' + startDato.getDate())
-        //$('#startDato').val(startDato.getFullYear() + '-' + (startDato.getMonth() + 1)  + '-' + startDato.getDate())
+
+        $('input[type="checkbox"]').each(function(){
+            if($(this).val() == 1)
+                $(this)[0].checked = true
+        })
     })
 </script>
