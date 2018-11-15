@@ -388,7 +388,7 @@ function changeAntalTimer(e) {
 				calcWeekAvailableworktime()
 				setWorkHoursUsed()
 			}
-		});
+		})
 	}
 }
 

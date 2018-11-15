@@ -1,4 +1,4 @@
-<form method="POST" id="opgaveform">
+<form method="POST" id="opgaveform" action="/opgave">
     <h1>Opret ny opgave</h1>
     <div class="row">
         {{!-- col 1 --}}
@@ -125,7 +125,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="estimeretTimetal">Estimeret timetal</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="0">
+                    <input type="number" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="0">
                 </div>
             </div>
 
@@ -166,47 +166,51 @@
                 </label>
             </div>
 
-            <div class="form-group row">
-                <button type="button" id="submitknap" class="btn btn-success">Opret Opgave</button>
+            <div class="form-group row submitButton">
+                <button type="button" id="submitCreate" class="btn btn-success">Opret Opgave</button>
+                <button type="button" id="submitUpdate" class="btn btn-success">Opdater Opgave</button>
+                <button type="button" id="submitDelete" class="btn btn-success">Slet Opgave</button>
             </div>
 
         </div>
 
         {{!-- col 2 --}}
         <div class="col">
-
-            <div class="form-group row">
-                <h2>Mulige opgaveløsere</h2>
+            <div class="muligeOpgavelosere">
+                <div class="form-group row">
+                                <h2>Mulige opgaveløsere</h2>
+                            </div>
+                            <div class="form-control row">
+                                <div>
+                                    <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Navn</th>
+                                                <th scope="col">Konsulentprofil</th>
+                                                <th scope="col">Lokation</th>
+                                                {{!-- <th scope="col">Status</th> --}}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each muligeOpgaveloser}}
+                                            <tr id="opgaveloserRow" class="muligOpgaveloser pointer">
+                                                <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                                                {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
+                                                --}}
+                                                {{!-- <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
+                                                <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
+                                                --}}
+                                                <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
+                                                <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                                                <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
             </div>
-            <div class="form-control row">
-                <div>
-                    <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
-                        <thead>
-                            <tr>
-                                <th scope="col">Navn</th>
-                                <th scope="col">Konsulentprofil</th>
-                                <th scope="col">Lokation</th>
-                                {{!-- <th scope="col">Status</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each muligeOpgaveloser}}
-                            <tr id="opgaveloserRow" class="muligOpgaveloser pointer">
-                                <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                                {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
-                                --}}
-                                {{!-- <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
-                                <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
-                                --}}
-                                <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
-                                <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                                <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            
 
             <div class="form-group row">
                 <h2>Deadlines</h2>
@@ -223,8 +227,8 @@
                         </thead>
                         <tbody>
                             {{#each deadlines}}
-                            <tr value={{this.deadlineId}} class="pointer">
-                                <td>{{this.deadlineDato}}</td>
+                            <tr onclick="markForRemoval(this)" value={{this.deadlineId}} class="pointer">
+                                <td class="date">{{this.deadlineDato}}</td>
                                 <td>{{this.deadlineKommentar}}</td>
                             </tr>
                             {{/each}}
@@ -255,7 +259,13 @@
                             </tr>
                         </thead>
                         <tbody class="pointer">
-
+                            {{#each opgavelosere}}
+                                <tr value={{this.opgaveloserKonsulentProfilId}}>
+                                    <td value="{{this.opgaveloserId}}">{{this.fornavn}} {{this.efternavn}}</td>
+                                    <td value="{{this.konsulentProfilId}}">{{this.konsulentProfilNavn}}</td>
+                                    <td value="{{this.lokationId}}">{{this.lokationNavn}}</td>
+                                </tr>
+                            {{/each}}
                         </tbody>
                     </table>
 
@@ -265,7 +275,8 @@
                 <h2>Kommentar</h2>
             </div>
             <div class="form-control row">
-                <textarea class="form-control" form="opgaveform" name="kommentar" id="kommentar" wrap="soft" rows="5" value=""></textarea>
+                <textarea class="form-control" form="opgaveform" name="kommentar" id="kommentar" wrap="soft" rows="5"
+                    value=""></textarea>
                 {{!-- <input type="textarea" class="form-control" id="kommentar" name="kommentar" rows="3"> --}}
             </div>
         </div>
@@ -285,17 +296,85 @@
                 $(this).val($(this).children("option:last").val())
             })
 
-            $('input[type="text"],textarea').each(function(){//set all text boxes
+            $('input[type="text"],textarea').each(function () {//set all text boxes
                 $(this).val('some text')
             })
 
-            $('input[type="date"]').each(function(){//all dates
-            $(this).val('2019-10-10')
+            $('input[type="date"]').each(function () {//all dates
+                $(this).val('2019-10-10')
             })
-
 
             $('#estimeretTimetal').val(100)
         })
+
+        //hvis det er en bestemt opgave ligesom - http://localhost:3000/opgave?opgaveId=1
+        //console.log(JSON.parse({{opgaveInfo}}))
+        {{#if opgaveInfo}}
+        function makeDate(date) {
+            var d = new Date(date)
+            var year = d.getFullYear()
+            var month = d.getMonth() + 1
+            var day = d.getDate()
+
+            if (month < 10)
+                month = '0' + month
+            if (day < 10)
+                day = '0' + day
+
+            return year + '-' + month + '-' + day
+        }
+        var startDato = new Date("{{opgaveInfo.startDato}}")
+        var slutDato = new Date("{{opgaveInfo.slutDato}}")
+        $('#startDato').val(makeDate(startDato))
+        $('#slutDato').val(makeDate(slutDato))
+
+        function setAllValues() {
+            $('#submitCreate').remove()
+            //$('.submitButton').append('<button type="button" id="submitUpdate" class="btn btn-success">Opdater Opgave</button>')
+            //$('.submitButton').append('<button type="button" id="submitDelete" class="btn btn-success">Slet Opgave</button>')
+
+            $('form').attr('method', "PUT")
+
+            $('input[name="opgaveNavn"]').val("{{opgaveInfo.opgaveNavn}}")
+
+            $('select[name="kundeId"]').val("{{opgaveInfo.kundeId}}")
+            $('select[name="kundeansvarligId"]').val("{{opgaveInfo.kundeansvarligId}}")
+            $('select[name="opgavestillerId"]').val("{{opgaveInfo.opgavestillerId}}")
+            $('select[name="lokationId"]').val("{{opgaveInfo.lokationId}}")
+            $('select[name="opgavetypeId"]').val("{{opgaveInfo.opgavetypeId}}")
+            $('select[name="opgaveStatusId"]').val("{{opgaveInfo.opgaveStatusId}}")
+            $('select[name="kontraktStatusId"]').val("{{opgaveInfo.kontraktStatusId}}")
+
+            $('input[name="fixedStartDato"]').val("{{opgaveInfo.fixedStartDato}}")
+            if("{{opgaveInfo.fixedStartDato}}" == '1')
+                $('#fixedStartDato')[0].checked= true
+
+            $('input[name="fixedSlutDato"]').val("{{opgaveInfo.fixedSlutDato}}")
+            if("{{opgaveInfo.fixedSlutDato}}" == '1')
+                $('#fixedSlutDato')[0].checked= true
+
+            $('input[name="aktiv"]').val("{{opgaveInfo.aktiv}}")
+            if("{{opgaveInfo.aktiv}}" == '1')
+                $('#aktiv')[0].checked = true
+
+            $('input[name="estimeretTimetal"]').val("{{opgaveInfo.estimeretTimetal}}")
+
+            $('textarea[name="kommentar"]').val("{{opgaveInfo.kommentar}}")
+            
+            $('form').append('<input type="hidden" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
+
+            $('.muligeOpgavelosere').remove()
+
+            $('#deadlines tr').each(function(){
+                $(this).children('.date').text(makeDate($(this).children('.date').text()))
+            })
+        }
+        setAllValues()
+        {{else}}
+            $('#submitUpdate').remove()
+            $('#submitDelete').remove()
+
+        {{/if}}
     })
 
 </script>

@@ -39,9 +39,9 @@ app.use(bodyParser.json()) // parse application/json
 app.use('/',function(req,res){
     console.log('-------------' + req.path + '-------------')
 
-    // console.log(req);
-    //console.log(req.body)
-    //console.log(req.query)
+    console.log(req.method);
+    // console.log(req.body)
+    // console.log(req.query)
     
     switch(req.method){
         case 'GET':{

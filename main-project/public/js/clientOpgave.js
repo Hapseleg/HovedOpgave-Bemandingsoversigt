@@ -1,6 +1,5 @@
 $(document).ready(function () {
-    $('#submitknap').click(function () {
-        // console.log($('form').serializeArray())
+    $('#submitCreate').click(function () {
         $('#opgaveform').submit()
     })
 
@@ -54,6 +53,18 @@ $(document).ready(function () {
             '<td>' + deadlineKommentar + '</td>' +
             '</tr>');
         deadlineCount++;
+    })
+
+    $('#submitUpdate').click(function(){
+        let d = $('form').serializeArray()
+        $.ajax({
+			url: '/opgave',
+			data: d,
+			type: 'PUT',
+			success: function (result) {
+				window.location = '/opgaveoversigt'
+			}
+		})
     })
 })
 
