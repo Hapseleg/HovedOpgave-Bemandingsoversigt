@@ -99,7 +99,7 @@ function getOpgaveById(opgaveId) {
             },
             {
                 table: 'Opgave',
-                columns: ['opgaveId','opgaveNavn', 'kundeId', 'kundeansvarligId', 'opgavestillerId', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'fixedStartDato', 'slutDato', 'fixedSlutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
+                columns: ['opgaveId', 'opgaveNavn', 'kundeId', 'kundeansvarligId', 'opgavestillerId', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'fixedStartDato', 'slutDato', 'fixedSlutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
                 leftJoins: [
                     { leftTable: 'Opgave', rightTable: 'OpgaveStatus', leftColumn: 'opgaveStatusId', rightColumn: 'opgaveStatusId', selectColumns: ['opgaveStatusNavn'] },
                     { leftTable: 'Opgave', rightTable: 'Opgavetype', leftColumn: 'opgavetypeId', rightColumn: 'opgavetypeId', selectColumns: ['opgavetypeNavn'] },
@@ -182,8 +182,19 @@ function updateOpgave(arg) {
             values: [arg.opgaveNavn, arg.kundeId, arg.kundeansvarligId, arg.opgavestillerId, arg.opgaveStatusId, arg.opgavetypeId, arg.lokationId, arg.kontraktStatusId, arg.startDato, arg.fixedStartDato, arg.slutDato, arg.fixedSlutDato, arg.kommentar, arg.estimeretTimetal, arg.aktiv],
             where: [{ column: 'OpgaveId', value: arg.opgaveId }]
         }
-        
-        //tilføj/fjern deadlines og opgaveløsere
+
+            //tilføj/fjern deadlines og opgaveløsere
+        ],
+        origin: name
+    }
+}
+
+function deleteOpgave(arg) {
+    return {
+        data: [{
+            table: 'Opgave',
+            where: [{ column: 'OpgaveId', value: arg.opgaveId }]
+        }
         ],
         origin: name
     }
@@ -194,5 +205,6 @@ module.exports = {
     saveData: saveData,
     getData: getData,
     getOpgaveById: getOpgaveById,
-    updateOpgave: updateOpgave
+    updateOpgave: updateOpgave,
+    deleteOpgave: deleteOpgave
 }

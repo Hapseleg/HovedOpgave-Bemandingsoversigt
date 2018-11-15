@@ -46,7 +46,7 @@ function setupValuesArray(array) {
     for (let i = 0; i < array.length; i++)
         if (!isNaN(array[i]) && array[i] != "" && array[i] != undefined)
             array[i] = parseInt(array[i], 10)
-        else if(array[i] == "null" || array[i] == "")
+        else if (array[i] == "null" || array[i] == "")
             array[i] = null
 }
 
@@ -187,9 +187,9 @@ function setupWhereString(array) {
 }
 
 async function updateInDB(arg, callback, errorCallback) {
-
-    let results = { data: [], origin: arg.origin, type: 'update' }
     console.log('updateInDB')
+    let results = { data: [], origin: arg.origin, type: 'update' }
+
     for (let i = 0, l = arg.data.length; i < l; i++) {
         let data = arg.data[i]
         //console.log(data)
@@ -213,12 +213,25 @@ async function updateInDB(arg, callback, errorCallback) {
     }
 }
 
-function deleteInDB(arg, callback, errorCallback) {
-    try {
+async function deleteInDB(arg, callback, errorCallback) {
+    console.log('updateInDB')
 
-    }
-    catch (error) {
-        throw error
+    for (let i = 0, l = arg.data.length; i < l; i++) {
+        let data = arg.data[i]
+        let tableName = data.table
+        let whereValues = setupWhereString(data.where)
+
+        let sql = "DELETE FROM " + tableName + whereValues
+        console.log(sql)
+        await conn.query(sql)
+            .then(function (result) {
+                results.data.push({ result: result, fields: { orgTable: tableName } })
+                callback(Object.assign(arg, results))
+                //callback(results)
+            })
+            .catch(function (error) {
+                errorCallback(Object.assign(arg, { error }))
+            })
     }
 }
 

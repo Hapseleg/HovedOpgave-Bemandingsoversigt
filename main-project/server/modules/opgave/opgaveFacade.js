@@ -11,6 +11,7 @@ function setup() {
     subGetView()
     subPostView()
     subPutView()
+    subDeleteView()
 }
 
 function subGetView() {
@@ -48,6 +49,21 @@ function subPutView(){
                 console.log('put opgave')
                 if(arg.req.body.opgaveId)
                     mediator.publish('updateInDB', Object.assign(arg, opgave.updateOpgave(arg.req.body)))//bemandingsoversigt.updateUgeTimeOpgave(req.body))
+            }
+        }
+        catch(error){
+            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
+        }
+    })
+}
+
+function subDeleteView(){
+    mediator.subscribe('deleteView',function(arg){
+        try{
+            if (arg.req.path == '/' + name) {
+                console.log('delete opgave')
+                if(arg.req.body.opgaveId)
+                    mediator.publish('deleteInDB', Object.assign(arg, opgave.deleteOpgave(arg.req.body)))
             }
         }
         catch(error){

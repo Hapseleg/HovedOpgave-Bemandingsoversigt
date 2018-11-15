@@ -66,6 +66,18 @@ $(document).ready(function () {
 			}
 		})
     })
+
+    $('#submitDelete').click(function(){
+        let d = $('form').serializeArray()
+        $.ajax({
+			url: '/opgave',
+			data: d,
+			type: 'DELETE',
+			success: function (result) {
+				window.location = '/opgaveoversigt'
+			}
+		})
+    })
 })
 
 function markForRemoval(e) {

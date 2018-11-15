@@ -59,7 +59,12 @@ function subUpdate(){
 
 function subDelete(){
     mediator.subscribe('deleteInDB',function(arg){
-        
+        try{
+            mysql.deleteInDB(arg, returnResult, throwError)
+        }
+        catch(error){
+            mediator.publish('error', {'res':arg.res, 'error':error, 'origin': name})
+        }
     })
 }
 
