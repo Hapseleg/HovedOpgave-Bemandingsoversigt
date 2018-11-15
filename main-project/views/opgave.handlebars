@@ -228,6 +228,8 @@
                         <tbody>
                             {{#each deadlines}}
                             <tr onclick="markForRemoval(this)" value={{this.deadlineId}} class="pointer">
+                                <input type="hidden" class="deadlineDato" name="deadlines[{{@index}}][deadlineDato]" value="{{this.deadlineDato}}">
+                                <input type="hidden" name="deadlines[{{@index}}][deadlineKommentar]" value="{{this.deadlineKommentar}}">
                                 <td class="date">{{this.deadlineDato}}</td>
                                 <td>{{this.deadlineKommentar}}</td>
                             </tr>
@@ -260,7 +262,8 @@
                         </thead>
                         <tbody class="pointer">
                             {{#each opgavelosere}}
-                                <tr value={{this.opgaveloserKonsulentProfilId}}>
+                                <tr id="opgaveloserRow">
+                                    <input type="hidden" name="opgaveloser[{{@index}}][opgaveloserKonsulentProfilId]" value={{this.opgaveloserKonsulentProfilId}}>
                                     <td value="{{this.opgaveloserId}}">{{this.fornavn}} {{this.efternavn}}</td>
                                     <td value="{{this.konsulentProfilId}}">{{this.konsulentProfilNavn}}</td>
                                     <td value="{{this.lokationId}}">{{this.lokationNavn}}</td>
@@ -367,7 +370,10 @@
 
             $('#deadlines tr').each(function(){
                 $(this).children('.date').text(makeDate($(this).children('.date').text()))
+                $(this).children('.deadlineDato').val( makeDate($(this).children('.date').text() ))
             })
+
+            
         }
         setAllValues()
         {{else}}

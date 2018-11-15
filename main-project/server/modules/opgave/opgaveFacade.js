@@ -3,7 +3,6 @@ var opgave = require('./opgave.js')
 
 var name = 'opgave';
 var profiler = [opgave]
-//var res;
 
 function setup() {
     console.log('setting up ' + name + ' facade')
@@ -48,7 +47,7 @@ function subPutView(){
             if (arg.req.path == '/' + name) {
                 console.log('put opgave')
                 if(arg.req.body.opgaveId)
-                    mediator.publish('updateInDB', Object.assign(arg, opgave.updateOpgave(arg.req.body)))//bemandingsoversigt.updateUgeTimeOpgave(req.body))
+                    mediator.publish('updateInDB', Object.assign(arg, opgave.updateOpgave(arg.req.body)))
             }
         }
         catch(error){
@@ -77,9 +76,6 @@ function subDataFromDB() {
         try {
             if (arg.origin == 'opgave') {
                 console.log('render subDataFromDB opgave here')
-                //console.log(arg.data)
-                //console.log(arg.type)
-
                 if (arg.type == 'read')
                     arg.res.render('opgave', {
                         muligeOpgaveloser: arg.data[0].result,
@@ -109,7 +105,6 @@ function subDataFromDB() {
                     'opgaveInfo': arg.data[8].result[0],
                     'deadlines': arg.data[9].result,
                     'opgavelosere': arg.data[10].result
-
                 })
             }
         }

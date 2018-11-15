@@ -182,7 +182,6 @@ function updateOpgave(arg) {
             values: [arg.opgaveNavn, arg.kundeId, arg.kundeansvarligId, arg.opgavestillerId, arg.opgaveStatusId, arg.opgavetypeId, arg.lokationId, arg.kontraktStatusId, arg.startDato, arg.fixedStartDato, arg.slutDato, arg.fixedSlutDato, arg.kommentar, arg.estimeretTimetal, arg.aktiv],
             where: [{ column: 'OpgaveId', value: arg.opgaveId }]
         }
-
             //tilføj/fjern deadlines og opgaveløsere
         ],
         origin: name

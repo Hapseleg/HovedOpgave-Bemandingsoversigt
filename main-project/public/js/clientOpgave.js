@@ -27,7 +27,7 @@ $(document).ready(function () {
 
             //clicked.attr('name', 'opgaveloser[{{@index}}][opgaveloserId]')
 
-            $('#valgteOpgavelosere tr:last').after(clicked)
+            $('#valgteOpgavelosere tbody').append(clicked)
         }
         else if (clicked.hasClass('valgtOpgaveloser')) {
             clicked.removeClass('valgtOpgaveloser')
@@ -57,6 +57,7 @@ $(document).ready(function () {
 
     $('#submitUpdate').click(function(){
         let d = $('form').serializeArray()
+        console.log(d)
         $.ajax({
 			url: '/opgave',
 			data: d,
