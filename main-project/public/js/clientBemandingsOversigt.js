@@ -65,7 +65,7 @@ $(document).ready(function () {
 			data: { year: year, month: month },
 			type: 'GET',
 			success: function (result) {
-				//console.log(result)
+				console.log(result)
 				insertWeeks(result, month, '#thMonth1')
 				insertAvailableWorkTime(result, month, year)
 				if (callback)

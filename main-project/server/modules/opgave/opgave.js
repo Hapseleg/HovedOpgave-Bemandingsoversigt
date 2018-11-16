@@ -129,6 +129,8 @@ function getOpgaveById(opgaveId) {
     }
 }
 
+
+
 function insertData(table, columns, values, data, useIdFromFirstInsert, callback) {
     let toBeInserted = {
         table: table,

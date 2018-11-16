@@ -1,0 +1,196 @@
+<form method="POST" id="opgaveform">
+    <h1>Rediger opgaveløsere på opgave</h1>
+    <div class="row">
+        <div class="col-4">
+            {{!-- Søge kriterier --}}
+            <h2>Søge kriterier</h2>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="startDatoSearch">startDato</label>
+                <div class="col-sm-5">
+                    <input type="date" class="form-control" id="startDatoSearch" name="startDatoSearch" value="null">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="slutDatoSearch">slutDato</label>
+                <div class="col-sm-5">
+                    <input type="date" class="form-control" id="slutDatoSearch" name="slutDatoSearch" value="null">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
+                <div class="col-sm-5">
+                    <select name="lokationId" form="opgaveform">
+                        <option value=null></option>
+                        {{#each lokation}}
+                        <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="konsulentProfil">konsulentProfil</label>
+                <div class="col-sm-5">
+                    <select id="konsulentProfil" form="profilform">
+                        <option value=null></option>
+                        {{#each konsulentProfil}}
+                        <option value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <button type="button" id="searchButton">Søg</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col">
+            {{!-- Mulige opgaveløsere tabel --}}
+            <h2>Mulige opgaveløsere</h2>
+            <div class="form-control row">
+                <table class="table table-light" id="muligeOpgavelosere" style="max-height: 300px">
+                    <thead>
+                        <tr>
+                            <th scope="col">Navn</th>
+                            <th scope="col">Konsulentprofil</th>
+                            <th scope="col">Lokation</th>
+                            <th scope="col">Ledige timer</th>
+                            <th scope="col">Andre opgaver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each opgavelosere}}
+                        <tr id="opgaveloserRow" class="muligOpgaveloser pointer">
+                            <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                            <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
+                            <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                            <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            {{!-- Opgave info --}}
+            <h2>Opgave info</h2>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="opgavetypeId">opgavetype</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="opgavetypeId" name="opgavetypeId" value="{{opgaveInfo.opgavetypeNavn}}" disabled>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="lokationId" name="lokationId" value="{{opgaveInfo.lokationNavn}}" disabled>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="estimeretTimetal">Estimeret timetal</label>
+                <div class="col-sm-5">
+                    <input type="number" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="{{opgaveInfo.estimeretTimetal}}" disabled>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="bemandedeTimer">Bemandede timer</label>
+                <div class="col-sm-5">
+                    <input type="number" class="form-control" id="bemandedeTimer" name="bemandedeTimer" value="{{bemandetTimer.timeAntal}}" disabled>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="manglendeTimer">Manglende timer</label>
+                <div class="col-sm-5">
+                    <input type="number" class="form-control" id="manglendeTimer" name="manglendeTimer" value="" disabled>
+                </div>
+            </div>
+
+            <div class="form-control row">
+                <table class="table table-light" id="deadlines" style="max-height: 300px">
+                    <thead>
+                        <tr>
+                            <th scope="col">Dato</th>
+                            <th scope="col">Kommentar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each deadlines}}
+                        <tr value={{this.deadlineId}}>
+                            <td>{{this.deadlineDato}}</td>
+                            <td>{{this.deadlineKommentar}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="form-group row submitButton">
+                <button type="button" id="submitCreate" class="btn btn-success">Opret Opgave</button>
+            </div>
+
+        </div>
+        <div class="col">
+            {{!-- Valgte opgaveløsere --}}
+            <h2>Valgte opgaveløsere</h2>
+            <div class="form-control row">
+                <table class="table table-light" id="valgteOpgavelosere" style="max-height: 300px">
+                    <thead>
+                        <tr>
+                            <th scope="col">Navn</th>
+                            <th scope="col">Konsulentprofil</th>
+                            <th scope="col">Lokation</th>
+                            <th scope="col">Ledige timer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each valgteOpgaveloser}}
+                        <tr id="opgaveloserRow" class="valgteOpgaveloser pointer">
+                            <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                            <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
+                            <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                            <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#startDatoSearch').val('2018-10-01')//TEST
+        $('#slutDatoSearch').val('2019-03-01')
+
+        $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}}-{{bemandetTimer.timeAntal}})
+
+        $('#searchButton').click(getWeeksAjax)
+        function getWeeksAjax() {
+            let start = new Date($('#startDatoSearch').val())
+            let slut = new Date($('#slutDatoSearch').val())
+
+            $.ajax({
+                url: '/tilfojopgaveloserTid',
+                data: { startDate: [start.getFullYear(),(start.getMonth()+1),start.getDate()], slutDate: [slut.getFullYear(),(slut.getMonth()+1),slut.getDate()] },
+                //data: {'startDate':[2018,9],'slutDate':[2018,12]},
+                type: 'GET',
+                success: function (result) {
+                    console.log(result)
+                }
+            });
+        }
+    })
+</script>

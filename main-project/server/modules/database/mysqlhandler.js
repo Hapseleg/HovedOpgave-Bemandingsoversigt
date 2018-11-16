@@ -130,7 +130,19 @@ async function readFromDB(arg, callback, errorCallback) {
             whereValues = setupWhereString(data.where)
         }
 
-        var sql = "SELECT " + columns + " FROM " + tableName + " a" + leftjoin + whereValues;
+        let betweenValues = ''
+        if (data.between) {
+            if (whereValues == '')
+                betweenValues = ' WHERE '
+            else
+                betweenValues = ' AND '
+
+            for (let i = 0; i < data.between.length; i++)
+                betweenValues += data.between[i].column + ' BETWEEN ' + data.between[i].start + ' AND ' + data.between[i].slut + ' AND '
+            betweenValues = betweenValues.slice(0, -5)
+        }
+
+        var sql = "SELECT " + columns + " FROM " + tableName + " a" + leftjoin + whereValues + betweenValues;
         console.log(sql)
 
         await conn.query(sql)

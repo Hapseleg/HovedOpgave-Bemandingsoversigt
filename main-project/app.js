@@ -1,5 +1,5 @@
 var express = require('express')
-var exphbs  = require('express-handlebars')
+var exphbs = require('express-handlebars')
 var bodyParser = require('body-parser')
 
 var mediator = require('./server/modules/mediator')
@@ -36,31 +36,31 @@ app.use(bodyParser.urlencoded({ extended: true })) // parse application/x-www-fo
 app.use(bodyParser.json()) // parse application/json
 
 //routers
-app.use('/',function(req,res){
-    console.log('-------------' + req.path + '-------------')
+app.use('/', function (req, res) {
+    console.log('-------------' + req.path + ' - ' + req.method + '------------')
 
-    console.log(req.method);
-    console.log(req.body)
-    console.log(req.query)
-    
-    switch(req.method){
-        case 'GET':{
-            mediator.publish('getView', {req,res})
+    // console.log(req.method);
+    // console.log(req.body)
+    // console.log(req.query)
+
+    switch (req.method) {
+        case 'GET': {
+            mediator.publish('getView', { req, res })
             break;
         }
-        case 'POST':{
-            mediator.publish('postView', {req,res})
+        case 'POST': {
+            mediator.publish('postView', { req, res })
             break;
         }
-        case 'PUT':{
-            mediator.publish('putView', {req,res})
+        case 'PUT': {
+            mediator.publish('putView', { req, res })
             break;
         }
-        case 'DELETE':{
-            mediator.publish('deleteView', {req,res})
+        case 'DELETE': {
+            mediator.publish('deleteView', { req, res })
             break;
         }
-        default:{
+        default: {
             res.send('ERROR IN APP ROUTER SWITCH')
         }
     }
