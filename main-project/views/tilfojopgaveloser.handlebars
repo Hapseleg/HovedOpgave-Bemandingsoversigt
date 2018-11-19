@@ -19,7 +19,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
                 <div class="col-sm-5">
-                    <select name="lokationId" form="opgaveform">
+                    <select name="lokationId" id="lokationId" form="opgaveform">
                         <option value=null></option>
                         {{#each lokation}}
                         <option value={{this.lokationId}}>{{this.lokationNavn}}</option>
@@ -38,6 +38,19 @@
                     </select>
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label"></label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="showRedFields">
+                    <label class="form-check-label" for="showRedFields">
+                        Vis røde felter
+                    </label>
+                </div>
+            </div>
+
+
+
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-5">
@@ -57,16 +70,21 @@
                             <th scope="col">Konsulentprofil</th>
                             <th scope="col">Lokation</th>
                             <th scope="col">Ledige timer</th>
-                            <th scope="col">Andre opgaver</th>
+                            {{!-- <th scope="col">Andre opgaver</th> --}}
                         </tr>
                     </thead>
                     <tbody>
                         {{#each opgavelosere}}
-                        <tr id="opgaveloserRow" class="muligOpgaveloser pointer">
-                            <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                            <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
-                            <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                            <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                        <tr id="opgaveloserRow" class="muligOpgaveloser pointer" arbejdstidPrUge={{this.arbejdstidPrUge}}
+                            opgaveloserKonsulentProfilId={{this.opgaveloserKonsulentProfilId}}>
+                            {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                            --}}
+                            <td class="opgaveloserId" value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
+                            <td class="konsulentProfilId" value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                            <td class="lokationId" value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                            <td class="ledigeTimer"></td>
+                            <td class="timeAntal"></td>
+                            {{!-- <td class="andreOpgaver"></td> --}}
                         </tr>
                         {{/each}}
                     </tbody>
@@ -83,35 +101,40 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="opgavetypeId">opgavetype</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="opgavetypeId" name="opgavetypeId" value="{{opgaveInfo.opgavetypeNavn}}" disabled>
+                    <input type="text" class="form-control" id="opgavetypeId" name="opgavetypeId" value="{{opgaveInfo.opgavetypeNavn}}"
+                        disabled>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
+                <label class="col-sm-3 col-form-label" for="opgavelokationId">lokation</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="lokationId" name="lokationId" value="{{opgaveInfo.lokationNavn}}" disabled>
+                    <input type="text" class="form-control" id="opgavelokationId" value="{{opgaveInfo.lokationNavn}}"
+                        disabled>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="estimeretTimetal">Estimeret timetal</label>
                 <div class="col-sm-5">
-                    <input type="number" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="{{opgaveInfo.estimeretTimetal}}" disabled>
+                    <input type="number" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="{{opgaveInfo.estimeretTimetal}}"
+                        disabled>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="bemandedeTimer">Bemandede timer</label>
                 <div class="col-sm-5">
-                    <input type="number" class="form-control" id="bemandedeTimer" name="bemandedeTimer" value="{{bemandetTimer.timeAntal}}" disabled>
+                    <input type="number" class="form-control" id="bemandedeTimer" name="bemandedeTimer" value="{{bemandetTimerTotal.timeAntal}}"
+                        disabled>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="manglendeTimer">Manglende timer</label>
                 <div class="col-sm-5">
-                    <input type="number" class="form-control" id="manglendeTimer" name="manglendeTimer" value="" disabled>
+                    <input type="number" class="form-control" id="manglendeTimer" name="manglendeTimer" value=""
+                        disabled>
                 </div>
             </div>
 
@@ -136,7 +159,7 @@
 
 
             <div class="form-group row submitButton">
-                <button type="button" id="submitCreate" class="btn btn-success">Opret Opgave</button>
+                <button type="button" id="submitCreate" class="btn btn-success">Gem ændringer</button>
             </div>
 
         </div>
@@ -151,15 +174,20 @@
                             <th scope="col">Konsulentprofil</th>
                             <th scope="col">Lokation</th>
                             <th scope="col">Ledige timer</th>
+                            <th scope="col">Timeantal</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each valgteOpgaveloser}}
-                        <tr id="opgaveloserRow" class="valgteOpgaveloser pointer">
-                            <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                            <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
-                            <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
-                            <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                        <tr id="opgaveloserRow" class="valgtOpgaveloser pointer">
+                            {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
+                            --}}
+                            <td class="opgaveloserId" value='{{this.opgaveloserId}}'>{{this.fornavn}}
+                                {{this.efternavn}}</td>
+                            <td class="konsulentProfilId" value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
+                            <td class="lokationId" value={{this.lokationId}}>{{this.lokationNavn}}</td>
+                            <td class="ledigeTimer"></td>
+                            <td class="timeAntal">{{this.timeAntal}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -173,24 +201,23 @@
 <script>
     $(document).ready(function () {
         $('#startDatoSearch').val('2018-10-01')//TEST
-        $('#slutDatoSearch').val('2019-03-01')
+        $('#slutDatoSearch').val('2018-12-01')
 
-        $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}}-{{bemandetTimer.timeAntal}})
+        $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}} - {{bemandetTimerTotal.timeAntal}})
 
-        $('#searchButton').click(getWeeksAjax)
-        function getWeeksAjax() {
-            let start = new Date($('#startDatoSearch').val())
-            let slut = new Date($('#slutDatoSearch').val())
 
-            $.ajax({
-                url: '/tilfojopgaveloserTid',
-                data: { startDate: [start.getFullYear(),(start.getMonth()+1),start.getDate()], slutDate: [slut.getFullYear(),(slut.getMonth()+1),slut.getDate()] },
-                //data: {'startDate':[2018,9],'slutDate':[2018,12]},
-                type: 'GET',
-                success: function (result) {
-                    console.log(result)
-                }
-            });
-        }
+    //hack til at fjerne valgte opgaveløsere fra mulige tabel
+    $('.valgtOpgaveloser').each(function () {
+        let valgtOpgaveloserId = $(this).children('.opgaveloserId').attr('value')
+
+        $('.muligOpgaveloser').each(function () {
+            let muligOpgaveloserId = $(this).children('.opgaveloserId').attr('value')
+            if (valgtOpgaveloserId == muligOpgaveloserId)
+                $(this).remove()
+        })
+    })
+        
     })
 </script>
+
+<script src="/js/clienttilfojopgaveloser.js"></script>

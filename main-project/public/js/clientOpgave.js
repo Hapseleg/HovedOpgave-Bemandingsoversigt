@@ -55,29 +55,29 @@ $(document).ready(function () {
         deadlineCount++;
     })
 
-    $('#submitUpdate').click(function(){
+    $('#submitUpdate').click(function () {
         let d = $('form').serializeArray()
         console.log(d)
         $.ajax({
-			url: '/opgave',
-			data: d,
-			type: 'PUT',
-			success: function (result) {
-				window.location = '/opgaveoversigt'
-			}
-		})
+            url: '/opgave',
+            data: d,
+            type: 'PUT',
+            success: function (result) {
+                window.location = '/opgaveoversigt'
+            }
+        })
     })
 
-    $('#submitDelete').click(function(){
+    $('#submitDelete').click(function () {
         let d = $('form').serializeArray()
         $.ajax({
-			url: '/opgave',
-			data: d,
-			type: 'DELETE',
-			success: function (result) {
-				window.location = '/opgaveoversigt'
-			}
-		})
+            url: '/opgave',
+            data: d,
+            type: 'DELETE',
+            success: function (result) {
+                window.location = '/opgaveoversigt'
+            }
+        })
     })
 })
 

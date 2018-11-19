@@ -41,15 +41,18 @@ function subGetView() {
 
 function subPostView() {
     mediator.subscribe('postView', function (arg) {
-        if (arg.req.path == '/' + name) {
-            try {
+        try {
+            if (arg.req.path == '/' + name) {
                 opgave.saveData(arg.req.body, function (data) {
                     mediator.publish('createInDB', Object.assign(arg, data))
                 })
             }
-            catch (error) {
-                mediator.publish('error', { 'res': arg.res, 'error': error, 'origin': name })
+            else if(arg.req.path == '/tilfojopgaveloser'){
+                console.log(arg.req.body)
             }
+        }
+        catch (error) {
+            mediator.publish('error', { 'res': arg.res, 'error': error, 'origin': name })
         }
     })
 }
@@ -121,33 +124,39 @@ function subDataFromDB() {
                 })
             }
             else if (arg.origin == 'tilfojopgaveloser') {
-                //console.log(arg.data)
-                console.log(arg.data[5].result)
-                console.log(arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal })))
+                for(let i = 0; i< arg.data[6].result.length;i++){
+                    arg.data[6].result[i].timeAntal = 0
+                    for(let j=0;j<arg.data[5].result.length;j++){
+                        if(arg.data[6].result[i].opgaveloserId == arg.data[5].result[j].opgaveloserId)
+                            arg.data[6].result[i].timeAntal +=arg.data[5].result[j].timeAntal
+                    }
+                }
+
                 arg.res.render('tilfojopgaveloser', {
                     'opgavelosere': arg.data[0].result,
                     'lokation': arg.data[1].result,
                     'konsulentProfil': arg.data[2].result,
                     'opgaveInfo': arg.data[3].result[0],
                     'deadlines': arg.data[4].result,
-                    'bemandetTimer': arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal }))
-                    //'bemandetTimer': arg.data[5].result.reduce(function (a, b) { return { 'timeAntal': a.timeAntal + b.timeAntal } }, 0)
+                    'bemandetTimerTotal': arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal })),
+                    'valgteOpgaveloser': arg.data[6].result,
                 })
             }
             else if (arg.origin == 'tilfojopgaveloserTid') {
-
+                let loopDone = false;
                 let weekdays = []
-                for (let year = arg.req.query.startDate[0]; year <= arg.req.query.slutDate[0]; year++) {//
+                for (let year = arg.req.query.startDate[0]; year <= arg.req.query.slutDate[0] && !loopDone; year++) {//
                     let month = 1
                     if (year == arg.req.query.startDate[0])
                         month = arg.req.query.startDate[1]
 
-                    while (month <= 12) {
+                    while (month <= 12 && !loopDone) {
                         if (year == arg.req.query.slutDate[0] && month == arg.req.query.slutDate[1]) {
                             tilfojopgaveloser.getWeekdaysInMonth(year, month, function (data) {
                                 weekdays.push({ 'year': year, 'month': month, 'weeks': data })
                                 arg.data.push({ weekdays })
-                                arg.res.json(arg.data)
+                                loopDone = true
+                                //arg.res.json(arg.data)
                             })
                             break;
                         }
@@ -159,6 +168,15 @@ function subDataFromDB() {
                     }
                     //if (year == arg.req.query.slutDate[0] && month == arg.req.query.slutDate[1])
                 }
+                tilfojopgaveloser.calculateMaxAvailableWorkTimeInMonthsAndWeeks(arg.data[0].result, weekdays, function (opgavelosereMaxAvailableWorkTime) {
+                    //console.log(opgavelosereMaxAvailableWorkTime)
+                    tilfojopgaveloser.addUsedHours(opgavelosereMaxAvailableWorkTime,arg.data[1].result, function(usedHours){
+                        //console.log(usedHours)
+                        arg.res.json(usedHours)
+                    })
+                    //calc ledig tid
+
+                })
 
                 //console.log(arg.data)
                 //arg.res.json(arg.data)

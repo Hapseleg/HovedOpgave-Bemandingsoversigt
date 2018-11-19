@@ -56,55 +56,114 @@ function getWeekdaysInMonth(year, month, callback) {
     })
 }
 
-//TODO udregner forkert da jeg skal bruge arbejdstidPrUge fra opgaveloser istedet for dagStart, dagSlut fra OpgaveloserArbejdsTider........
-function calculateAvailableWorkTimeInWeeks(weekNumbers, data, year, month, callback) {
-    for (let i = 0; i < weekNumbers.length; i++) {
-        let currentWeekNumber = weekNumbers[i]
-        currentWeekNumber.opgaveloser = []
-
-        for (let i = 0; i < data[0].result.length; i++) {
-            let da = data[0].result[i]
-
-            let opgaveloser = currentWeekNumber.opgaveloser.find(o => o.opgaveloserId === da.opgaveloserId)
-
-            if (opgaveloser == undefined) {//if the opgaveloser is not in the array, add it
-                opgaveloser = { opgaveloserId: da.opgaveloserId, week: currentWeekNumber.week, workDaysInWeek: [], maxAvailableWorkTime: 0, currentWorkTime: [] }
-                currentWeekNumber.opgaveloser.push(opgaveloser)
-            }
-            if (currentWeekNumber.weekdays.includes(da.dag)) {
-                opgaveloser.workDaysInWeek.push(da.dag)
-
-                dagStartMoment = moment(da.dagStart, 'HHmmss')
-                dagSlutMoment = moment(da.dagSlut, 'HHmmss')
-
-                opgaveloser.maxAvailableWorkTime += dagSlutMoment.diff(dagStartMoment, 'h', true)
-            }
+function getWorkDaysForOpgavelosere(data) {
+    let opgavelosereArbejdsDage = []
+    for (let i = 0; i < data.length; i++) {
+        let op = data[i]
+        let currentOpgaveloser = opgavelosereArbejdsDage.find(o => o.opgaveloserId === op.opgaveloserId)
+        if (currentOpgaveloser == undefined) {
+            currentOpgaveloser = { 'opgaveloserId': op.opgaveloserId, 'arbejdsDage': [], 'arbejdstidPrUge': op.arbejdstidPrUge }
+            opgavelosereArbejdsDage.push(currentOpgaveloser)
         }
+        currentOpgaveloser.arbejdsDage.push(op.dag)
     }
+    return opgavelosereArbejdsDage
+}
 
-    for (let i = 0; i < data[1].result.length; i++) {
-        let da = data[1].result[i]
+function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
+    //console.log(data)
+    //console.log(months)
+    /**
+     * Lav objekter for hver opgaveløser med deres arbejdsdage
+     * gå ind i måned
+     * Tjek om opgaveløseren findes, hvis ikke tilføj ham
+     * gå ind i ugen
+     * sammenlign dage i ugen og arbejdsdage for opgaveløseren
+     * maxAvailableWorkTimeInWeek = arbejdstidPrUge / arbejdsdage i ugen
+     * maxAvailableWorkTimeInMonth += maxAvailableWorkTimeInWeek
+     */
 
-        if (da.ugeTimeOpgaveId != null) {
-            if (da.year == year && da.month == month) {
-                let currentWeekNumber = weekNumbers.find(o => o.week === da.week)
-                if (currentWeekNumber != undefined) {
-                    let opgaveloser = currentWeekNumber.opgaveloser.find(o => o.opgaveloserId === da.opgaveloserId)
-                    opgaveloser.currentWorkTime.push({ ugeTimeOpgaveId: da.ugeTimeOpgaveId, opgaveId: da.opgaveId, timeAntal: da.timeAntal, opgaveloserOpgaveId: da.opgaveloserOpgaveId })
+    //Lav objekter for hver opgaveløser med deres arbejdsdage
+    //{ 'opgaveloserId': op.opgaveloserId, 'arbejdsDage': [], 'arbejdstidPrUge': op.arbejdstidPrUge }
+    let opgavelosereArbejdsDage = getWorkDaysForOpgavelosere(data)
+
+    //gå igennem hver opgaveløser og tilføj 
+    //id, år, måned, maxAvailableWorkTimeInMonth, maxAvailableWorkTimeInWeeks: [{week:1, time:37},{week:1, time:37}]
+    let opgaveloseremaxAvailableWorkTime = []
+    for (let i = 0; i < opgavelosereArbejdsDage.length; i++) {
+        let curOp = opgavelosereArbejdsDage[i]
+        let opgaveloser = {
+            'opgaveloserId': curOp.opgaveloserId,
+            'months': [],
+            'maxAvailableWorkTime': 0,
+            'availableWorkTime': 0,
+            // 'maxAvailableWorkTimeInWeeks': []
+        }
+        opgaveloseremaxAvailableWorkTime.push(opgaveloser)
+
+        //gå ind i måned
+        for (let currentMonth = 0; currentMonth < months.length; currentMonth++) {
+            let mo = months[currentMonth]
+            //tilføj måned
+            let newMo = {
+                'year': mo.year,
+                'month': mo.month,
+                'weeks': [],//[{week:1, time:37},{week:1, time:37}]
+                'maxAvailableWorkTimeInMonth': 0
+            }
+            opgaveloser.months.push(newMo)
+
+            //gå ind i ugen
+            for (let currentWeek = 0; currentWeek < mo.weeks.length; currentWeek++) {
+                let we = mo.weeks[currentWeek]//{ week: 40, weekdays: [ 1, 2, 3, 4, 5 ] }
+
+                //sammenlign dage i ugen og arbejdsdage for opgaveløseren
+                let availableWorkDaysInWeek = 0
+                for (let i = 0; i < we.weekdays.length; i++) {
+                    if (curOp.arbejdsDage.includes(we.weekdays[i]))
+                        availableWorkDaysInWeek++
+                }
+
+                // maxAvailableWorkTimeInWeek = arbejdstidPrUge / arbejdsdage i ugen
+                if (availableWorkDaysInWeek > 0) {
+                    let maxWorksHoursInWeek = curOp.arbejdstidPrUge / availableWorkDaysInWeek
+                    newMo.weeks.push({ 'week': we.week, 'hours': maxWorksHoursInWeek })
+                    // maxAvailableWorkTimeInMonth += maxAvailableWorkTimeInWeek
+                    newMo.maxAvailableWorkTimeInMonth += maxWorksHoursInWeek
+                    opgaveloser.maxAvailableWorkTime += maxWorksHoursInWeek
+                    opgaveloser.availableWorkTime += maxWorksHoursInWeek
                 }
 
             }
         }
     }
-    callback(weekNumbers)
+
+    callback(opgaveloseremaxAvailableWorkTime)
 }
 
-function getIsoWeek(year,month,date){
+function addUsedHours(maxAvailableWorkTime, workTime, callback) {
+    for (let i = 0; i < workTime.length; i++) {
+        let wt = workTime[i]
+        let currentOpgaveloser = maxAvailableWorkTime.find(o => o.opgaveloserId == wt.opgaveloserId)
+        if (currentOpgaveloser != undefined) {
+            currentOpgaveloser.availableWorkTime -= wt.timeAntal
+
+            let month = currentOpgaveloser.months.find(o => o.month == wt.month)
+            if (month != undefined) {
+                //TODO add tid og add tid til ugerne
+            }
+        }
+    }
+    callback(maxAvailableWorkTime)
+}
+
+function getIsoWeek(year, month, date) {
     return moment(year, 'YYYY').month(month).date(date).isoWeek()
 }
 
 module.exports = {
     getWeekdaysInMonth: getWeekdaysInMonth,
-    calculateAvailableWorkTimeInWeeks: calculateAvailableWorkTimeInWeeks,
-    getIsoWeek:getIsoWeek
+    calculateMaxAvailableWorkTimeInMonthsAndWeeks: calculateMaxAvailableWorkTimeInMonthsAndWeeks,
+    getIsoWeek: getIsoWeek,
+    addUsedHours: addUsedHours,
 }

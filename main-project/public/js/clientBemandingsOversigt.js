@@ -16,6 +16,7 @@ $(document).ready(function () {
 
 	// $('#getTimeData').click(populateWeeks)
 
+	//skifter mellem ledige timer og brugte timer
 	$('#toggleWeeks').click(function () {
 		let t = $(this)
 		if ($(t).hasClass('toggledUsed')) {
@@ -43,6 +44,7 @@ $(document).ready(function () {
 	})
 
 	//https://stackoverflow.com/a/19947532/5098223
+	//sorterer når man trykker på head i table
 	$('#secondHead th').click(function () {
 		var table = $(this).parents('table').children('tbody')
 		var rows = table.find('tr').toArray().sort(comparer($(this).index()))
@@ -59,6 +61,8 @@ $(document).ready(function () {
 	}
 	function getCellValue(row, index) { return $(row).children('td').eq(index).text() }
 
+
+	//henter info om uger i måneden og hvor mange timer de kan arbejde i den måned og tilføjer det til table
 	function getWeeksAjax(year, month, callback) {
 		$.ajax({
 			url: '/bemandingsOversigtTid',
@@ -74,6 +78,7 @@ $(document).ready(function () {
 		});
 	}
 
+	//laver ajax kaldene til at hente ugerne 
 	function populateWeeks() {
 		let month = $('#month').val()
 		let year = $('#year').val()
@@ -102,6 +107,7 @@ $(document).ready(function () {
 		})
 	}
 
+	//resetter ugerne
 	function clearWeeks() {
 		$('#firstHead').children().remove()
 		$('.weekNumber').remove()
@@ -109,6 +115,7 @@ $(document).ready(function () {
 		$('#firstHead').append('<th colspan="3"></th>')
 	}
 
+	//tilføjer ugerne til table
 	function insertWeeks(result, month, th) {
 		let months = $('#month').children()
 
@@ -125,6 +132,7 @@ $(document).ready(function () {
 		}
 	}
 
+	//tilføjer information til hver uge
 	function insertAvailableWorkTime(weekDays, month, year) {
 		var rows = $('tbody tr')
 		for (let i = 0; i < rows.length; i++) {
@@ -181,6 +189,7 @@ $(document).ready(function () {
 	}
 })
 
+//udregner hvor mange timer de har til rådighed for hver uge
 function calcWeekAvailableworktime() {//TODO dårlig performance.. refactor
 	let rows = $('tbody tr')
 	let realAvailableWorkTime = []
@@ -268,6 +277,8 @@ function setWorkDaysInMonth() {//dårlig performance..//TODO dårlig performance
 	})
 }
 
+//sætter hvor mange timer de har brugt i hver måned og hvor mange de max kan have ledigt
+//udregner forkert efter at kravene er blevet ændret til at bruge arbejdstidPrUge fra Opgave tabellen i stedet for OpgaveloserArbejdstider
 function setWorkHoursUsed() {
 	setWorkDaysInMonth()
 	/* 
@@ -348,6 +359,7 @@ function setWorkHoursUsed() {
 	//usedHoursPercent
 }
 
+//laver ajax kald når man har trykket på en time i en uge og ændret tallet
 function changeAntalTimer(e) {
 	let val = prompt("Indtast time antal")
 	console.log(val)
@@ -392,6 +404,7 @@ function changeAntalTimer(e) {
 	}
 }
 
+//sætter farverne på felterne
 function changeWorkLoad(td) {
 	let availableWorkTime = $(td).attr('availableWorkTime')
 
@@ -414,6 +427,7 @@ function changeWorkLoad(td) {
 	}
 }
 
+//når uge felteren ændre sig 
 $('.availableWorkTime').change(function () {
 	console.log('change')
 	let maxAvailableWorkTime = $(this).attr('maxAvailableWorkTime')

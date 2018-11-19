@@ -53,6 +53,18 @@ function getData(opgaveId) {
                 columns: ['opgaveId'],
                 leftJoins: [
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'UgeTimeOpgave', leftColumn: 'opgaveloserOpgaveId', rightColumn: 'opgaveloserOpgaveId', selectColumns: ['timeAntal'] },
+                    { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
+                ],
+                where: [{ column: 'opgaveId', value: opgaveId }]
+            },
+            {
+                table: 'Opgaveloser',
+                columns: ['opgaveloserId', 'fornavn', 'efternavn', 'lokationId', 'arbejdstidPrUge'],
+                leftJoins: [
+                    { leftTable: 'Opgaveloser', rightTable: 'Lokation', leftColumn: 'lokationId', rightColumn: 'lokationId', selectColumns: ['lokationNavn'] },
+                    { leftTable: 'Opgaveloser', rightTable: 'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['opgaveloserKonsulentProfilId', 'konsulentProfilId', 'konsulentProfilWeight'] },
+                    { leftTable: 'OpgaveloserKonsulentprofil', rightTable: 'Konsulentprofil', leftColumn: 'konsulentProfilId', rightColumn: 'konsulentProfilId', selectColumns: ['konsulentProfilNavn'] },
+                    { leftTable: 'OpgaveloserKonsulentprofil', rightTable: 'OpgaveloserOpgave', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveId'] }
                 ],
                 where: [{ column: 'opgaveId', value: opgaveId }]
             },
@@ -66,7 +78,11 @@ function getTidData(startDate, slutDate) {
         data: [
             {
                 table: 'OpgaveloserArbejdsTider',
-                columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
+                //columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
+                columns: ['opgaveloserId', 'dag'],
+                leftJoins: [
+                    { leftTable: 'OpgaveloserArbejdsTider', rightTable: 'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['arbejdstidPrUge'] }
+                ],
             },
             {
                 table: 'OpgaveloserOpgave',
@@ -75,10 +91,10 @@ function getTidData(startDate, slutDate) {
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'UgeTimeOpgave', leftColumn: 'opgaveloserOpgaveId', rightColumn: 'opgaveloserOpgaveId', selectColumns: ['year', 'month', 'week', 'timeAntal'] },
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
                 ],
-                //where: [{ column: 'opgaveId', value: opgaveId }],
                 between: [
-                    { 'column': 'year', 'start': startDate[0], 'slut': slutDate[0] },
-                    { 'column': 'month', 'start': startDate[1], 'slut': slutDate[1] },
+                    { 'column': 'dato', 'start': ('"'+startDate[0] +'-'+startDate[1]+'-01"'), 'slut': ('"'+slutDate[0] +'-'+slutDate[1]+'-01"') },
+                    //{ 'column': 'year', 'start': startDate[0], 'slut': slutDate[0] },
+                    //{ 'column': 'month', 'start': startDate[1], 'slut': slutDate[1] },
                     //{ 'column': 'week', 'start': tidsUdregner.getIsoWeek(startDate[0],startDate[1],startDate[2]), 'slut': tidsUdregner.getIsoWeek(slutDate[0],slutDate[1],slutDate[2]) }
                 ]
             },
@@ -87,11 +103,16 @@ function getTidData(startDate, slutDate) {
     }
 }
 
+function saveData(arg, callback){
+    
+}
+
 module.exports = {
     getView: getView,
-    //saveData: saveData,
+    saveData: saveData,
     getData: getData,
     getTidData: getTidData,
     getWeekdaysInMonth: tidsUdregner.getWeekdaysInMonth,
-    calculateAvailableWorkTimeInWeeks: tidsUdregner.calculateAvailableWorkTimeInWeeks
+    calculateMaxAvailableWorkTimeInMonthsAndWeeks: tidsUdregner.calculateMaxAvailableWorkTimeInMonthsAndWeeks,
+    addUsedHours: tidsUdregner.addUsedHours
 }

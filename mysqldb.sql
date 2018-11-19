@@ -41,6 +41,7 @@ FOREIGN KEY (lokationId)
    REFERENCES Lokation(lokationId)
    ON DELETE RESTRICT
 );
+#Tilføj trigger når nogen updater arbejdstidPrUge så grafer ikke bliver ændret
 
 CREATE TABLE Opgavestiller (
 opgavestillerId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -165,6 +166,7 @@ year INT(2) UNSIGNED NOT NULL,
 month INT(1) UNSIGNED NOT NULL,
 week INT(1) UNSIGNED NOT NULL,
 timeAntal DECIMAL(4,1) UNSIGNED NOT NULL,
+dato DATE default NULL,
 
 UNIQUE KEY ugeTimeOpgaveId (opgaveloserOpgaveId,year,month,week),
 
@@ -172,6 +174,17 @@ FOREIGN KEY (opgaveloserOpgaveId)
    REFERENCES OpgaveloserOpgave(opgaveloserOpgaveId)
    ON DELETE CASCADE
 );
+
+DELIMITER ;;
+CREATE TRIGGER createDate 
+	BEFORE INSERT ON UgeTimeOpgave 
+    FOR EACH ROW
+BEGIN
+	#https://stackoverflow.com/questions/3960049/create-date-from-day-month-year-fields-in-mysql#comment60757399_3960097
+    SET NEW.dato = STR_TO_DATE(CONCAT(NEW.year,'-',LPAD(NEW.month,2,'00'),'-',LPAD('01',2,'00')), '%Y-%m-%d');
+END;;
+DELIMITER ;
+
 
 CREATE TABLE Deadline (
 deadlineId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

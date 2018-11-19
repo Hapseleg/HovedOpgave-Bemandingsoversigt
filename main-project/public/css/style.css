@@ -61,6 +61,22 @@ nav a {
     background-color: #e74c3c
 }
 
+.red{
+    background-color: #e74c3c
+}
+
+.green{
+    background-color: #2ecc71
+}
+
+.redLedigeTimer{
+    background-color: #e74c3c
+}
+
+.greenLedigeTimer{
+    background-color: #2ecc71
+}
+
 th{
     text-align: center
 }
