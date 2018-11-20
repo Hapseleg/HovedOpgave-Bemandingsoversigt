@@ -73,7 +73,7 @@
                             {{!-- <th scope="col">Andre opgaver</th> --}}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="opgaveloserTbody">
                         {{#each opgavelosere}}
                         <tr id="opgaveloserRow" class="muligOpgaveloser pointer" arbejdstidPrUge={{this.arbejdstidPrUge}}
                             opgaveloserKonsulentProfilId={{this.opgaveloserKonsulentProfilId}}>
@@ -83,7 +83,7 @@
                             <td class="konsulentProfilId" value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                             <td class="lokationId" value={{this.lokationId}}>{{this.lokationNavn}}</td>
                             <td class="ledigeTimer"></td>
-                            <td class="timeAntal"></td>
+                            <td class="timeAntal" orgTimeTal="0"></td>
                             {{!-- <td class="andreOpgaver"></td> --}}
                         </tr>
                         {{/each}}
@@ -98,6 +98,8 @@
         <div class="col-4">
             {{!-- Opgave info --}}
             <h2>Opgave info</h2>
+            <div id="opgaveId" value="{{opgaveInfo.opgaveId}}"></div>
+
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="opgavetypeId">opgavetype</label>
                 <div class="col-sm-5">
@@ -125,7 +127,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="bemandedeTimer">Bemandede timer</label>
                 <div class="col-sm-5">
-                    <input type="number" class="form-control" id="bemandedeTimer" name="bemandedeTimer" value="{{bemandetTimerTotal.timeAntal}}"
+                    <input type="number" class="form-control" id="bemandedeTimer" name="bemandedeTimer" value="0"
                         disabled>
                 </div>
             </div>
@@ -177,17 +179,19 @@
                             <th scope="col">Timeantal</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="opgaveloserTbody">
                         {{#each valgteOpgaveloser}}
                         <tr id="opgaveloserRow" class="valgtOpgaveloser pointer">
                             {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
                             --}}
+                            <input type="hidden" class="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}>
+                            {{!-- <div class="opgaveloserOpgaveId" value={{this.opgaveloserOpgaveId}}></div> --}}
                             <td class="opgaveloserId" value='{{this.opgaveloserId}}'>{{this.fornavn}}
                                 {{this.efternavn}}</td>
                             <td class="konsulentProfilId" value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                             <td class="lokationId" value={{this.lokationId}}>{{this.lokationNavn}}</td>
-                            <td class="ledigeTimer"></td>
-                            <td class="timeAntal">{{this.timeAntal}}</td>
+                            <td class="ledigeTimer" orgledigeTimer=""></td>
+                            <td class="timeAntal" orgTimeTal="{{this.timeAntal}}">{{this.timeAntal}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -202,9 +206,13 @@
     $(document).ready(function () {
         $('#startDatoSearch').val('2018-10-01')//TEST
         $('#slutDatoSearch').val('2018-12-01')
-
+    {{#if bemandetTimerTotal.timeAntal}}
+        $('#bemandedeTimer').val({{bemandetTimerTotal.timeAntal}})
         $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}} - {{bemandetTimerTotal.timeAntal}})
 
+        {{else}}
+        $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}})
+    {{/if}}
 
     //hack til at fjerne valgte opgaveløsere fra mulige tabel
     $('.valgtOpgaveloser').each(function () {

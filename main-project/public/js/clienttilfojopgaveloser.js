@@ -26,14 +26,14 @@ $(document).ready(function () {
     }
 
     function addLedigeTimer(result) {
-        $('tbody').children().each(function () {
-            //console.log($(this))
+        $('.opgaveloserTbody').children().each(function () {
 
             let opgaveloserId = $(this).children('.opgaveloserId').attr('value')
             let ledigeTimer = result.find(o => o.opgaveloserId == opgaveloserId).availableWorkTime
 
             let td = $(this).children('.ledigeTimer')[0]
             $(td).html(ledigeTimer)
+            $(td).attr('orgledigeTimer', ledigeTimer)
         })
     }
 
@@ -84,6 +84,20 @@ $(document).ready(function () {
         })
     }
 
+    function colorLedigeTider() {
+        $('.ledigeTimer').each(function () {
+            let td = $(this)[0]
+            $(td).removeClass('redLedigeTimer')
+            $(td).removeClass('greenLedigeTimer')
+            if (parseFloat($(td).html()) <= 0) {
+                $(td).addClass('redLedigeTimer')
+            }
+            else {
+                $(td).addClass('greenLedigeTimer')
+            }
+        })
+    }
+
     function sortMuligeOpgavelosere() {
         resetTable()
         let lokationId = $('#lokationId option:selected').val()
@@ -93,16 +107,8 @@ $(document).ready(function () {
         sortByType('.konsulentProfilId', konsulentProfilId, 'red', 'green')
 
         showOrHideRowsByColor()
+        colorLedigeTider()
 
-        $('.ledigeTimer').each(function () {
-            let td = $(this)[0]
-            if ($(td).html() == 0) {
-                $(td).addClass('redLedigeTimer')
-            }
-            else {
-                $(td).addClass('greenLedigeTimer')
-            }
-        })
     }
 
     $('#showRedFields').change(function () {
@@ -116,31 +122,90 @@ $(document).ready(function () {
     })
 
 
+    function setEstimeret() {
+        let estimeretTimetal = parseFloat($('#estimeretTimetal').val())
+        let bemandedeTimer = 0
+
+        $('.valgtOpgaveloser').children('.timeAntal').each(function () {
+            bemandedeTimer += parseFloat($(this).html())
+        })
+
+        $('#manglendeTimer').val(estimeretTimetal - bemandedeTimer)
+        $('#bemandedeTimer').val(bemandedeTimer)
+    }
+
     //Tilføj opgaveløser til valgte opgaveløsere
-    $('.muligOpgaveloser').click(function (e) {
-        //console.log($(this))
-        let val = prompt("Indtast time antal")
-        if (val != null && !isNaN(val)) {
-            $(this).removeClass('muligOpgaveloser')
-            $(this).addClass('valgtOpgaveloser newOpgaveloser')
+    // $('.muligOpgaveloser').click(function () {
 
-            //$(this).append($('<td>', {class: 'Timeantal', value: val, text:val}))
-            $(this).children('.timeAntal').html(val)
-            let ledigeTimer = $(this).children('.ledigeTimer').html() - val
-            $(this).children('.ledigeTimer').html(ledigeTimer)
+    // })
 
-            $('#valgteOpgavelosere tbody').append($(this))
+    //ændre timetallet for en allerede valgt opgaveløser
+    $('tr').click(function () {
+        if ($(this).hasClass('valgtOpgaveloser')) {
+            console.log($(this))
+            let val = prompt("Indtast time antal")
+            if (val != null && !isNaN(val)) {
+                if (!$(this).hasClass('newOpgaveloser'))
+                    $(this).addClass('changedOpgaveloser')
+
+                $(this).children('.timeAntal').html(val)
+                let orgTimeTal = $(this).children('.timeAntal').attr('orgTimeTal')
+                let ledigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigeTimer'), 10) - val + parseInt(orgTimeTal, 10)
+                console.log(orgTimeTal)
+                console.log(ledigeTimer)
+                $(this).children('.ledigeTimer').html(ledigeTimer)
+            }
+            setEstimeret()
+            colorLedigeTider()
         }
+        else if ($(this).hasClass('muligOpgaveloser')) {
+            //console.log($(this))
+            let val = prompt("Indtast time antal")
+            if (val != null && !isNaN(val)) {
+                $(this).removeClass('muligOpgaveloser')
+                $(this).addClass('valgtOpgaveloser newOpgaveloser')
 
+                $(this).children('.timeAntal').html(val)
+                let ledigeTimer = $(this).children('.ledigeTimer').html() - val
+                $(this).children('.ledigeTimer').html(ledigeTimer)
+                //$(this).attr('onclick', "changeValgtOpgaveloser")
+
+                $('#valgteOpgavelosere tbody').append($(this))
+            }
+            setEstimeret()
+            colorLedigeTider()
+        }
     })
+
+    // $('.valgtOpgaveloser').click(changeValgtOpgaveloser)
+
+    // function changeValgtOpgaveloser() {
+    //     console.log($(this))
+    //     let val = prompt("Indtast time antal")
+    //     if (val != null && !isNaN(val)) {
+    //         if (!$(this).hasClass('newOpgaveloser'))
+    //             $(this).addClass('changedOpgaveloser')
+
+    //         $(this).children('.timeAntal').html(val)
+    //         let orgTimeTal = $(this).children('.timeAntal').attr('orgTimeTal')
+    //         let ledigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigeTimer'), 10) - val + parseInt(orgTimeTal, 10)
+    //         console.log(orgTimeTal)
+    //         console.log(ledigeTimer)
+    //         $(this).children('.ledigeTimer').html(ledigeTimer)
+    //     }
+    //     setEstimeret()
+    //     colorLedigeTider()
+    // }
 
     $('#submitCreate').click(function () {
         //tilføj ændrede eller ny valgte opgaveløsere
         //let valgteOpgavelosere = $('.valgtOpgaveloser')
-
-
+        let opgaveId = $('#opgaveId').attr('value')
+        let newOpgavelosere = []
+        let changedOpgavelosere = []
 
         $('.valgtOpgaveloser').each(function () {
+
             let opgaveloserId = $(this).children('.opgaveloserId').attr('value')
             let konsulentProfilId = $(this).children('.konsulentProfilId').attr('value')
             let lokationId = $(this).children('.lokationId').attr('value')
@@ -149,48 +214,39 @@ $(document).ready(function () {
             let start = new Date($('#startDatoSearch').val())
             let slut = new Date($('#slutDatoSearch').val())
 
-            let data = {
+            let d = {
+                opgaveId: opgaveId,
                 opgaveloserId: opgaveloserId,
                 konsulentProfilId: konsulentProfilId,
                 lokationId: lokationId,
                 timeAntal: timeAntal,
                 startDato: start,
                 slutDato: slut,
-                weekdays: weekdays.find(o=>o.opgaveloserId == opgaveloserId)
+                weekdays: weekdays.find(o => o.opgaveloserId == opgaveloserId)
             }
 
             if ($(this).hasClass('newOpgaveloser')) {
-                console.log('newOpgaveloser ajax')
-                $.ajax({
-                    url: '/tilfojopgaveloser',
-                    data: data,
-                    type: 'POST',
-                    success: function (result) {
-                        console.log('create success for' + opgaveloserId)
-                    }
-                })
+                d.opgaveloserKonsulentProfilId = $(this).attr('opgaveloserKonsulentProfilId')
+                newOpgavelosere.push(d)
             }
             else if ($(this).hasClass('changedOpgaveloser')) {
-                console.log('changedOpgaveloser ajax')
+                d.opgaveloserOpgaveId = $(this).children('.opgaveloserOpgaveId').attr('value')
+                console.log($(this).children('.opgaveloserOpgaveId').attr('value'))
+                changedOpgavelosere.push(d)
             }
         })
 
-        // $.ajax({
-        //     url: '/bemandingsOversigtTid',
-        //     data: d,
-        //     type: 'PUT',
-        //     success: function (result) {
-        //         $(e).attr('ugeTimeOpgaveId', result.insertId)
-        //         $(e).text(val)
-        //         $(e).attr('timeAntalForOpgave', val)
-        //         let availableWorkTime = $(e).attr('maxAvailableWorkTime') - val
-        //         $(e).attr('availableWorkTime', availableWorkTime)
+        console.log('newOpgaveloser ajax')
+        $.ajax({
+            url: '/tilfojopgaveloser',
+            data: { newOpgavelosere: newOpgavelosere, changedOpgavelosere: changedOpgavelosere },
+            type: 'POST',
+            success: function (result) {
+                console.log('create success for' + opgaveloserId)
+            }
+        })
 
-        //         changeWorkLoad($(e))
-        //         calcWeekAvailableworktime()
-        //         setWorkHoursUsed()
-        //     }
-        // })
     })
 
 })
+

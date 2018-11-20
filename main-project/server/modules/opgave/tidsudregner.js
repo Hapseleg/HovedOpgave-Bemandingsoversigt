@@ -109,7 +109,8 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                 'year': mo.year,
                 'month': mo.month,
                 'weeks': [],//[{week:1, time:37},{week:1, time:37}]
-                'maxAvailableWorkTimeInMonth': 0
+                'maxAvailableWorkTimeInMonth': 0,
+                'availableWorkTimeInMonth': 0,
             }
             opgaveloser.months.push(newMo)
 
@@ -127,11 +128,20 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                 // maxAvailableWorkTimeInWeek = arbejdstidPrUge / arbejdsdage i ugen
                 if (availableWorkDaysInWeek > 0) {
                     let maxWorksHoursInWeek = curOp.arbejdstidPrUge / availableWorkDaysInWeek
-                    newMo.weeks.push({ 'week': we.week, 'hours': maxWorksHoursInWeek })
-                    // maxAvailableWorkTimeInMonth += maxAvailableWorkTimeInWeek
-                    newMo.maxAvailableWorkTimeInMonth += maxWorksHoursInWeek
-                    opgaveloser.maxAvailableWorkTime += maxWorksHoursInWeek
-                    opgaveloser.availableWorkTime += maxWorksHoursInWeek
+                    let fixedMaxWorksHoursInWeek = parseInt(maxWorksHoursInWeek.toFixed(0),10) 
+
+                    
+                    newMo.weeks.push({ 
+                        'week': we.week, 
+                        'hours': fixedMaxWorksHoursInWeek,
+                        'usedHours': 0,
+                     })
+
+                    newMo.maxAvailableWorkTimeInMonth += fixedMaxWorksHoursInWeek
+                    newMo.availableWorkTimeInMonth += fixedMaxWorksHoursInWeek
+
+                    opgaveloser.maxAvailableWorkTime += fixedMaxWorksHoursInWeek
+                    opgaveloser.availableWorkTime += fixedMaxWorksHoursInWeek
                 }
 
             }
@@ -150,7 +160,10 @@ function addUsedHours(maxAvailableWorkTime, workTime, callback) {
 
             let month = currentOpgaveloser.months.find(o => o.month == wt.month)
             if (month != undefined) {
-                //TODO add tid og add tid til ugerne
+                month.availableWorkTimeInMonth -= wt.timeAntal
+
+                let week = month.weeks.find(o=>o.week == wt.week)
+                week.usedHours += wt.timeAntal
             }
         }
     }

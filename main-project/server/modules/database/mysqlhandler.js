@@ -50,7 +50,12 @@ function setupValuesArray(array) {
             array[i] = null
 }
 
+
+
+
 async function createInDB(arg, createdDone, firstId, earlierResults, callback, errorCallback) {
+    console.log('create in db')
+    console.log(arg.data)
     let results = { data: [], origin: arg.origin, type: 'create' }
     if (earlierResults != undefined)
         results = earlierResults
@@ -58,6 +63,7 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
     let insertId = firstId;
 
     let data = arg.data[createdDone]
+    
 
     var tableName = data.table
     var columns = setupColumnsString(data.columns)
@@ -65,12 +71,13 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
     for (let i = 0; i < data.values.length; i++)
         setupValuesArray(data.values[i])
 
+    // console.log(arg.data[0].values[0], 'setupvalues')
     if (data.useIdFromFirstInsert) {
         for (let i = 0; i < data.values.length; i++) {
             data.values[i].push(insertId)
         }
     }
-
+    // console.log(arg.data[0].values[0],'sql string')
     var sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES ?";
     console.log(sql)
 
@@ -204,11 +211,10 @@ async function updateInDB(arg, callback, errorCallback) {
 
     for (let i = 0, l = arg.data.length; i < l; i++) {
         let data = arg.data[i]
-        //console.log(data)
 
         let tableName = data.table
         let setValues = setupSetString(data.columns, data.values)
-        //console.log(setValues)
+
         let whereValues = setupWhereString(data.where)
 
         let sql = "UPDATE " + tableName + " SET " + setValues + whereValues
@@ -217,7 +223,6 @@ async function updateInDB(arg, callback, errorCallback) {
             .then(function (result) {
                 results.data.push({ result: result, fields: { orgTable: tableName } })
                 callback(Object.assign(arg, results))
-                //callback(results)
             })
             .catch(function (error) {
                 errorCallback(Object.assign(arg, { error }))
@@ -227,6 +232,7 @@ async function updateInDB(arg, callback, errorCallback) {
 
 async function deleteInDB(arg, callback, errorCallback) {
     console.log('updateInDB')
+    let results = { data: [], origin: arg.origin, type: 'delete' }
 
     for (let i = 0, l = arg.data.length; i < l; i++) {
         let data = arg.data[i]

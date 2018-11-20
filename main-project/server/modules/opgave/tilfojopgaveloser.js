@@ -36,7 +36,7 @@ function getData(opgaveId) {
             },
             {
                 table: 'Opgave',
-                columns: ['opgaveNavn','estimeretTimetal'],
+                columns: ['opgaveId', 'opgaveNavn', 'estimeretTimetal'],
                 leftJoins: [
                     { leftTable: 'Opgave', rightTable: 'Opgavetype', leftColumn: 'opgavetypeId', rightColumn: 'opgavetypeId', selectColumns: ['opgavetypeNavn'] },
                     { leftTable: 'Opgave', rightTable: 'Lokation', leftColumn: 'lokationId', rightColumn: 'lokationId', selectColumns: ['lokationNavn'] },
@@ -64,7 +64,7 @@ function getData(opgaveId) {
                     { leftTable: 'Opgaveloser', rightTable: 'Lokation', leftColumn: 'lokationId', rightColumn: 'lokationId', selectColumns: ['lokationNavn'] },
                     { leftTable: 'Opgaveloser', rightTable: 'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['opgaveloserKonsulentProfilId', 'konsulentProfilId', 'konsulentProfilWeight'] },
                     { leftTable: 'OpgaveloserKonsulentprofil', rightTable: 'Konsulentprofil', leftColumn: 'konsulentProfilId', rightColumn: 'konsulentProfilId', selectColumns: ['konsulentProfilNavn'] },
-                    { leftTable: 'OpgaveloserKonsulentprofil', rightTable: 'OpgaveloserOpgave', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveId'] }
+                    { leftTable: 'OpgaveloserKonsulentprofil', rightTable: 'OpgaveloserOpgave', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveId', 'opgaveloserOpgaveId'] }
                 ],
                 where: [{ column: 'opgaveId', value: opgaveId }]
             },
@@ -92,7 +92,7 @@ function getTidData(startDate, slutDate) {
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
                 ],
                 between: [
-                    { 'column': 'dato', 'start': ('"'+startDate[0] +'-'+startDate[1]+'-01"'), 'slut': ('"'+slutDate[0] +'-'+slutDate[1]+'-01"') },
+                    { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-01"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-01"') },
                     //{ 'column': 'year', 'start': startDate[0], 'slut': slutDate[0] },
                     //{ 'column': 'month', 'start': startDate[1], 'slut': slutDate[1] },
                     //{ 'column': 'week', 'start': tidsUdregner.getIsoWeek(startDate[0],startDate[1],startDate[2]), 'slut': tidsUdregner.getIsoWeek(slutDate[0],slutDate[1],slutDate[2]) }
@@ -103,16 +103,155 @@ function getTidData(startDate, slutDate) {
     }
 }
 
-function saveData(arg, callback){
-    
+//TODO avanceret version til at fordele timerne, starter med en nemmere udgave
+function calculateAverageHoursForMonths(timeAntal, months) {
+    if (months.length == 0)
+        throw "There are no months"
+    if (timeAntal <= 0)
+        throw "timeAntal needs to be greater than 0"
+
+    //tjek om det er muligt at fordele timerne i samme timetal ud over månederne
+    let averageHours = timeAntal / months.length
+    let averageHoursIsPossible = true
+    let i = 0
+    while (averageHoursIsPossible && i < months.length) {
+        if (months[i].availableWorkTimeInMonth < averageHours)
+            averageHoursIsPossible = false
+        i++
+    }
+    if (averageHoursIsPossible) {//det er muligt at fordele dem gennemsnitligt
+        //er det muligt at fordele timerne udover alle ugerne gennemsnitligt - det er det nok for det meste ikke..
+
+
+    }
+    else {
+
+    }
+}
+
+function calculateHoursForMonths(timeAntal, months, callback) {
+    if (months.length == 0)
+        throw "There are no months"
+    if (timeAntal <= 0)
+        throw "timeAntal needs to be greater than 0"
+
+    let datesAndHours = []
+
+    let i = 0
+    while (timeAntal > 0 && i < months.length) {//bliv ved så længe timeantal er større end 0
+        if (months[i].availableWorkTimeInMonth > 0) {//hvis der er nogen timer til rådighed i den måned
+
+            for (let currentWeek = 0; timeAntal > 0 && currentWeek < months[i].weeks.length; currentWeek++) {
+                let d = {
+                    'year': months[i].year,
+                    'month': months[i].month,
+                    'week': 0,
+                    'timeAntal': 0
+                    //'weeks': []
+                }
+                let we = months[i].weeks[currentWeek]
+                //console.log(we)
+                if (we.hours > 0) {//hvis der er timer til rådighed i den uge
+                    timeAntal -= parseFloat(we.hours)
+
+                    if (timeAntal < 0) {
+                        d.timeAntal = parseFloat(we.hours) + timeAntal
+                    }
+                    else {
+                        d.timeAntal = we.hours
+                    }
+
+                    d.week = we.week
+                    datesAndHours.push(d)
+                }
+                //console.log(d)
+            }
+            //datesAndHours.push(d)
+        }
+        i++
+    }
+    callback(datesAndHours)
+}
+
+function insertData(table, columns, values, data, useIdFromFirstInsert, callback) {
+    let toBeInserted = {
+        table: table,
+        columns: columns,
+        values: [],
+        useIdFromFirstInsert: useIdFromFirstInsert
+    }
+
+    if (values != undefined) {
+        for (let i = 0; i < values.length; i++) {
+            let da = values[i]
+            let arr = []
+            for (let i = 0; i < Object.keys(da).length; i++) {
+                arr.push(da[Object.keys(da)[i]])
+            }
+            toBeInserted.values.push(arr)
+        }
+        data.push(toBeInserted)
+    }
+    callback(data)
+}
+
+function saveNewOpgavelosere(arg, months, callback) {
+    let data = {
+        data: [{
+            table: 'OpgaveloserOpgave',
+            columns: ['opgaveloserKonsulentProfilId', 'opgaveId'],
+            values: [[arg.opgaveloserKonsulentProfilId, arg.opgaveId]]
+        }
+        ],
+        origin: name + 'NewOpgavelosere',
+        idFromFirstInsert: 'OpgaveloserOpgave'
+    }
+
+    insertData('UgeTimeOpgave', ['year', 'month', 'week', 'timeAntal', 'opgaveloserOpgaveId'], months, data.data, true, function () {
+        callback(data)
+    })
+}
+
+function saveChangedOpgavelosere(arg, months, callback) {
+    let data = {
+        data: [],
+        origin: name + 'NewOpgavelosere',
+        idFromFirstInsert: 'OpgaveloserOpgave'
+    }
+
+    for(let i = 0; i< months.length;i++)
+        months[i].opgaveloserOpgaveId = arg.opgaveloserOpgaveId
+
+    insertData('UgeTimeOpgave', ['year', 'month', 'week', 'timeAntal', 'opgaveloserOpgaveId'], months, data.data, false, function () {
+        callback(data)
+    })
+}
+
+function deleteUgeTimeOpgave(arg, startDate, slutDate) {
+    return {
+        data: [{
+            table: 'UgeTimeOpgave',
+            where: [
+                { column: 'opgaveloserOpgaveId', value: arg.opgaveloserOpgaveId }
+            ],
+            between: [
+                { 'column': 'dato', 'start': ('"' + startDate + '"'), 'slut': ('"' + slutDate + '"') },
+            ]
+        }
+        ],
+        origin: name+'delete'
+    }
 }
 
 module.exports = {
     getView: getView,
-    saveData: saveData,
     getData: getData,
     getTidData: getTidData,
     getWeekdaysInMonth: tidsUdregner.getWeekdaysInMonth,
     calculateMaxAvailableWorkTimeInMonthsAndWeeks: tidsUdregner.calculateMaxAvailableWorkTimeInMonthsAndWeeks,
-    addUsedHours: tidsUdregner.addUsedHours
+    addUsedHours: tidsUdregner.addUsedHours,
+    calculateHoursForMonths: calculateHoursForMonths,
+    deleteUgeTimeOpgave: deleteUgeTimeOpgave,
+    saveNewOpgavelosere: saveNewOpgavelosere,
+    saveChangedOpgavelosere:saveChangedOpgavelosere
 }

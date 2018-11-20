@@ -193,7 +193,7 @@
                             </thead>
                             <tbody>
                                 {{#each muligeOpgaveloser}}
-                                <tr id="opgaveloserRow" class="muligOpgaveloser pointer">
+                                <tr id="opgaveloserRow" class="muligOpgaveloser">
                                     <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
                                     {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
                                     --}}
@@ -210,7 +210,7 @@
                     </div>
                 </div>
             </div>
-
+            
 
             <div class="form-group row">
                 <h2>Deadlines</h2>
@@ -272,6 +272,11 @@
 
                 </div>
             </div>
+            {{#if opgaveInfo}}
+            <div class="form-group row">
+                <button type="button" id="redigerOpgavelosere">Rediger opgaveløsere</button>
+            </div>
+            {{/if}}
             <div class="form-group row">
                 <h2>Kommentar</h2>
             </div>
@@ -280,7 +285,9 @@
                     value=""></textarea>
                 {{!-- <input type="textarea" class="form-control" id="kommentar" name="kommentar" rows="3"> --}}
             </div>
+            
         </div>
+        
 
 
     </div>
@@ -310,7 +317,7 @@
 
         //hvis det er en bestemt opgave ligesom - http://localhost:3000/opgave?opgaveId=1
         //console.log(JSON.parse({{opgaveInfo}}))
-        { { #if opgaveInfo} }
+        {{#if opgaveInfo}}
         function makeDate(date) {
             var d = new Date(date)
             var year = d.getFullYear()
@@ -362,7 +369,7 @@
 
             $('textarea[name="kommentar"]').val("{{opgaveInfo.kommentar}}")
 
-            $('form').append('<input type="hidden" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
+            $('form').append('<input type="hidden" id="opgaveId" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
 
             $('.muligeOpgavelosere').remove()
 
@@ -374,13 +381,10 @@
 
         }
         setAllValues()
-        { {else } }
+        {{else}}
         $('#submitUpdate').remove()
         $('#submitDelete').remove()
-
-        {
-            {
-                /if}}
+        {{/if}}
             })
 
 </script>

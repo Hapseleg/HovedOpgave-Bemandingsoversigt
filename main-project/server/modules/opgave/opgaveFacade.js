@@ -47,8 +47,66 @@ function subPostView() {
                     mediator.publish('createInDB', Object.assign(arg, data))
                 })
             }
-            else if(arg.req.path == '/tilfojopgaveloser'){
-                console.log(arg.req.body)
+            else if (arg.req.path == '/tilfojopgaveloser') {
+                //09-11 4 05:40 og 07:45
+                //console.log(arg.req.body)
+
+                //nye opgaveløsere på opgaven
+                let newOpgavelosere = arg.req.body.newOpgavelosere
+                if (newOpgavelosere != undefined){
+                    // let dataFromAll = undefined//grimt hack
+
+                    for (let i = 0; i < newOpgavelosere.length; i++) {
+                        console.log('newOpgavelosere')
+                        tilfojopgaveloser.calculateHoursForMonths(parseFloat(newOpgavelosere[i].timeAntal), newOpgavelosere[i].weekdays.months, function (d) {
+                            tilfojopgaveloser.saveNewOpgavelosere(newOpgavelosere[i],d,function(data){
+                                console.log(data)
+                                mediator.publish('createInDB', Object.assign(arg, data))
+                                // if(dataFromAll == undefined)//grimt hack
+                                //     dataFromAll = data
+                                // else{
+                                //     for(let j = 0; j<data.data.length;j++){
+                                //         for(let k = 0; k<data.data[j].values.length;k++){
+                                //             dataFromAll.data[j].values.push(data.data[j].values[k])
+                                //         }
+                                //     }
+                                // }//grimt hack
+
+                            })
+                        })
+                        // if(dataFromAll.data[0].values.length == newOpgavelosere.length){//grimt hack
+                        //     console.log(dataFromAll)
+                        //     //mediator.publish('createInDB', Object.assign(arg, dataFromAll))
+                        // }   
+                    }
+                }
+                    
+
+                //opgaveløsere der allerede var på opgaven men hvor timetallet er blevet ændret
+                let changedOpgavelosere = arg.req.body.changedOpgavelosere
+                if (changedOpgavelosere != undefined)
+                    for (let i = 0; i < changedOpgavelosere.length; i++) {
+                        console.log('changedOpgavelosere')
+                        let start = new Date(changedOpgavelosere[i].startDato)
+                        let slut = new Date(changedOpgavelosere[i].slutDato)
+                        let startDate = start.getFullYear() + '-' + (start.getMonth()+1) + '-' + start.getDate()
+                        let slutDate = slut.getFullYear() + '-' + (slut.getMonth()+1) + '-' + slut.getDate()
+
+                        //slet alle timeantal der allerede er oprettet i ugetimeopgave
+                        //console.log(arg.req.body)
+                        //console.log(tilfojopgaveloser.deleteUgeTimeOpgave(changedOpgavelosere[i], startDate, slutDate))
+                        mediator.publish('deleteInDB', Object.assign(arg, tilfojopgaveloser.deleteUgeTimeOpgave(changedOpgavelosere[i], startDate, slutDate)))
+
+                        tilfojopgaveloser.calculateHoursForMonths(parseFloat(changedOpgavelosere[i].timeAntal), changedOpgavelosere[i].weekdays.months, function (d) {
+                            //console.log(d)
+                            //mediator.publish('createInDB', Object.assign(arg, data))
+                            //console.log(d)
+                            tilfojopgaveloser.saveChangedOpgavelosere(changedOpgavelosere[i],d,function(data){
+                                console.log(data)
+                                mediator.publish('createInDB', Object.assign(arg, data))
+                            })
+                        })
+                    }
             }
         }
         catch (error) {
@@ -124,12 +182,16 @@ function subDataFromDB() {
                 })
             }
             else if (arg.origin == 'tilfojopgaveloser') {
-                for(let i = 0; i< arg.data[6].result.length;i++){
+                for (let i = 0; i < arg.data[6].result.length; i++) {
                     arg.data[6].result[i].timeAntal = 0
-                    for(let j=0;j<arg.data[5].result.length;j++){
-                        if(arg.data[6].result[i].opgaveloserId == arg.data[5].result[j].opgaveloserId)
-                            arg.data[6].result[i].timeAntal +=arg.data[5].result[j].timeAntal
+                    for (let j = 0; j < arg.data[5].result.length; j++) {
+                        if (arg.data[6].result[i].opgaveloserId == arg.data[5].result[j].opgaveloserId)
+                            arg.data[6].result[i].timeAntal += arg.data[5].result[j].timeAntal
                     }
+                }
+                let bemandetTimerTotal = {}
+                if(arg.data[5].result.length>0){
+                    bemandetTimerTotal = arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal }))
                 }
 
                 arg.res.render('tilfojopgaveloser', {
@@ -138,7 +200,7 @@ function subDataFromDB() {
                     'konsulentProfil': arg.data[2].result,
                     'opgaveInfo': arg.data[3].result[0],
                     'deadlines': arg.data[4].result,
-                    'bemandetTimerTotal': arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal })),
+                    'bemandetTimerTotal': bemandetTimerTotal,
                     'valgteOpgaveloser': arg.data[6].result,
                 })
             }
@@ -170,7 +232,7 @@ function subDataFromDB() {
                 }
                 tilfojopgaveloser.calculateMaxAvailableWorkTimeInMonthsAndWeeks(arg.data[0].result, weekdays, function (opgavelosereMaxAvailableWorkTime) {
                     //console.log(opgavelosereMaxAvailableWorkTime)
-                    tilfojopgaveloser.addUsedHours(opgavelosereMaxAvailableWorkTime,arg.data[1].result, function(usedHours){
+                    tilfojopgaveloser.addUsedHours(opgavelosereMaxAvailableWorkTime, arg.data[1].result, function (usedHours) {
                         //console.log(usedHours)
                         arg.res.json(usedHours)
                     })
@@ -181,6 +243,15 @@ function subDataFromDB() {
                 //console.log(arg.data)
                 //arg.res.json(arg.data)
             }
+            else if (arg.origin == 'tilfojopgaveloserNewOpgavelosere') {
+                //arg.res.json({})
+            }
+            else if (arg.origin == 'tilfojopgaveloserChangedOpgavelosere') {
+                //arg.res.json({})
+            }
+            // else if (arg.origin == 'tilfojopgaveloserdelete') {
+            //     arg.res.json({})
+            // }
         }
         catch (error) {
             mediator.publish('error', { 'res': arg.res, 'error': error, 'origin': name })

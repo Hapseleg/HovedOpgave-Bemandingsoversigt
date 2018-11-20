@@ -3,6 +3,11 @@ $(document).ready(function () {
         $('#opgaveform').submit()
     })
 
+    $('#redigerOpgavelosere').click(function(){
+        var opgaveId = $('#opgaveId').val()
+        window.location = '/tilfojopgaveloser?opgaveId=' + opgaveId
+    })
+
     $('input:checkbox').change(function () {
         let id = $(this).attr('id')
         if ($(this)[0].checked == true)
@@ -11,35 +16,35 @@ $(document).ready(function () {
             $('input:hidden[name=' + id + ']').val(0)
     })
 
-    $("tr").click(function () {
-        let clicked = $(this)
-        let hiddenInputs = clicked.children('input')
+    // $("tr").click(function () {
+    //     let clicked = $(this)
+    //     let hiddenInputs = clicked.children('input')
 
-        if (clicked.hasClass('muligOpgaveloser')) {
-            clicked.removeClass('muligOpgaveloser')
-            clicked.addClass('valgtOpgaveloser')
+    //     if (clicked.hasClass('muligOpgaveloser')) {
+    //         clicked.removeClass('muligOpgaveloser')
+    //         clicked.addClass('valgtOpgaveloser')
 
-            let rowId = $(hiddenInputs[0]).attr('id')
-            for (let i = 0; i < hiddenInputs.length; i++) {
-                let idName = $(hiddenInputs[i]).attr('idName')
-                $(hiddenInputs[i]).attr('name', 'opgaveloser[' + rowId + '][' + idName + ']')
-            }
+    //         let rowId = $(hiddenInputs[0]).attr('id')
+    //         for (let i = 0; i < hiddenInputs.length; i++) {
+    //             let idName = $(hiddenInputs[i]).attr('idName')
+    //             $(hiddenInputs[i]).attr('name', 'opgaveloser[' + rowId + '][' + idName + ']')
+    //         }
 
-            //clicked.attr('name', 'opgaveloser[{{@index}}][opgaveloserId]')
+    //         //clicked.attr('name', 'opgaveloser[{{@index}}][opgaveloserId]')
 
-            $('#valgteOpgavelosere tbody').append(clicked)
-        }
-        else if (clicked.hasClass('valgtOpgaveloser')) {
-            clicked.removeClass('valgtOpgaveloser')
-            clicked.addClass('muligOpgaveloser')
+    //         $('#valgteOpgavelosere tbody').append(clicked)
+    //     }
+    //     else if (clicked.hasClass('valgtOpgaveloser')) {
+    //         clicked.removeClass('valgtOpgaveloser')
+    //         clicked.addClass('muligOpgaveloser')
 
-            for (let i = 0; i < hiddenInputs.length; i++) {
-                $(hiddenInputs[i]).attr('')
-            }
+    //         for (let i = 0; i < hiddenInputs.length; i++) {
+    //             $(hiddenInputs[i]).attr('')
+    //         }
 
-            $('#muligeOpgavelosere tr:last').after(clicked)
-        }
-    })
+    //         $('#muligeOpgavelosere tr:last').after(clicked)
+    //     }
+    // })
 
     var deadlineCount = 0;
     $('#addDeadline').click(function () {

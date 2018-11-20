@@ -61,7 +61,22 @@ INSERT INTO Kundeansvarlig (fornavn,efternavn,lokationId) VALUES ('zeus','jørge
 
 
 
-INSERT INTO OpgaveloserArbejdsTider (dag,dagStart,dagSlut,opgaveloserId) VALUES (1,'08:00', '15:00',1), (2,'08:00', '15:00',1), (3,'08:00', '15:00',1), (1,'08:00', '15:00',2),  (1,'08:00', '15:00',3);
+INSERT INTO OpgaveloserArbejdsTider (dag,dagStart,dagSlut,opgaveloserId) VALUES 
+(1,'08:00', '15:00',1),
+(2,'08:00', '15:00',1), 
+(3,'08:00', '15:00',1), 
+(4,'08:00', '15:00',1), 
+(5,'08:00', '15:00',1), 
+ 
+(1,'08:00', '13:30',2),
+(2,'08:00', '13:30',2),
+(3,'08:00', '13:30',2),
+(4,'08:00', '13:30',2),
+
+(2,'08:00', '13:30',3),
+(3,'08:00', '13:30',3),
+(4,'08:00', '13:30',3),
+(5,'08:00', '13:30',3);
 
 INSERT INTO OpgaveloserKonsulentprofil (opgaveloserId,konsulentprofilId,konsulentProfilWeight) VALUES (1,1, 30), (1,3, 70), (2,1,100), (3,3,100);    
 
@@ -69,13 +84,16 @@ INSERT INTO OpgaveloserKonsulentprofil (opgaveloserId,konsulentprofilId,konsulen
 insert into Opgave(opgaveNavn, kundeId, kundeAnsvarligId,opgavestillerId,opgaveStatusId,opgavetypeId,lokationId,kontraktStatusId,startDato,slutDato,kommentar,estimeretTimetal,aktiv)
 values
 	("HMG",1,1,1,1,1,1,1,'2018-10-26','2018-12-26','kommentar her',200,true),
-    ("asdasd",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her',150,true),
+    ("Special Minds",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her',150,true),
     ("ASD",1,1,1,1,1,1,1,'2018-09-26','2018-10-26','kommentar her',100,false);
     
 
-INSERT INTO OpgaveloserOpgave (opgaveloserKonsulentProfilId,opgaveId) VALUES (1,1), (1,2), (2,1), (3,2);   
+INSERT INTO OpgaveloserOpgave (opgaveloserKonsulentProfilId,opgaveId) VALUES (1,1), (3,2), (4,1);
 
-INSERT INTO UgeTimeOpgave (opgaveloserOpgaveId,year,month,week,timeAntal) VALUES (1,2018,10,42, 10), (2,2018,11,46, 10), (3,2018,12,50, 5);   
+INSERT INTO UgeTimeOpgave (opgaveloserOpgaveId,year,month,week,timeAntal) VALUES 
+(1,2018,10,42, 10), 
+(2,2018,11,46, 10), 
+(3,2018,12,50, 5);   
 
 insert into Deadline(opgaveId, deadlineDato, deadlineKommentar)
 values
