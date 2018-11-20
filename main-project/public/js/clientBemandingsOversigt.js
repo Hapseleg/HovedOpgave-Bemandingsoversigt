@@ -295,6 +295,8 @@ function setWorkHoursUsed() {
 	(1+2+3+4+5+6+7) / ( (23 * 6,9) * ((37 - 0,5*5)/34,5) )
 	*/
 
+	
+
 
 	//get total workhours and 
 	let workHoursInMonth = []

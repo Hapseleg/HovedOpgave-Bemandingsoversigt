@@ -142,7 +142,7 @@ $(document).ready(function () {
     //ændre timetallet for en allerede valgt opgaveløser
     $('tr').click(function () {
         if ($(this).hasClass('valgtOpgaveloser')) {
-            console.log($(this))
+            //console.log($(this))
             let val = prompt("Indtast time antal")
             if (val != null && !isNaN(val)) {
                 if (!$(this).hasClass('newOpgaveloser'))
@@ -151,8 +151,8 @@ $(document).ready(function () {
                 $(this).children('.timeAntal').html(val)
                 let orgTimeTal = $(this).children('.timeAntal').attr('orgTimeTal')
                 let ledigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigeTimer'), 10) - val + parseInt(orgTimeTal, 10)
-                console.log(orgTimeTal)
-                console.log(ledigeTimer)
+                //console.log(orgTimeTal)
+                //console.log(ledigeTimer)
                 $(this).children('.ledigeTimer').html(ledigeTimer)
             }
             setEstimeret()
@@ -177,44 +177,26 @@ $(document).ready(function () {
         }
     })
 
-    // $('.valgtOpgaveloser').click(changeValgtOpgaveloser)
-
-    // function changeValgtOpgaveloser() {
-    //     console.log($(this))
-    //     let val = prompt("Indtast time antal")
-    //     if (val != null && !isNaN(val)) {
-    //         if (!$(this).hasClass('newOpgaveloser'))
-    //             $(this).addClass('changedOpgaveloser')
-
-    //         $(this).children('.timeAntal').html(val)
-    //         let orgTimeTal = $(this).children('.timeAntal').attr('orgTimeTal')
-    //         let ledigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigeTimer'), 10) - val + parseInt(orgTimeTal, 10)
-    //         console.log(orgTimeTal)
-    //         console.log(ledigeTimer)
-    //         $(this).children('.ledigeTimer').html(ledigeTimer)
-    //     }
-    //     setEstimeret()
-    //     colorLedigeTider()
-    // }
-
     $('#submitCreate').click(function () {
         //tilføj ændrede eller ny valgte opgaveløsere
-        //let valgteOpgavelosere = $('.valgtOpgaveloser')
-        let opgaveId = $('#opgaveId').attr('value')
-        let newOpgavelosere = []
-        let changedOpgavelosere = []
+        let valgteOpgavelosere = $('.valgtOpgaveloser')
+        createOpgavelosere(0, valgteOpgavelosere)
+    })
 
-        $('.valgtOpgaveloser').each(function () {
-
-            let opgaveloserId = $(this).children('.opgaveloserId').attr('value')
-            let konsulentProfilId = $(this).children('.konsulentProfilId').attr('value')
-            let lokationId = $(this).children('.lokationId').attr('value')
-            let timeAntal = $(this).children('.timeAntal').html()
+    function createOpgavelosere(i, valgteOpgavelosere) {
+        if (i < valgteOpgavelosere.length) {
+            console.log(valgteOpgavelosere[i])
+            let opgaveId = $('#opgaveId').attr('value')
+            let opgaveloserId = $(valgteOpgavelosere[i]).children('.opgaveloserId').attr('value')
+            let konsulentProfilId = $(valgteOpgavelosere[i]).children('.konsulentProfilId').attr('value')
+            let lokationId = $(valgteOpgavelosere[i]).children('.lokationId').attr('value')
+            let timeAntal = $(valgteOpgavelosere[i]).children('.timeAntal').html()
 
             let start = new Date($('#startDatoSearch').val())
             let slut = new Date($('#slutDatoSearch').val())
 
             let d = {
+                type: '',
                 opgaveId: opgaveId,
                 opgaveloserId: opgaveloserId,
                 konsulentProfilId: konsulentProfilId,
@@ -225,28 +207,34 @@ $(document).ready(function () {
                 weekdays: weekdays.find(o => o.opgaveloserId == opgaveloserId)
             }
 
-            if ($(this).hasClass('newOpgaveloser')) {
-                d.opgaveloserKonsulentProfilId = $(this).attr('opgaveloserKonsulentProfilId')
-                newOpgavelosere.push(d)
+            if ($(valgteOpgavelosere[i]).hasClass('newOpgaveloser')) {
+                d.type = 'newOpgaveloser'
+                d.opgaveloserKonsulentProfilId = $(valgteOpgavelosere[i]).attr('opgaveloserKonsulentProfilId')
             }
-            else if ($(this).hasClass('changedOpgaveloser')) {
-                d.opgaveloserOpgaveId = $(this).children('.opgaveloserOpgaveId').attr('value')
-                console.log($(this).children('.opgaveloserOpgaveId').attr('value'))
-                changedOpgavelosere.push(d)
+            else if ($(valgteOpgavelosere[i]).hasClass('changedOpgaveloser')) {
+                d.type = 'changedOpgaveloser'
+                d.opgaveloserOpgaveId = $(valgteOpgavelosere[i]).children('.opgaveloserOpgaveId').attr('value')
             }
-        })
+            //console.log(d)
+            addOpgaveloserAjax(d, function(){
+                createOpgavelosere(i + 1, valgteOpgavelosere)
+            })
+        }
+    }
 
-        console.log('newOpgaveloser ajax')
+    function addOpgaveloserAjax(data, callback) {
+        console.log(data)
         $.ajax({
             url: '/tilfojopgaveloser',
-            data: { newOpgavelosere: newOpgavelosere, changedOpgavelosere: changedOpgavelosere },
+            data: data,
             type: 'POST',
             success: function (result) {
-                console.log('create success for' + opgaveloserId)
+                console.log(result)
+                console.log('create success for' + data.opgaveloserId)
+                if (callback)
+                    callback()
             }
         })
-
-    })
+    }
 
 })
-

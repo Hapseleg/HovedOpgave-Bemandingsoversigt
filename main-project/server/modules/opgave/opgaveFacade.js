@@ -49,64 +49,29 @@ function subPostView() {
             }
             else if (arg.req.path == '/tilfojopgaveloser') {
                 //09-11 4 05:40 og 07:45
-                //console.log(arg.req.body)
+                let opgaveloser = arg.req.body
 
-                //nye opgaveløsere på opgaven
-                let newOpgavelosere = arg.req.body.newOpgavelosere
-                if (newOpgavelosere != undefined){
-                    // let dataFromAll = undefined//grimt hack
-
-                    for (let i = 0; i < newOpgavelosere.length; i++) {
-                        console.log('newOpgavelosere')
-                        tilfojopgaveloser.calculateHoursForMonths(parseFloat(newOpgavelosere[i].timeAntal), newOpgavelosere[i].weekdays.months, function (d) {
-                            tilfojopgaveloser.saveNewOpgavelosere(newOpgavelosere[i],d,function(data){
-                                console.log(data)
-                                mediator.publish('createInDB', Object.assign(arg, data))
-                                // if(dataFromAll == undefined)//grimt hack
-                                //     dataFromAll = data
-                                // else{
-                                //     for(let j = 0; j<data.data.length;j++){
-                                //         for(let k = 0; k<data.data[j].values.length;k++){
-                                //             dataFromAll.data[j].values.push(data.data[j].values[k])
-                                //         }
-                                //     }
-                                // }//grimt hack
-
-                            })
+                if(opgaveloser.type == 'newOpgaveloser'){
+                    tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
+                        tilfojopgaveloser.saveNewOpgavelosere(opgaveloser,d,function(data){
+                            mediator.publish('createInDB', Object.assign(arg, data))
                         })
-                        // if(dataFromAll.data[0].values.length == newOpgavelosere.length){//grimt hack
-                        //     console.log(dataFromAll)
-                        //     //mediator.publish('createInDB', Object.assign(arg, dataFromAll))
-                        // }   
-                    }
+                    })
                 }
-                    
+                else if(opgaveloser.type == 'changedOpgaveloser'){
+                    let start = new Date(opgaveloser.startDato)
+                    let slut = new Date(opgaveloser.slutDato)
+                    let startDate = start.getFullYear() + '-' + (start.getMonth()+1) + '-' + start.getDate()
+                    let slutDate = slut.getFullYear() + '-' + (slut.getMonth()+1) + '-' + slut.getDate()
 
-                //opgaveløsere der allerede var på opgaven men hvor timetallet er blevet ændret
-                let changedOpgavelosere = arg.req.body.changedOpgavelosere
-                if (changedOpgavelosere != undefined)
-                    for (let i = 0; i < changedOpgavelosere.length; i++) {
-                        console.log('changedOpgavelosere')
-                        let start = new Date(changedOpgavelosere[i].startDato)
-                        let slut = new Date(changedOpgavelosere[i].slutDato)
-                        let startDate = start.getFullYear() + '-' + (start.getMonth()+1) + '-' + start.getDate()
-                        let slutDate = slut.getFullYear() + '-' + (slut.getMonth()+1) + '-' + slut.getDate()
+                    mediator.publish('deleteInDB', Object.assign(arg, tilfojopgaveloser.deleteUgeTimeOpgave(opgaveloser, startDate, slutDate)))
 
-                        //slet alle timeantal der allerede er oprettet i ugetimeopgave
-                        //console.log(arg.req.body)
-                        //console.log(tilfojopgaveloser.deleteUgeTimeOpgave(changedOpgavelosere[i], startDate, slutDate))
-                        mediator.publish('deleteInDB', Object.assign(arg, tilfojopgaveloser.deleteUgeTimeOpgave(changedOpgavelosere[i], startDate, slutDate)))
-
-                        tilfojopgaveloser.calculateHoursForMonths(parseFloat(changedOpgavelosere[i].timeAntal), changedOpgavelosere[i].weekdays.months, function (d) {
-                            //console.log(d)
-                            //mediator.publish('createInDB', Object.assign(arg, data))
-                            //console.log(d)
-                            tilfojopgaveloser.saveChangedOpgavelosere(changedOpgavelosere[i],d,function(data){
-                                console.log(data)
-                                mediator.publish('createInDB', Object.assign(arg, data))
-                            })
+                    tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
+                        tilfojopgaveloser.saveChangedOpgavelosere(opgaveloser,d,function(data){
+                            mediator.publish('createInDB', Object.assign(arg, data))
                         })
-                    }
+                    })
+                }
             }
         }
         catch (error) {
@@ -244,10 +209,10 @@ function subDataFromDB() {
                 //arg.res.json(arg.data)
             }
             else if (arg.origin == 'tilfojopgaveloserNewOpgavelosere') {
-                //arg.res.json({})
+                arg.res.json({})
             }
             else if (arg.origin == 'tilfojopgaveloserChangedOpgavelosere') {
-                //arg.res.json({})
+                arg.res.json({})
             }
             // else if (arg.origin == 'tilfojopgaveloserdelete') {
             //     arg.res.json({})
