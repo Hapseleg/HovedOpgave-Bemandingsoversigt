@@ -1,4 +1,4 @@
-var tidsUdregner = require('./tidsudregner.js')
+var tidsUdregner = require('../tidsudregner.js')
 
 var name = 'tilfojopgaveloser'
 
@@ -92,7 +92,7 @@ function getTidData(startDate, slutDate) {
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
                 ],
                 between: [
-                    { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-01"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-01"') },
+                    { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-' + startDate[2] + '"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-' + slutDate[2] + '"') },
                     //{ 'column': 'year', 'start': startDate[0], 'slut': slutDate[0] },
                     //{ 'column': 'month', 'start': startDate[1], 'slut': slutDate[1] },
                     //{ 'column': 'week', 'start': tidsUdregner.getIsoWeek(startDate[0],startDate[1],startDate[2]), 'slut': tidsUdregner.getIsoWeek(slutDate[0],slutDate[1],slutDate[2]) }
@@ -136,11 +136,10 @@ function calculateHoursForMonths(timeAntal, months, callback) {
         throw "timeAntal needs to be greater than 0"
 
     let datesAndHours = []
-
+    //console.log(months)
     let i = 0
     while (timeAntal > 0 && i < months.length) {//bliv ved så længe timeantal er større end 0
-        if (months[i].availableWorkTimeInMonth > 0) {//hvis der er nogen timer til rådighed i den måned
-
+        if (parseFloat(months[i].availableWorkTimeInMonth) > 0) {//hvis der er nogen timer til rådighed i den måned
             for (let currentWeek = 0; timeAntal > 0 && currentWeek < months[i].weeks.length; currentWeek++) {
                 let d = {
                     'year': months[i].year,
@@ -151,9 +150,10 @@ function calculateHoursForMonths(timeAntal, months, callback) {
                 }
                 let we = months[i].weeks[currentWeek]
                 //console.log(we)
-                if (we.hours > 0) {//hvis der er timer til rådighed i den uge
-                    timeAntal -= parseFloat(we.hours)
+                let remainingHours = (parseFloat(we.hours) - parseFloat(we.usedHours))
 
+                if (remainingHours > 0) {//hvis der er timer til rådighed i den uge
+                    timeAntal -= remainingHours
                     if (timeAntal < 0) {
                         d.timeAntal = parseFloat(we.hours) + timeAntal
                     }
@@ -170,15 +170,17 @@ function calculateHoursForMonths(timeAntal, months, callback) {
         }
         i++
     }
+    //console.log(datesAndHours)
     callback(datesAndHours)
 }
 
-function insertData(table, columns, values, data, useIdFromFirstInsert, callback) {
+function insertData(table, columns, values, onDupliateKeyUpdate, data, useIdFromFirstInsert, callback) {
     let toBeInserted = {
         table: table,
         columns: columns,
         values: [],
-        useIdFromFirstInsert: useIdFromFirstInsert
+        useIdFromFirstInsert: useIdFromFirstInsert,
+        onDupliateKeyUpdate: onDupliateKeyUpdate
     }
 
     if (values != undefined) {
@@ -207,7 +209,8 @@ function saveNewOpgavelosere(arg, months, callback) {
         idFromFirstInsert: 'OpgaveloserOpgave'
     }
 
-    insertData('UgeTimeOpgave', ['year', 'month', 'week', 'timeAntal', 'opgaveloserOpgaveId'], months, data.data, true, function () {
+    let onDupliateKeyUpdate = { 'column': 'timeAntal' }
+    insertData('UgeTimeOpgave', ['year', 'month', 'week', 'timeAntal', 'opgaveloserOpgaveId'], months, onDupliateKeyUpdate, data.data, true, function () {
         callback(data)
     })
 }
@@ -219,10 +222,11 @@ function saveChangedOpgavelosere(arg, months, callback) {
         idFromFirstInsert: 'OpgaveloserOpgave'
     }
 
-    for(let i = 0; i< months.length;i++)
+    for (let i = 0; i < months.length; i++)
         months[i].opgaveloserOpgaveId = arg.opgaveloserOpgaveId
 
-    insertData('UgeTimeOpgave', ['year', 'month', 'week', 'timeAntal', 'opgaveloserOpgaveId'], months, data.data, false, function () {
+    let onDupliateKeyUpdate = { 'column': 'timeAntal' }
+    insertData('UgeTimeOpgave', ['year', 'month', 'week', 'timeAntal', 'opgaveloserOpgaveId'], months, onDupliateKeyUpdate, data.data, false, function () {
         callback(data)
     })
 }
@@ -239,7 +243,7 @@ function deleteUgeTimeOpgave(arg, startDate, slutDate) {
             ]
         }
         ],
-        origin: name+'delete'
+        origin: name + 'delete'
     }
 }
 
@@ -253,5 +257,5 @@ module.exports = {
     calculateHoursForMonths: calculateHoursForMonths,
     deleteUgeTimeOpgave: deleteUgeTimeOpgave,
     saveNewOpgavelosere: saveNewOpgavelosere,
-    saveChangedOpgavelosere:saveChangedOpgavelosere
+    saveChangedOpgavelosere: saveChangedOpgavelosere
 }

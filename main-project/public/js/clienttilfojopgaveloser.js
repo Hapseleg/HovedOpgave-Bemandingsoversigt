@@ -143,17 +143,25 @@ $(document).ready(function () {
     $('tr').click(function () {
         if ($(this).hasClass('valgtOpgaveloser')) {
             //console.log($(this))
-            let val = prompt("Indtast time antal")
+            let val = prompt("Indtast time antal der skal tilføjes")
             if (val != null && !isNaN(val)) {
+                let value = parseFloat(val)
+                if (value <= 0) {
+                    alert('skal være større end 0')
+                    return
+                }
                 if (!$(this).hasClass('newOpgaveloser'))
-                    $(this).addClass('changedOpgaveloser')
+                    $(this).addClass('changedOpgaveloser changed')
 
-                $(this).children('.timeAntal').html(val)
-                let orgTimeTal = $(this).children('.timeAntal').attr('orgTimeTal')
-                let ledigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigeTimer'), 10) - val + parseInt(orgTimeTal, 10)
-                //console.log(orgTimeTal)
-                //console.log(ledigeTimer)
-                $(this).children('.ledigeTimer').html(ledigeTimer)
+                let orgTimeTal = parseInt($(this).children('.timeAntal').attr('orgTimeTal'), 10)
+                let orgLedigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigetimer'), 10)
+
+                $(this).children('.timeAntal').html((value + orgTimeTal))
+                $(this).children('.ledigeTimer').html((orgLedigeTimer-value))
+
+
+
+                $(this).children('.timeAntal').attr('addedTimeTal', value)
             }
             setEstimeret()
             colorLedigeTider()
@@ -162,11 +170,17 @@ $(document).ready(function () {
             //console.log($(this))
             let val = prompt("Indtast time antal")
             if (val != null && !isNaN(val)) {
+                let value = parseFloat(val)
+                if (value <= 0) {
+                    alert('skal være større end 0')
+                    return
+                }
                 $(this).removeClass('muligOpgaveloser')
-                $(this).addClass('valgtOpgaveloser newOpgaveloser')
+                $(this).addClass('valgtOpgaveloser newOpgaveloser changed')
 
-                $(this).children('.timeAntal').html(val)
-                let ledigeTimer = $(this).children('.ledigeTimer').html() - val
+                $(this).children('.timeAntal').html(value)
+                $(this).children('.timeAntal').attr('addedTimeTal', value)
+                let ledigeTimer = $(this).children('.ledigeTimer').html() - value
                 $(this).children('.ledigeTimer').html(ledigeTimer)
                 //$(this).attr('onclick', "changeValgtOpgaveloser")
 
@@ -179,7 +193,7 @@ $(document).ready(function () {
 
     $('#submitCreate').click(function () {
         //tilføj ændrede eller ny valgte opgaveløsere
-        let valgteOpgavelosere = $('.valgtOpgaveloser')
+        let valgteOpgavelosere = $('.changed')
         createOpgavelosere(0, valgteOpgavelosere)
     })
 
@@ -190,7 +204,7 @@ $(document).ready(function () {
             let opgaveloserId = $(valgteOpgavelosere[i]).children('.opgaveloserId').attr('value')
             let konsulentProfilId = $(valgteOpgavelosere[i]).children('.konsulentProfilId').attr('value')
             let lokationId = $(valgteOpgavelosere[i]).children('.lokationId').attr('value')
-            let timeAntal = $(valgteOpgavelosere[i]).children('.timeAntal').html()
+            let timeAntal = $(valgteOpgavelosere[i]).children('.timeAntal').attr('addedTimeTal')
 
             let start = new Date($('#startDatoSearch').val())
             let slut = new Date($('#slutDatoSearch').val())
@@ -215,10 +229,14 @@ $(document).ready(function () {
                 d.type = 'changedOpgaveloser'
                 d.opgaveloserOpgaveId = $(valgteOpgavelosere[i]).children('.opgaveloserOpgaveId').attr('value')
             }
-            //console.log(d)
-            addOpgaveloserAjax(d, function(){
+            console.log(d)
+            addOpgaveloserAjax(d, function () {
                 createOpgavelosere(i + 1, valgteOpgavelosere)
             })
+        }
+        else {
+            alert('done')
+            window.location.href = '/opgave?opgaveId=' + $('#opgaveId').attr('value')
         }
     }
 

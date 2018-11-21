@@ -6,10 +6,22 @@ var name = 'database';
 function setup(){
     console.log('setting up '+name+' facade')
     subCreate()
+    //subReplace()
     subRead()
     subUpdate()
     subDelete()
     mysql.initConnection()
+}
+
+function throwError(arg){
+    console.log('throwError')
+    //console.log(Object.keys(arg))
+    mediator.publish('error', {'res':arg.res, 'error':arg.error, 'origin': name})
+}
+
+function returnResult(result){
+    console.log('returnResult')
+    mediator.publish('dataFromDB', result)
 }
 
 function subCreate(){
@@ -24,16 +36,9 @@ function subCreate(){
     })
 }
 
-function throwError(arg){
-    console.log('throwError')
-    //console.log(Object.keys(arg))
-    mediator.publish('error', {'res':arg.res, 'error':arg.error, 'origin': name})
-}
 
-function returnResult(result){
-    console.log('returnResult')
-    mediator.publish('dataFromDB', result)
-}
+
+
 
 function subRead(){
     mediator.subscribe('readFromDB',function(arg){
@@ -67,6 +72,7 @@ function subDelete(){
         }
     })
 }
+
 
 module.exports = {
     setup:setup

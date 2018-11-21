@@ -71,8 +71,9 @@ function getWorkDaysForOpgavelosere(data) {
 }
 
 function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
-    //console.log(data)
-    //console.log(months)
+
+    // console.log(data)
+    // console.log(months)
     /**
      * Lav objekter for hver opgaveløser med deres arbejdsdage
      * gå ind i måned
@@ -124,18 +125,24 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                     if (curOp.arbejdsDage.includes(we.weekdays[i]))
                         availableWorkDaysInWeek++
                 }
+                //let foundWeek = newMo.weeks.find(o => o.week = we.week)
 
-                // maxAvailableWorkTimeInWeek = arbejdstidPrUge / arbejdsdage i ugen
                 if (availableWorkDaysInWeek > 0) {
-                    let maxWorksHoursInWeek = curOp.arbejdstidPrUge / availableWorkDaysInWeek
-                    let fixedMaxWorksHoursInWeek = parseInt(maxWorksHoursInWeek.toFixed(0),10) 
+                    // maxAvailableWorkTimeInWeek = (arbejdstidPrUge / 5) * arbejdsdage i ugen
+                    let maxWorksHoursInWeek = (curOp.arbejdstidPrUge / 5) * availableWorkDaysInWeek
+                    let fixedMaxWorksHoursInWeek = parseInt(maxWorksHoursInWeek.toFixed(0), 10)
+                    //console.log(curOp.opgaveloserId,curOp.arbejdstidPrUge, availableWorkDaysInWeek,fixedMaxWorksHoursInWeek)
 
-                    
-                    newMo.weeks.push({ 
-                        'week': we.week, 
+                    //if (foundWeek == undefined) {
+                    newMo.weeks.push({
+                        'week': we.week,
                         'hours': fixedMaxWorksHoursInWeek,
                         'usedHours': 0,
-                     })
+                    })
+                    // }
+                    // else {
+                    //     foundWeek += fixedMaxWorksHoursInWeek
+                    // }
 
                     newMo.maxAvailableWorkTimeInMonth += fixedMaxWorksHoursInWeek
                     newMo.availableWorkTimeInMonth += fixedMaxWorksHoursInWeek
@@ -143,32 +150,47 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                     opgaveloser.maxAvailableWorkTime += fixedMaxWorksHoursInWeek
                     opgaveloser.availableWorkTime += fixedMaxWorksHoursInWeek
                 }
+                else {
+                    //if (foundWeek == undefined) {
+                    newMo.weeks.push({
+                        'week': we.week,
+                        'hours': 0,
+                        'usedHours': 0,
+                    })
+                }
+                //}
 
             }
+
         }
     }
-
     callback(opgaveloseremaxAvailableWorkTime)
 }
 
 function addUsedHours(maxAvailableWorkTime, workTime, callback) {
+    //console.log('workTime',workTime)
     for (let i = 0; i < workTime.length; i++) {
         let wt = workTime[i]
-        let currentOpgaveloser = maxAvailableWorkTime.find(o => o.opgaveloserId == wt.opgaveloserId)
-        if (currentOpgaveloser != undefined) {
-            currentOpgaveloser.availableWorkTime -= wt.timeAntal
+        if(wt.opgaveloserOpgaveId != null){
 
-            let month = currentOpgaveloser.months.find(o => o.month == wt.month)
-            if (month != undefined) {
-                month.availableWorkTimeInMonth -= wt.timeAntal
-
-                let week = month.weeks.find(o=>o.week == wt.week)
-                week.usedHours += wt.timeAntal
+            let currentOpgaveloser = maxAvailableWorkTime.find(o => o.opgaveloserId == wt.opgaveloserId)
+            if (currentOpgaveloser != undefined) {
+                currentOpgaveloser.availableWorkTime -= wt.timeAntal
+    
+                let month = currentOpgaveloser.months.find(o => o.month == wt.month)
+                if (month != undefined) {
+                    month.availableWorkTimeInMonth -= wt.timeAntal
+    
+                    let week = month.weeks.find(o => o.week == wt.week)
+                    week.usedHours += wt.timeAntal
+                }
             }
         }
     }
     callback(maxAvailableWorkTime)
 }
+
+
 
 function getIsoWeek(year, month, date) {
     return moment(year, 'YYYY').month(month).date(date).isoWeek()

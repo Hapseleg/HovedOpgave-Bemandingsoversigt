@@ -34,9 +34,9 @@ $(document).ready(function () {
         rød- flere timer i kalenderen end estimeret
         gul- mangler timer
         grøn- 0 timer tilbage af estimeret*/
-        if (manglendeTimer > 0)
+        if (manglendeTimer == 0)
             $(estimeret).addClass('lowWorkload')
-        else if (manglendeTimer == 0)
+        else if (manglendeTimer > 0)
             $(estimeret).addClass('mediumWorkload')
         else
             $(estimeret).addClass('highWorkload')

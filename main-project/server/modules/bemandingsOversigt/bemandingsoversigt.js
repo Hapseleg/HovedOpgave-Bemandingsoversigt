@@ -17,16 +17,23 @@ function getData(){
     return {
         data:[
             {//OpgaveloserOpgave, opgave, Opgaveloser, ugetimeopgave, OpgaveloserKonsulentprofil, Konsulentprofil
-                table:'OpgaveloserOpgave',
-                columns: ['opgaveloserOpgaveId','opgaveId','opgaveloserKonsulentProfilId'],
-                leftJoins:[
-                    {leftTable: 'OpgaveloserOpgave', rightTable:'Opgave', leftColumn: 'opgaveId', rightColumn: 'opgaveId', selectColumns: ['opgaveNavn', 'startDato', 'slutDato']},
-                    {leftTable: 'OpgaveloserOpgave', rightTable:'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId', 'konsulentProfilId']},
-                    {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Konsulentprofil', leftColumn: 'konsulentProfilId', rightColumn: 'konsulentProfilId', selectColumns: ['konsulentProfilNavn']},
-                    {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['fornavn', 'efternavn', 'arbejdstidPrUge']},
-                ],
-                where: [{ column: 'aktiv', value: 1 }]
+                table:'Opgaveloser',
+                columns: ['*'],
+                // leftJoins:[
+                   
+                // ],
             },
+            // {//OpgaveloserOpgave, opgave, Opgaveloser, ugetimeopgave, OpgaveloserKonsulentprofil, Konsulentprofil
+            //     table:'OpgaveloserOpgave',
+            //     columns: ['opgaveloserOpgaveId','opgaveId','opgaveloserKonsulentProfilId'],
+            //     leftJoins:[
+            //         {leftTable: 'OpgaveloserOpgave', rightTable:'Opgave', leftColumn: 'opgaveId', rightColumn: 'opgaveId', selectColumns: ['opgaveNavn', 'startDato', 'slutDato']},
+            //         {leftTable: 'OpgaveloserOpgave', rightTable:'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId', 'konsulentProfilId']},
+            //         {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Konsulentprofil', leftColumn: 'konsulentProfilId', rightColumn: 'konsulentProfilId', selectColumns: ['konsulentProfilNavn']},
+            //         {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['fornavn', 'efternavn', 'arbejdstidPrUge']},
+            //     ],
+            //     where: [{ column: 'aktiv', value: 1 }]
+            // },
         ],
         origin:name
     }
@@ -37,9 +44,13 @@ function getTidData(){
         data:[
             {
                 table: 'OpgaveloserArbejdsTider',
-                columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
+                //columns: ['opgaveloserId', 'dag', 'dagStart', 'dagSlut'],
+                columns: ['opgaveloserId', 'dag'],
+                leftJoins: [
+                    { leftTable: 'OpgaveloserArbejdsTider', rightTable: 'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['arbejdstidPrUge'] }
+                ],
             },
-            {//tilføj så man kan trække kun data ud fra et bestemt måned (dato between 1-31)
+            {
                 table: 'opgaveloserKonsulentProfil',
                 columns: ['opgaveloserKonsulentProfilId','opgaveloserId'],
                 leftJoins:[

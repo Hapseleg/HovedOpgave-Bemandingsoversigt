@@ -26,7 +26,7 @@ $(document).ready(function () {
 
 			//maxAvailableWorkTime
 			$('.availableWorkTime').each(function (index) {
-				let text = $(this).attr('availableWorkTime')
+				let text = $(this).attr('usedworkhoursinweek')
 				$(this).text(text)
 			})
 		}
@@ -37,7 +37,7 @@ $(document).ready(function () {
 
 			//timeAntalForOpgave
 			$('.availableWorkTime').each(function (index) {
-				let text = $(this).attr('timeAntalForOpgave')
+				let text = $(this).attr('availableworktimeinweek')
 				$(this).text(text)
 			})
 		}
@@ -69,6 +69,7 @@ $(document).ready(function () {
 			data: { year: year, month: month },
 			type: 'GET',
 			success: function (result) {
+				console.log(year, month)
 				console.log(result)
 				insertWeeks(result, month, '#thMonth1')
 				insertAvailableWorkTime(result, month, year)
@@ -78,8 +79,23 @@ $(document).ready(function () {
 		});
 	}
 
+	function addMonthsAndWeeks(i, year, month, numberOfMonths) {
+		if (i < numberOfMonths) {
+			getWeeksAjax(year, month, function () {
+				if (month == 12) {
+					year++
+					month = 1
+				}
+				else
+					month++
+				addMonthsAndWeeks(i + 1, year, month, numberOfMonths)
+			})
+		}
+	}
+
 	//laver ajax kaldene til at hente ugerne 
 	function populateWeeks() {
+		let numberOfMonths = 5
 		let month = $('#month').val()
 		let year = $('#year').val()
 
@@ -88,23 +104,7 @@ $(document).ready(function () {
 
 		clearWeeks()
 
-		getWeeksAjax(year, month, function () {
-			if (month == 12) {
-				year++
-				month = 1
-			}
-			else
-				month++
-			getWeeksAjax(year, month, function () {
-				if (month == 12) {
-					year++
-					month = 1
-				}
-				else
-					month++
-				getWeeksAjax(year, month)
-			})
-		})
+		addMonthsAndWeeks(0, year, month, numberOfMonths)
 	}
 
 	//resetter ugerne
@@ -112,18 +112,18 @@ $(document).ready(function () {
 		$('#firstHead').children().remove()
 		$('.weekNumber').remove()
 		$('.availableWorkTime').remove()
-		$('#firstHead').append('<th colspan="3"></th>')
+		$('#firstHead').append('<th colspan="1"></th>')
 	}
 
 	//tilføjer ugerne til table
 	function insertWeeks(result, month, th) {
 		let months = $('#month').children()
 
-		$('#firstHead').append('<th colspan="' + result.length + '" id="' + th + '">' + $(months[month - 1]).text() + '</th>')
+		$('#firstHead').append('<th colspan="' + result[0].months[0].weeks.length + '" id="' + th + '">' + $(months[month - 1]).text() + '</th>')
 
 		let thead = $('#secondHead')
-		for (let i = 0; i < result.length; i++) {
-			let th = $('<th>', { 'class': 'weekNumber', 'text': result[i].week })
+		for (let i = 0; i < result[0].months[0].weeks.length; i++) {
+			let th = $('<th>', { 'class': 'weekNumber ', 'text': result[0].months[0].weeks[i].week })
 			if (i == 0)
 				$(th).addClass('firstInMonth')
 			thead.append(th)
@@ -133,59 +133,91 @@ $(document).ready(function () {
 	}
 
 	//tilføjer information til hver uge
-	function insertAvailableWorkTime(weekDays, month, year) {
+	function insertAvailableWorkTime(opgavelosere, month, year) {
 		var rows = $('tbody tr')
 		for (let i = 0; i < rows.length; i++) {
 			let currentRow = rows[i]
 			let rowOpgaveloserId = $(currentRow).children('[idName=opgaveloserId]').val()
-			let rowopgaveloserOpgaveId = $(currentRow).children('[idName=opgaveloserOpgaveId]').val()
+			//let rowopgaveloserOpgaveId = $(currentRow).children('[idName=opgaveloserOpgaveId]').val()
+			let opgaveloser = opgavelosere.find(o => o.opgaveloserId == rowOpgaveloserId)
 
-			for (let i = 0; i < weekDays.length; i++) {
-				let currentWeek = weekDays[i].week
-				let opgaveloser = weekDays[i].opgaveloser.find(o => o.opgaveloserId == rowOpgaveloserId)
-				//console.log(opgaveloser)
-				let timeAntalForOpgave = 0
-				let ugeTimeOpgaveId
-				let availableWorkTime = opgaveloser.maxAvailableWorkTime
-
-				for (let i = 0; i < opgaveloser.currentWorkTime.length; i++) {
-					let currentWorkTime = opgaveloser.currentWorkTime[i]
-					if (rowopgaveloserOpgaveId == currentWorkTime.opgaveloserOpgaveId) {
-						timeAntalForOpgave += currentWorkTime.timeAntal
-						ugeTimeOpgaveId = currentWorkTime.ugeTimeOpgaveId
-						availableWorkTime -= timeAntalForOpgave
-					}
-				}
-
-				// availableWorkTime -= opgaveloser.maxAvailableWorkTime - timeAntalForOpgave
-
+			for (let i = 0; i < opgaveloser.months[0].weeks.length; i++) {
+				let currentWeek = opgaveloser.months[0].weeks[i]
 				let td = $('<td>', {
-					'onclick': 'changeAntalTimer(this)',
+					//'onclick': 'changeAntalTimer(this)',
 					'class': 'availableWorkTime pointer',
-					'maxAvailableWorkTime': opgaveloser.maxAvailableWorkTime,
-					'timeAntalForOpgave': timeAntalForOpgave,
-					'availableWorkTime': availableWorkTime,
-					'week': currentWeek,
-					'ugeTimeOpgaveId': ugeTimeOpgaveId,
-					'text': timeAntalForOpgave,
+					//'maxAvailableWorkTime': opgaveloser.maxAvailableWorkTime,
+					'maxAvailableWorkTimeInMonth': opgaveloser.maxAvailableWorkTime,
+					'availableWorkTimeInMonth': opgaveloser.availableWorkTime,
+					//'timeAntalForOpgave': 0,//TODO
+					//'availableWorkTime': opgaveloser.availableWorkTime,
+					'week': currentWeek.week,
+					//'ugeTimeOpgaveId': 0,//TODO
+					'text': (currentWeek.hours - currentWeek.usedHours),
 					'data-toggle': 'tooltip',
-					'title': '',
-					'workDaysInWeek': opgaveloser.workDaysInWeek.length,
-					'workDaysInMonth': 0,
+					'title': currentWeek.usedHours,
+					//'workDaysInWeek': opgaveloser.workDaysInWeek.length,
+					//'workDaysInMonth': 0,
 					'month': month,
-					'year': year
+					'year': year,
+					'maxAvailableWorkTimeInWeek': currentWeek.hours,
+					'availableWorkTimeInWeek': (currentWeek.hours - currentWeek.usedHours),
+					'usedWorkHoursInWeek': currentWeek.usedHours
 				})
-
 				if (i == 0)
-					$(td).addClass('firstInMonth')
-
-				//changeWorkLoad(td)
+			 		$(td).addClass('firstInMonth')
+				//$(this).attr('usedWorkHoursInWeek', opgaveloserWeek.availableWorkTime)
+				changeWorkLoad(td)
 				$(currentRow).append(td)
+				
 			}
+
+			// for (let i = 0; i < weekDays.length; i++) {
+			// 	let currentWeek = weekDays[i].week
+			// 	let opgaveloser = weekDays[i].opgaveloser.find(o => o.opgaveloserId == rowOpgaveloserId)
+			// 	//console.log(opgaveloser)
+			// 	let timeAntalForOpgave = 0
+			// 	let ugeTimeOpgaveId
+			// 	let availableWorkTime = opgaveloser.maxAvailableWorkTime
+
+			// 	for (let i = 0; i < opgaveloser.currentWorkTime.length; i++) {
+			// 		let currentWorkTime = opgaveloser.currentWorkTime[i]
+			// 		if (rowopgaveloserOpgaveId == currentWorkTime.opgaveloserOpgaveId) {
+			// 			timeAntalForOpgave += currentWorkTime.timeAntal
+			// 			ugeTimeOpgaveId = currentWorkTime.ugeTimeOpgaveId
+			// 			availableWorkTime -= timeAntalForOpgave
+			// 		}
+			// 	}
+
+			// 	// availableWorkTime -= opgaveloser.maxAvailableWorkTime - timeAntalForOpgave
+
+			// 	let td = $('<td>', {
+			// 		'onclick': 'changeAntalTimer(this)',
+			// 		'class': 'availableWorkTime pointer',
+			// 		'maxAvailableWorkTime': opgaveloser.maxAvailableWorkTime,
+			// 		'timeAntalForOpgave': timeAntalForOpgave,
+			// 		'availableWorkTime': availableWorkTime,
+			// 		'week': currentWeek,
+			// 		'ugeTimeOpgaveId': ugeTimeOpgaveId,
+			// 		'text': timeAntalForOpgave,
+			// 		'data-toggle': 'tooltip',
+			// 		'title': '',
+			// 		'workDaysInWeek': opgaveloser.workDaysInWeek.length,
+			// 		'workDaysInMonth': 0,
+			// 		'month': month,
+			// 		'year': year
+			// 	})
+
+			// 	if (i == 0)
+			// 		$(td).addClass('firstInMonth')
+
+			// 	//changeWorkLoad(td)
+			// 	$(currentRow).append(td)
+			// }
 		}
 
-		calcWeekAvailableworktime()
-		setWorkHoursUsed()
+		//calcWeekAvailableworktime()
+		//setWorkHoursUsed()
 	}
 })
 
@@ -254,8 +286,8 @@ function setWorkDaysInMonth() {//dårlig performance..//TODO dårlig performance
 			$(this).children('.availableWorkTime').each(function () {
 				var month = $(this).attr('month')
 				let currentMonth = opgaveloser.workDaysInMonth.find(o => o.month == month)//tjek om månedet findes
-				if(currentMonth == undefined){//hvis ikke opret det
-					currentMonth = {'month':month, 'days': 0}
+				if (currentMonth == undefined) {//hvis ikke opret det
+					currentMonth = { 'month': month, 'days': 0 }
 					opgaveloser.workDaysInMonth.push(currentMonth)
 				}
 				currentMonth.days += parseInt($(this).attr('workDaysInWeek'), 10)//tilføj dage
@@ -295,7 +327,7 @@ function setWorkHoursUsed() {
 	(1+2+3+4+5+6+7) / ( (23 * 6,9) * ((37 - 0,5*5)/34,5) )
 	*/
 
-	
+
 
 
 	//get total workhours and 
@@ -408,12 +440,8 @@ function changeAntalTimer(e) {
 
 //sætter farverne på felterne
 function changeWorkLoad(td) {
-	let availableWorkTime = $(td).attr('availableWorkTime')
+	let availableWorkTime = $(td).attr('availableWorkTimeInWeek')
 
-	// let maxAvailableWorkTime = $(td).attr('maxAvailableWorkTime')
-	// let timeAntalForOpgave = $(td).attr('timeAntalForOpgave')
-	// let time = maxAvailableWorkTime - timeAntalForOpgave
-	//$(td).attr('class', 'availableWorkTime')
 	$(td).removeClass('lowWorkload')
 	$(td).removeClass('mediumWorkload')
 	$(td).removeClass('highWorkload')

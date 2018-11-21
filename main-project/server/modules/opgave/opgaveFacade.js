@@ -50,25 +50,31 @@ function subPostView() {
             else if (arg.req.path == '/tilfojopgaveloser') {
                 //09-11 4 05:40 og 07:45
                 let opgaveloser = arg.req.body
-
+                //console.log(opgaveloser.weekdays.months)
                 if(opgaveloser.type == 'newOpgaveloser'){
+                    
                     tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
+                        
                         tilfojopgaveloser.saveNewOpgavelosere(opgaveloser,d,function(data){
+                            //console.log(data)
                             mediator.publish('createInDB', Object.assign(arg, data))
                         })
                     })
                 }
                 else if(opgaveloser.type == 'changedOpgaveloser'){
-                    let start = new Date(opgaveloser.startDato)
-                    let slut = new Date(opgaveloser.slutDato)
-                    let startDate = start.getFullYear() + '-' + (start.getMonth()+1) + '-' + start.getDate()
-                    let slutDate = slut.getFullYear() + '-' + (slut.getMonth()+1) + '-' + slut.getDate()
+                    // let start = new Date(opgaveloser.startDato)
+                    // let slut = new Date(opgaveloser.slutDato)
+                    // let startDate = start.getFullYear() + '-' + (start.getMonth()+1) + '-' + start.getDate()
+                    // let slutDate = slut.getFullYear() + '-' + (slut.getMonth()+1) + '-' + slut.getDate()
 
-                    mediator.publish('deleteInDB', Object.assign(arg, tilfojopgaveloser.deleteUgeTimeOpgave(opgaveloser, startDate, slutDate)))
+                    //mediator.publish('deleteInDB', Object.assign(arg, tilfojopgaveloser.deleteUgeTimeOpgave(opgaveloser, startDate, slutDate)))
 
                     tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
+                        //console.log(d)
                         tilfojopgaveloser.saveChangedOpgavelosere(opgaveloser,d,function(data){
+                            //console.log(data)
                             mediator.publish('createInDB', Object.assign(arg, data))
+                            // mediator.publish('replaceInDB', Object.assign(arg, data))
                         })
                     })
                 }
@@ -199,10 +205,9 @@ function subDataFromDB() {
                     //console.log(opgavelosereMaxAvailableWorkTime)
                     tilfojopgaveloser.addUsedHours(opgavelosereMaxAvailableWorkTime, arg.data[1].result, function (usedHours) {
                         //console.log(usedHours)
+                        //console.log(usedHours)
                         arg.res.json(usedHours)
                     })
-                    //calc ledig tid
-
                 })
 
                 //console.log(arg.data)

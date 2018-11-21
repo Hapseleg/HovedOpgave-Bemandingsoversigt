@@ -51,11 +51,18 @@ function setupValuesArray(array) {
 }
 
 
+// function createDuplicateKeyString(array){
+//     let query = ''
+//     //timeAntal = values(timeAntal)
+//     for (let i = 0; i < array.length; i++)
+//         query += array[i].column + ' = values(' + array[i].column + ')'
 
+//     return query
+// }
 
 async function createInDB(arg, createdDone, firstId, earlierResults, callback, errorCallback) {
     console.log('create in db')
-    console.log(arg.data)
+    //console.log(arg.data)
     let results = { data: [], origin: arg.origin, type: 'create' }
     if (earlierResults != undefined)
         results = earlierResults
@@ -77,8 +84,16 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
             data.values[i].push(insertId)
         }
     }
+
+    console.log(data)
+    let duplicateKey = ''
+    if(data.onDupliateKeyUpdate){
+        duplicateKey = 'ON DUPLICATE KEY UPDATE ' + data.onDupliateKeyUpdate.column + ' = values(' + data.onDupliateKeyUpdate.column + ')'
+        //duplicateKey += createDuplicateKeyString()
+    }
+
     // console.log(arg.data[0].values[0],'sql string')
-    var sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES ?";
+    var sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES ? " + duplicateKey;
     console.log(sql)
 
     await conn.query(sql, [data.values])
