@@ -186,8 +186,7 @@ BEGIN
     SET NEW.dato = STR_TO_DATE(CONCAT(NEW.year,'-',LPAD(NEW.month,2,'00'),'-',LPAD('01',2,'00')), '%Y-%m-%d');
 END;;
 DELIMITER ;
-#drop trigger updateIfExist;
-#drop trigger createDate;
+
 
 
 

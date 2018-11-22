@@ -228,7 +228,7 @@ $(document).ready(function () {
 
     function createOpgavelosere(i, valgteOpgavelosere) {
         if (i < valgteOpgavelosere.length) {
-            console.log(valgteOpgavelosere[i])
+            // console.log(valgteOpgavelosere[i])
             let opgaveId = $('#opgaveId').attr('value')
             let opgaveloserId = $(valgteOpgavelosere[i]).children('.opgaveloserId').attr('value')
             let konsulentProfilId = $(valgteOpgavelosere[i]).children('.konsulentProfilId').attr('value')
@@ -258,7 +258,7 @@ $(document).ready(function () {
                 d.type = 'changedOpgaveloser'
                 d.opgaveloserOpgaveId = $(valgteOpgavelosere[i]).children('.opgaveloserOpgaveId').attr('value')
             }
-            console.log(d)
+            // console.log(d)
             addOpgaveloserAjax(d, function () {
                 createOpgavelosere(i + 1, valgteOpgavelosere)
             })

@@ -24,12 +24,7 @@ function subGetView() {
                 mediator.publish('readFromDB', Object.assign(arg, profiler[0].getData()))
             }
         }
-        else if (arg.req.path == '/tilfojopgaveloser/modal') {
-            arg.modalTest = true
-            mediator.publish('readFromDB', Object.assign(arg, profiler[1].getData(arg.req.query.opgaveId)))
-        }
         else if (arg.req.path == '/tilfojopgaveloser') {
-            //console.log(arg.req.query)
             //arg.req.query.opgaveId
             mediator.publish('readFromDB', Object.assign(arg, profiler[1].getData(arg.req.query.opgaveId)))
             //arg.res.render('tilfojopgaveloser')//TODO
@@ -55,20 +50,18 @@ function subPostView() {
             else if (arg.req.path == '/tilfojopgaveloser') {
                 //09-11 4 05:40 og 07:45
                 let opgaveloser = arg.req.body
-                console.log(opgaveloser)
-                console.log(parseFloat(opgaveloser.timeAntal))
                 //console.log(opgaveloser.weekdays.months)
-                if (opgaveloser.type == 'newOpgaveloser') {
-
+                if(opgaveloser.type == 'newOpgaveloser'){
+                    
                     tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
-
-                        tilfojopgaveloser.saveNewOpgavelosere(opgaveloser, d, function (data) {
+                        
+                        tilfojopgaveloser.saveNewOpgavelosere(opgaveloser,d,function(data){
                             //console.log(data)
                             mediator.publish('createInDB', Object.assign(arg, data))
                         })
                     })
                 }
-                else if (opgaveloser.type == 'changedOpgaveloser') {
+                else if(opgaveloser.type == 'changedOpgaveloser'){
                     // let start = new Date(opgaveloser.startDato)
                     // let slut = new Date(opgaveloser.slutDato)
                     // let startDate = start.getFullYear() + '-' + (start.getMonth()+1) + '-' + start.getDate()
@@ -78,7 +71,7 @@ function subPostView() {
 
                     tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
                         //console.log(d)
-                        tilfojopgaveloser.saveChangedOpgavelosere(opgaveloser, d, function (data) {
+                        tilfojopgaveloser.saveChangedOpgavelosere(opgaveloser,d,function(data){
                             //console.log(data)
                             mediator.publish('createInDB', Object.assign(arg, data))
                             // mediator.publish('replaceInDB', Object.assign(arg, data))
@@ -99,10 +92,10 @@ function subPutView() {
             if (arg.req.path == '/' + name) {
                 console.log('put opgave')
                 if (arg.req.body.opgaveId)
-                    opgave.updateOpgave(arg.req.body, function (data) {
+                    opgave.updateOpgave(arg.req.body, function(data){
                         mediator.publish('updateInDB', Object.assign(arg, data))
                     })
-
+                    
             }
         }
         catch (error) {
@@ -153,7 +146,7 @@ function subDataFromDB() {
                     arg.res.json({})
                 else if (arg.type == 'delete')
                     arg.res.json({})
-
+                
             }
             else if (arg.origin == name + 'specific') {
                 arg.res.render('opgave', {
@@ -179,34 +172,19 @@ function subDataFromDB() {
                     }
                 }
                 let bemandetTimerTotal = {}
-                if (arg.data[5].result.length > 0) {
+                if(arg.data[5].result.length>0){
                     bemandetTimerTotal = arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal }))
                 }
 
-                if (arg.modalTest)
-                
-                    arg.res.render('tilfojopgaveloser', {
-                        layout: false,
-                        'opgavelosere': arg.data[0].result,
-                        'lokation': arg.data[1].result,
-                        'konsulentProfil': arg.data[2].result,
-                        'opgaveInfo': arg.data[3].result[0],
-                        'deadlines': arg.data[4].result,
-                        'bemandetTimerTotal': bemandetTimerTotal,
-                        'valgteOpgaveloser': arg.data[6].result,
-                    }, function (err, html) {
-                        arg.res.send(html);
-                    });
-                else
-                    arg.res.render('tilfojopgaveloser', {
-                        'opgavelosere': arg.data[0].result,
-                        'lokation': arg.data[1].result,
-                        'konsulentProfil': arg.data[2].result,
-                        'opgaveInfo': arg.data[3].result[0],
-                        'deadlines': arg.data[4].result,
-                        'bemandetTimerTotal': bemandetTimerTotal,
-                        'valgteOpgaveloser': arg.data[6].result,
-                    })
+                arg.res.render('tilfojopgaveloser', {
+                    'opgavelosere': arg.data[0].result,
+                    'lokation': arg.data[1].result,
+                    'konsulentProfil': arg.data[2].result,
+                    'opgaveInfo': arg.data[3].result[0],
+                    'deadlines': arg.data[4].result,
+                    'bemandetTimerTotal': bemandetTimerTotal,
+                    'valgteOpgaveloser': arg.data[6].result,
+                })
             }
             else if (arg.origin == 'tilfojopgaveloserTid') {
                 let loopDone = false;

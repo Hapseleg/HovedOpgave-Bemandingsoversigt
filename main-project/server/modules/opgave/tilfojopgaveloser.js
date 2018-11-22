@@ -36,7 +36,7 @@ function getData(opgaveId) {
             },
             {
                 table: 'Opgave',
-                columns: ['opgaveId', 'opgaveNavn', 'estimeretTimetal'],
+                columns: ['opgaveId', 'opgaveNavn', 'estimeretTimetal', 'aktiv'],
                 leftJoins: [
                     { leftTable: 'Opgave', rightTable: 'Opgavetype', leftColumn: 'opgavetypeId', rightColumn: 'opgavetypeId', selectColumns: ['opgavetypeNavn'] },
                     { leftTable: 'Opgave', rightTable: 'Lokation', leftColumn: 'lokationId', rightColumn: 'lokationId', selectColumns: ['lokationNavn'] },
@@ -90,6 +90,7 @@ function getTidData(startDate, slutDate) {
                 leftJoins: [
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'UgeTimeOpgave', leftColumn: 'opgaveloserOpgaveId', rightColumn: 'opgaveloserOpgaveId', selectColumns: ['year', 'month', 'week', 'timeAntal'] },
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
+                    { leftTable: 'OpgaveloserOpgave', rightTable: 'Opgave', leftColumn: 'opgaveId', rightColumn: 'opgaveId', selectColumns: ['aktiv'] },
                 ],
                 between: [
                     { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-01"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-01"') },
@@ -171,7 +172,10 @@ function calculateHoursForMonths(timeAntal, months, callback) {
         }
         i++
     }
-    //console.log(datesAndHours)
+
+    // console.log('timeAntal', timeAntal)
+    // console.log('months', months)
+    // console.log('datesAndHours', datesAndHours)
     callback(datesAndHours)
 }
 

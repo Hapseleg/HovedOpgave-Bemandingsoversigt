@@ -105,12 +105,3 @@ th{
 .centerTextTd{
     text-align: center
 }
-
-.modal-full{
-    max-width: 85%;
-}
-
-.modal-padding{
-    padding:20px;
-    background-color: #3498db;
-}
