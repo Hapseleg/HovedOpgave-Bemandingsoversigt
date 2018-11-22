@@ -92,3 +92,16 @@ th{
 .firstInMonth {
     border-left-width: 3px
 }
+
+.tooltipLink{
+    color: #212529
+}
+
+.hoursText{
+    height:100%;
+    width:100%;
+}
+
+.centerTextTd{
+    text-align: center
+}

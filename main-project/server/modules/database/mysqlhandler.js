@@ -61,7 +61,8 @@ function setupValuesArray(array) {
 // }
 
 async function createInDB(arg, createdDone, firstId, earlierResults, callback, errorCallback) {
-    console.log('create in db')
+    try{
+        console.log('create in db')
     //console.log(arg.data)
     let results = { data: [], origin: arg.origin, type: 'create' }
     if (earlierResults != undefined)
@@ -70,7 +71,7 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
     let insertId = firstId;
 
     let data = arg.data[createdDone]
-    
+
 
     var tableName = data.table
     var columns = setupColumnsString(data.columns)
@@ -87,7 +88,7 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
 
     console.log(data)
     let duplicateKey = ''
-    if(data.onDupliateKeyUpdate){
+    if (data.onDupliateKeyUpdate) {
         duplicateKey = 'ON DUPLICATE KEY UPDATE ' + data.onDupliateKeyUpdate.column + ' = values(' + data.onDupliateKeyUpdate.column + ')'
         //duplicateKey += createDuplicateKeyString()
     }
@@ -109,14 +110,17 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
                 createInDB(arg, createdDone + 1, insertId, results, callback, errorCallback)
         })
         .catch(function (error) {
-            errorCallback(Object.assign(arg, { error }))
-            return
+            throw error
         })
+    }
+    catch (error) {
+        errorCallback(Object.assign(arg, { error }))
+    }
 }
 
 async function readFromDB(arg, callback, errorCallback) {
-
-    console.log('readfromdb')
+    try{
+        console.log('readfromdb')
     let results = { data: [], origin: arg.origin, type: 'read' }
 
     for (let i = 0, l = arg.data.length; i < l; i++) {
@@ -175,10 +179,13 @@ async function readFromDB(arg, callback, errorCallback) {
                 //callback(results)
             })
             .catch(function (error) {
-                errorCallback(Object.assign(arg, { error }))
+                throw error
             })
     }
-
+    }
+    catch (error) {
+        errorCallback(Object.assign(arg, { error }))
+    }
 }
 
 function setupSetString(colArray, valArray) {
@@ -221,51 +228,64 @@ function setupWhereString(array) {
 }
 
 async function updateInDB(arg, callback, errorCallback) {
-    console.log('updateInDB')
-    let results = { data: [], origin: arg.origin, type: 'update' }
+    try {
+        console.log('updateInDB')
+        let results = { data: [], origin: arg.origin, type: 'update' }
 
-    for (let i = 0, l = arg.data.length; i < l; i++) {
-        let data = arg.data[i]
+        for (let i = 0, l = arg.data.length; i < l; i++) {
+            let data = arg.data[i]
 
-        let tableName = data.table
-        let setValues = setupSetString(data.columns, data.values)
+            let tableName = data.table
+            let setValues = setupSetString(data.columns, data.values)
 
-        let whereValues = setupWhereString(data.where)
+            let whereValues = setupWhereString(data.where)
 
-        let sql = "UPDATE " + tableName + " SET " + setValues + whereValues
-        console.log(sql)
-        await conn.query(sql)
-            .then(function (result) {
-                results.data.push({ result: result, fields: { orgTable: tableName } })
-                callback(Object.assign(arg, results))
-            })
-            .catch(function (error) {
-                errorCallback(Object.assign(arg, { error }))
-            })
+            let sql = "UPDATE " + tableName + " SET " + setValues + whereValues
+            console.log(sql)
+            await conn.query(sql)
+                .then(function (result) {
+                    results.data.push({ result: result, fields: { orgTable: tableName } })
+                    callback(Object.assign(arg, results))
+                })
+                .catch(function (error) {
+                    throw error
+                })
+        }
     }
+    catch (error) {
+        errorCallback(Object.assign(arg, { error }))
+    }
+
 }
 
 async function deleteInDB(arg, callback, errorCallback) {
-    console.log('updateInDB')
-    let results = { data: [], origin: arg.origin, type: 'delete' }
-
-    for (let i = 0, l = arg.data.length; i < l; i++) {
-        let data = arg.data[i]
-        let tableName = data.table
-        let whereValues = setupWhereString(data.where)
-
-        let sql = "DELETE FROM " + tableName + whereValues
-        console.log(sql)
-        await conn.query(sql)
-            .then(function (result) {
-                results.data.push({ result: result, fields: { orgTable: tableName } })
-                callback(Object.assign(arg, results))
-                //callback(results)
-            })
-            .catch(function (error) {
-                errorCallback(Object.assign(arg, { error }))
-            })
+    try{
+        console.log('updateInDB')
+        let results = { data: [], origin: arg.origin, type: 'delete' }
+    
+        for (let i = 0, l = arg.data.length; i < l; i++) {
+            let data = arg.data[i]
+            let tableName = data.table
+            let whereValues = setupWhereString(data.where)
+    
+            let sql = "DELETE FROM " + tableName + whereValues
+            console.log(sql)
+            await conn.query(sql)
+                .then(function (result) {
+                    results.data.push({ result: result, fields: { orgTable: tableName } })
+                    callback(Object.assign(arg, results))
+                    //callback(results)
+                })
+                .catch(function (error) {
+                    throw error
+                })
+        }
     }
+    catch (error) {
+        errorCallback(Object.assign(arg, { error }))
+    }
+
+    
 }
 
 module.exports = {

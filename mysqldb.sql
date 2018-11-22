@@ -182,6 +182,7 @@ CREATE TRIGGER createDate
     FOR EACH ROW
 BEGIN
 	#https://stackoverflow.com/questions/3960049/create-date-from-day-month-year-fields-in-mysql#comment60757399_3960097
+    
     SET NEW.dato = STR_TO_DATE(CONCAT(NEW.year,'-',LPAD(NEW.month,2,'00'),'-',LPAD('01',2,'00')), '%Y-%m-%d');
 END;;
 DELIMITER ;

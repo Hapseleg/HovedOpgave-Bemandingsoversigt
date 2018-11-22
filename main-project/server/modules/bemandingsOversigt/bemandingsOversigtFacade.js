@@ -17,7 +17,6 @@ function subGetView() {
             mediator.publish('readFromDB', Object.assign(arg, bemandingsoversigt.getData()))
         }
         else if (arg.req.path == '/bemandingsOversigtTid') {
-
             mediator.publish('readFromDB', Object.assign(arg, bemandingsoversigt.getTidData()))
         }
     })
@@ -52,18 +51,22 @@ function subDataFromDB() {
 
                 if (arg.type == 'read') {
                     if (field.orgTable == 'Opgaveloser') {
-                        arg.res.render(name, { opgaveloser: arg.data[0].result })
+                        arg.res.render(name, 
+                            { 
+                                'opgaveloser': arg.data[0].result,
+                                //'opgaver':arg.data[1].result 
+                            })
                     }
                     else if (field.orgTable == 'OpgaveloserArbejdsTider') {
-
                         let year = arg.req.query.year
                         let month = arg.req.query.month
                         let weekdays = []
                         tidsUdregner.getWeekdaysInMonth(year, month, function (data) {
                             weekdays.push({ 'year': year, 'month': month, 'weeks': data })
                             arg.data.push({ weekdays })
-                            //console.log(weekdays)
+
                             tidsUdregner.calculateMaxAvailableWorkTimeInMonthsAndWeeks(arg.data[0].result, weekdays, function (opgavelosereMaxAvailableWorkTime) {
+                                //console.log(arg.data[1].result)
                                 tidsUdregner.addUsedHours(opgavelosereMaxAvailableWorkTime, arg.data[1].result, function (usedHours) {
                                     arg.res.json(usedHours)
                                 })

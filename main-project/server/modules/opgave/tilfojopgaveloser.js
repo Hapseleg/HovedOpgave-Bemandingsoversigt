@@ -92,7 +92,8 @@ function getTidData(startDate, slutDate) {
                     { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
                 ],
                 between: [
-                    { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-' + startDate[2] + '"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-' + slutDate[2] + '"') },
+                    { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-01"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-01"') },
+                    // { 'column': 'dato', 'start': ('"' + startDate[0] + '-' + startDate[1] + '-' + startDate[2] + '"'), 'slut': ('"' + slutDate[0] + '-' + slutDate[1] + '-' + slutDate[2] + '"') },
                     //{ 'column': 'year', 'start': startDate[0], 'slut': slutDate[0] },
                     //{ 'column': 'month', 'start': startDate[1], 'slut': slutDate[1] },
                     //{ 'column': 'week', 'start': tidsUdregner.getIsoWeek(startDate[0],startDate[1],startDate[2]), 'slut': tidsUdregner.getIsoWeek(slutDate[0],slutDate[1],slutDate[2]) }
@@ -158,7 +159,7 @@ function calculateHoursForMonths(timeAntal, months, callback) {
                         d.timeAntal = parseFloat(we.hours) + timeAntal
                     }
                     else {
-                        d.timeAntal = we.hours
+                        d.timeAntal = remainingHours
                     }
 
                     d.week = we.week

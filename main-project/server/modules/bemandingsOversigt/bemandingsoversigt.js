@@ -16,23 +16,16 @@ function getView(path){
 function getData(){
     return {
         data:[
-            {//OpgaveloserOpgave, opgave, Opgaveloser, ugetimeopgave, OpgaveloserKonsulentprofil, Konsulentprofil
+            {
                 table:'Opgaveloser',
                 columns: ['*'],
-                // leftJoins:[
-                   
-                // ],
             },
-            // {//OpgaveloserOpgave, opgave, Opgaveloser, ugetimeopgave, OpgaveloserKonsulentprofil, Konsulentprofil
+            // {
             //     table:'OpgaveloserOpgave',
-            //     columns: ['opgaveloserOpgaveId','opgaveId','opgaveloserKonsulentProfilId'],
-            //     leftJoins:[
-            //         {leftTable: 'OpgaveloserOpgave', rightTable:'Opgave', leftColumn: 'opgaveId', rightColumn: 'opgaveId', selectColumns: ['opgaveNavn', 'startDato', 'slutDato']},
-            //         {leftTable: 'OpgaveloserOpgave', rightTable:'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId', 'konsulentProfilId']},
-            //         {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Konsulentprofil', leftColumn: 'konsulentProfilId', rightColumn: 'konsulentProfilId', selectColumns: ['konsulentProfilNavn']},
-            //         {leftTable: 'OpgaveloserKonsulentprofil', rightTable:'Opgaveloser', leftColumn: 'opgaveloserId', rightColumn: 'opgaveloserId', selectColumns: ['fornavn', 'efternavn', 'arbejdstidPrUge']},
+            //     columns: ['opgaveId'],
+            //     leftJoins: [
+            //         { leftTable: 'OpgaveloserOpgave', rightTable: 'opgaveloserKonsulentProfil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] }
             //     ],
-            //     where: [{ column: 'aktiv', value: 1 }]
             // },
         ],
         origin:name
@@ -62,6 +55,15 @@ function getTidData(){
                         selectColumns: [
                             'opgaveloserOpgaveId',
                             'opgaveId'
+                        ]
+                    },
+                    {
+                        leftTable: 'opgaveloserOpgave', 
+                        rightTable:'Opgave', 
+                        leftColumn: 'opgaveId', 
+                        rightColumn: 'opgaveId', 
+                        selectColumns: [
+                            'opgaveNavn', 'aktiv',
                         ]
                     },
                     {

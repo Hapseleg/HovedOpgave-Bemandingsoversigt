@@ -226,9 +226,9 @@
                     </thead>
                     <tbody>
                         {{#each deadlines}}
-                        <tr onclick="markForRemoval(this)" value={{this.deadlineId}} class="pointer">
-                            <input type="hidden" class="deadlineDato" name="deadlines[{{@index}}][deadlineDato]" value="{{this.deadlineDato}}">
-                            <input type="hidden" name="deadlines[{{@index}}][deadlineKommentar]" value="{{this.deadlineKommentar}}">
+                        <tr onclick="markForRemoval(this)" value="{{this.deadlineId}}" class="pointer">
+                            {{!-- <input type="hidden" class="deadlineDato" name="deadlines[{{@index}}][deadlineDato]" value="{{this.deadlineDato}}">
+                            <input type="hidden" name="deadlines[{{@index}}][deadlineKommentar]" value="{{this.deadlineKommentar}}"> --}}
                             <td class="date">{{this.deadlineDato}}</td>
                             <td>{{this.deadlineKommentar}}</td>
                         </tr>
@@ -261,7 +261,7 @@
                         <tbody class="pointer">
                             {{#each opgavelosere}}
                             <tr id="opgaveloserRow">
-                                <input type="hidden" name="opgaveloser[{{@index}}][opgaveloserKonsulentProfilId]" value={{this.opgaveloserKonsulentProfilId}}>
+                                {{!-- <input type="hidden" name="opgaveloser[{{@index}}][opgaveloserKonsulentProfilId]" value={{this.opgaveloserKonsulentProfilId}}> --}}
                                 <td value="{{this.opgaveloserId}}">{{this.fornavn}} {{this.efternavn}}</td>
                                 <td value="{{this.konsulentProfilId}}">{{this.konsulentProfilNavn}}</td>
                                 <td value="{{this.lokationId}}">{{this.lokationNavn}}</td>

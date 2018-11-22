@@ -110,7 +110,7 @@ function getOpgaveById(opgaveId) {
             },
             {
                 table: 'Deadline',
-                columns: ['deadlineDato', 'deadlineKommentar'],
+                columns: ['deadlineId','deadlineDato', 'deadlineKommentar'],
                 where: [{ column: 'opgaveId', value: opgaveId }]
             },
             {
@@ -176,8 +176,8 @@ function saveData(arg, callback) {
     }
 }
 
-function updateOpgave(arg) {
-    return {
+function updateOpgave(arg, callback) {
+    let data = {
         data: [{
             table: 'Opgave',
             columns: ['opgaveNavn', 'kundeId', 'kundeansvarligId', 'opgavestillerId', 'opgaveStatusId', 'opgavetypeId', 'lokationId', 'kontraktStatusId', 'startDato', 'fixedStartDato', 'slutDato', 'fixedSlutDato', 'kommentar', 'estimeretTimetal', 'aktiv'],
@@ -188,6 +188,12 @@ function updateOpgave(arg) {
         ],
         origin: name
     }
+
+    insertData('Deadline', ['deadlineDato', 'deadlineKommentar', 'opgaveId'], arg.deadlines, data.data, true, function () {
+        //insertData('OpgaveloserOpgave', ['opgaveloserKonsulentProfilId', 'opgaveId'], arg.opgaveloser, data.data, true, function () {
+            callback(data)
+        //})
+    })
 }
 
 function deleteOpgave(arg) {
@@ -201,11 +207,30 @@ function deleteOpgave(arg) {
     }
 }
 
+function deleteDeadlines(arg) {
+    console.log(arg.deadlinesToRemove)
+    let data = {
+        data: [
+        ],
+        origin: name
+    }
+    for(let i = 0; i< arg.deadlinesToRemove.length; i++){
+        data.data.push({
+            'table': 'Deadline',
+            'where': [{ column: 'deadlineId', value: arg.deadlinesToRemove[i] }]
+        })
+        console.log(data)
+        if(data.data.length == arg.deadlinesToRemove.length)
+            return data
+    }
+}
+
 module.exports = {
     getView: getView,
     saveData: saveData,
     getData: getData,
     getOpgaveById: getOpgaveById,
     updateOpgave: updateOpgave,
-    deleteOpgave: deleteOpgave
+    deleteOpgave: deleteOpgave,
+    deleteDeadlines:deleteDeadlines
 }

@@ -92,7 +92,10 @@ function subPutView() {
             if (arg.req.path == '/' + name) {
                 console.log('put opgave')
                 if (arg.req.body.opgaveId)
-                    mediator.publish('updateInDB', Object.assign(arg, opgave.updateOpgave(arg.req.body)))
+                    opgave.updateOpgave(arg.req.body, function(data){
+                        mediator.publish('updateInDB', Object.assign(arg, data))
+                    })
+                    
             }
         }
         catch (error) {
@@ -108,6 +111,11 @@ function subDeleteView() {
                 console.log('delete opgave')
                 if (arg.req.body.opgaveId)
                     mediator.publish('deleteInDB', Object.assign(arg, opgave.deleteOpgave(arg.req.body)))
+            }
+            else if (arg.req.path == '/' + name + 'DeleteDeadlines') {
+                console.log('delete deadlines')
+                if (arg.req.body.deadlinesToRemove)
+                    mediator.publish('deleteInDB', Object.assign(arg, opgave.deleteDeadlines(arg.req.body)))
             }
         }
         catch (error) {
@@ -136,6 +144,9 @@ function subDataFromDB() {
                     arg.res.redirect('opgaveoversigt')
                 else if (arg.type == 'update')
                     arg.res.json({})
+                else if (arg.type == 'delete')
+                    arg.res.json({})
+                
             }
             else if (arg.origin == name + 'specific') {
                 arg.res.render('opgave', {

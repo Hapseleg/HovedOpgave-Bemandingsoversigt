@@ -1,11 +1,40 @@
 $(document).ready(function () {
     var weekdays
 
-    $('#searchButton').click(search)
+    function setup() {
+        var now = new Date()
 
-    function search() {
+        let month = now.getMonth() + 1
+        let year = now.getFullYear()
+        let date = now.getDate()
+
+        $('#startDatoSearch').val(year + '-' + month + '-' + date)
+        month++
+        if (month > 12) {
+            month = 1
+            year++
+        }
+        $('#slutDatoSearch').val(year + '-' + month + '-' + date)
+
         getWeeksAjax()
     }
+    setup()
+
+    $('select').change(function () {
+        sortMuligeOpgavelosere()
+    })
+    $('input[type="date"]').change(function () {
+        let start = new Date($('#startDatoSearch').val())
+        let slut = new Date($('#slutDatoSearch').val())
+
+        if (slut >= start)
+            getWeeksAjax()
+        else
+            alert('start skal være før slut')
+
+    })
+
+    $('#searchButton').click(getWeeksAjax)
 
     function getWeeksAjax() {
         let start = new Date($('#startDatoSearch').val())
@@ -157,7 +186,7 @@ $(document).ready(function () {
                 let orgLedigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigetimer'), 10)
 
                 $(this).children('.timeAntal').html((value + orgTimeTal))
-                $(this).children('.ledigeTimer').html((orgLedigeTimer-value))
+                $(this).children('.ledigeTimer').html((orgLedigeTimer - value))
 
 
 

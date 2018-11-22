@@ -128,8 +128,8 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                 //let foundWeek = newMo.weeks.find(o => o.week = we.week)
 
                 if (availableWorkDaysInWeek > 0) {
-                    // maxAvailableWorkTimeInWeek = (arbejdstidPrUge / 5) * arbejdsdage i ugen
-                    let maxWorksHoursInWeek = (curOp.arbejdstidPrUge / 5) * availableWorkDaysInWeek
+                    // maxAvailableWorkTimeInWeek = (arbejdstidPrUge / hvor mange dage de arbejder i en normal uge) * arbejdsdage i ugen
+                    let maxWorksHoursInWeek = (curOp.arbejdstidPrUge / curOp.arbejdsDage.length) * availableWorkDaysInWeek
                     let fixedMaxWorksHoursInWeek = parseInt(maxWorksHoursInWeek.toFixed(0), 10)
                     //console.log(curOp.opgaveloserId,curOp.arbejdstidPrUge, availableWorkDaysInWeek,fixedMaxWorksHoursInWeek)
 
@@ -138,6 +138,7 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                         'week': we.week,
                         'hours': fixedMaxWorksHoursInWeek,
                         'usedHours': 0,
+                        'opgaver':[]
                     })
                     // }
                     // else {
@@ -148,7 +149,7 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                     newMo.availableWorkTimeInMonth += fixedMaxWorksHoursInWeek
 
                     opgaveloser.maxAvailableWorkTime += fixedMaxWorksHoursInWeek
-                    opgaveloser.availableWorkTime += fixedMaxWorksHoursInWeek
+                    opgaveloser.availableWorkTime += fixedMaxWorksHoursInWeek//TODO bliver nogle gange regnet forkert, 
                 }
                 else {
                     //if (foundWeek == undefined) {
@@ -156,6 +157,7 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                         'week': we.week,
                         'hours': 0,
                         'usedHours': 0,
+                        'opgaver':[]
                     })
                 }
                 //}
@@ -177,12 +179,15 @@ function addUsedHours(maxAvailableWorkTime, workTime, callback) {
             if (currentOpgaveloser != undefined) {
                 currentOpgaveloser.availableWorkTime -= wt.timeAntal
     
-                let month = currentOpgaveloser.months.find(o => o.month == wt.month)
-                if (month != undefined) {
+                let month = currentOpgaveloser.months.find(o => o.month == wt.month && o.year == wt.year)
+                // if (month != undefined) {
+                if (month != undefined && wt.aktiv == 1) {
                     month.availableWorkTimeInMonth -= wt.timeAntal
     
                     let week = month.weeks.find(o => o.week == wt.week)
                     week.usedHours += wt.timeAntal
+                    //if(wt.opgaveId != null)
+                    week.opgaver.push({'opgaveId':wt.opgaveId, 'opgaveNavn':wt.opgaveNavn})
                 }
             }
         }
