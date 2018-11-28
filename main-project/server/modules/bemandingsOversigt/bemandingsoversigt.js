@@ -1,3 +1,5 @@
+var tidsUdregner = require('../tidsudregner.js')
+
 var name = 'bemandingsoversigt'
 
 function validatePath(path){
@@ -181,5 +183,8 @@ module.exports = {
     getData:getData,
     getTidData:getTidData,
     createUgeTimeOpgave:createUgeTimeOpgave,
-    updateUgeTimeOpgave:updateUgeTimeOpgave
+    updateUgeTimeOpgave:updateUgeTimeOpgave,
+    getWeekdaysInMonth: tidsUdregner.getWeekdaysInMonth,
+    calculateMaxAvailableWorkTimeInMonthsAndWeeks : tidsUdregner.calculateMaxAvailableWorkTimeInMonthsAndWeeks,
+    addUsedHours : tidsUdregner.addUsedHours
 }

@@ -1,6 +1,6 @@
 var mediator = require('../mediator.js')
 var bemandingsoversigt = require('./bemandingsoversigt.js')
-var tidsUdregner = require('../tidsudregner.js')
+//var tidsUdregner = require('../tidsudregner.js')
 
 var name = 'bemandingsoversigt';
 
@@ -61,13 +61,13 @@ function subDataFromDB() {
                         let year = arg.req.query.year
                         let month = arg.req.query.month
                         let weekdays = []
-                        tidsUdregner.getWeekdaysInMonth(year, month, function (data) {
+                        bemandingsoversigt.getWeekdaysInMonth(year, month, function (data) {
                             weekdays.push({ 'year': year, 'month': month, 'weeks': data })
                             arg.data.push({ weekdays })
 
-                            tidsUdregner.calculateMaxAvailableWorkTimeInMonthsAndWeeks(arg.data[0].result, weekdays, function (opgavelosereMaxAvailableWorkTime) {
+                            bemandingsoversigt.calculateMaxAvailableWorkTimeInMonthsAndWeeks(arg.data[0].result, weekdays, function (opgavelosereMaxAvailableWorkTime) {
                                 //console.log(arg.data[1].result)
-                                tidsUdregner.addUsedHours(opgavelosereMaxAvailableWorkTime, arg.data[1].result, function (usedHours) {
+                                bemandingsoversigt.addUsedHours(opgavelosereMaxAvailableWorkTime, arg.data[1].result, function (usedHours) {
                                     arg.res.json(usedHours)
                                 })
                             })
