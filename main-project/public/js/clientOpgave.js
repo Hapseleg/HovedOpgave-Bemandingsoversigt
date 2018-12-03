@@ -4,7 +4,7 @@ $(document).ready(function () {
     })
 
     $('#redigerOpgavelosere').click(function () {
-        var opgaveId = $('#opgaverealId').val()
+        var opgaveId = $('#opgaveId').val()
         window.location = '/tilfojopgaveloser?opgaveId=' + opgaveId
     })
 
@@ -72,8 +72,6 @@ $(document).ready(function () {
             }
         })
     })
-
-    
 })
 
 function markForRemoval(e) {
@@ -87,21 +85,4 @@ function removeDeadlines() {
     //$(e).remove()
     $('.selectedForRemoval').addClass('deleteDeadline')
     $('.selectedForRemoval').hide()
-}
-
-var rendered = false
-function renderTilfOpgaveloser(){
-    $.ajax({
-        url: '/tilfojopgaveloser/modal',
-        data: {'opgaveId': '1'},
-        type: 'GET',
-        success: function (result) {
-            //console.log(result)
-            if(!rendered){
-                rendered=true
-                $('.modal-body').append(result)
-
-            }
-        }
-    })
 }

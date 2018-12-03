@@ -16,29 +16,29 @@ function setup() {
 
 function subGetView() {
     mediator.subscribe('getView', function (arg) {
-        if (arg.req.path == '/' + name) {
-            if (arg.req.query.opgaveId != undefined) {
-                mediator.publish('readFromDB', Object.assign(arg, profiler[0].getOpgaveById(arg.req.query.opgaveId)))
+        if (arg.req.path == '/' + name) {//name is "opgave"
+            if (arg.req.query.opgaveId != undefined) {//if it contains a opgaveId, get specific opgave from db
+                mediator.publish('readFromDB', Object.assign(arg, opgave.getOpgaveById(arg.req.query.opgaveId)))
             }
-            else {
-                mediator.publish('readFromDB', Object.assign(arg, profiler[0].getData()))
+            else {//else just get required data (from db) for creating a new opgave (opgavetype, lokation etc.)
+                mediator.publish('readFromDB', Object.assign(arg, opgave.getData()))
             }
         }
-        else if (arg.req.path == '/tilfojopgaveloser/modal') {
-            arg.modalTest = true
-            mediator.publish('readFromDB', Object.assign(arg, profiler[1].getData(arg.req.query.opgaveId)))
-        }
+        // else if (arg.req.path == '/tilfojopgaveloser/modal') {
+        //     arg.modalTest = true
+        //     mediator.publish('readFromDB', Object.assign(arg, tilfojopgaveloser.getData(arg.req.query.opgaveId)))
+        // }
         else if (arg.req.path == '/tilfojopgaveloser') {
             //console.log(arg.req.query)
             //arg.req.query.opgaveId
-            mediator.publish('readFromDB', Object.assign(arg, profiler[1].getData(arg.req.query.opgaveId)))
+            mediator.publish('readFromDB', Object.assign(arg, tilfojopgaveloser.getData(arg.req.query.opgaveId)))
             //arg.res.render('tilfojopgaveloser')//TODO
         }
         else if (arg.req.path == '/tilfojopgaveloserTid') {
             //arg.req.query.opgaveId
             console.log(arg.req.query)
 
-            mediator.publish('readFromDB', Object.assign(arg, profiler[1].getTidData(arg.req.query.startDate, arg.req.query.slutDate)))
+            mediator.publish('readFromDB', Object.assign(arg, tilfojopgaveloser.getTidData(arg.req.query.startDate, arg.req.query.slutDate)))
             //arg.res.render('tilfojopgaveloser')//TODO
         }
     })
@@ -156,6 +156,11 @@ function subDataFromDB() {
 
             }
             else if (arg.origin == name + 'specific') {
+                let bemandetTimerTotal = {}
+                if (arg.data[11].result.length > 0) {
+                    bemandetTimerTotal = arg.data[11].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal }))
+                }
+
                 arg.res.render('opgave', {
                     'muligeOpgaveloser': arg.data[0].result,
                     'opgavetype': arg.data[1].result,
@@ -167,7 +172,8 @@ function subDataFromDB() {
                     'kunde': arg.data[7].result,
                     'opgaveInfo': arg.data[8].result[0],
                     'deadlines': arg.data[9].result,
-                    'opgavelosere': arg.data[10].result
+                    'opgavelosere': arg.data[10].result,
+                    'bemandetTimerTotal': bemandetTimerTotal,
                 })
             }
             else if (arg.origin == 'tilfojopgaveloser') {
@@ -183,30 +189,30 @@ function subDataFromDB() {
                     bemandetTimerTotal = arg.data[5].result.reduce((a, b) => ({ 'timeAntal': a.timeAntal + b.timeAntal }))
                 }
 
-                if (arg.modalTest)
-                
-                    arg.res.render('tilfojopgaveloser', {
-                        layout: false,
-                        'opgavelosere': arg.data[0].result,
-                        'lokation': arg.data[1].result,
-                        'konsulentProfil': arg.data[2].result,
-                        'opgaveInfo': arg.data[3].result[0],
-                        'deadlines': arg.data[4].result,
-                        'bemandetTimerTotal': bemandetTimerTotal,
-                        'valgteOpgaveloser': arg.data[6].result,
-                    }, function (err, html) {
-                        arg.res.send(html);
-                    });
-                else
-                    arg.res.render('tilfojopgaveloser', {
-                        'opgavelosere': arg.data[0].result,
-                        'lokation': arg.data[1].result,
-                        'konsulentProfil': arg.data[2].result,
-                        'opgaveInfo': arg.data[3].result[0],
-                        'deadlines': arg.data[4].result,
-                        'bemandetTimerTotal': bemandetTimerTotal,
-                        'valgteOpgaveloser': arg.data[6].result,
-                    })
+                // if (arg.modalTest)
+
+                //     arg.res.render('tilfojopgaveloser', {
+                //         layout: false,
+                //         'opgavelosere': arg.data[0].result,
+                //         'lokation': arg.data[1].result,
+                //         'konsulentProfil': arg.data[2].result,
+                //         'opgaveInfo': arg.data[3].result[0],
+                //         'deadlines': arg.data[4].result,
+                //         'bemandetTimerTotal': bemandetTimerTotal,
+                //         'valgteOpgaveloser': arg.data[6].result,
+                //     }, function (err, html) {
+                //         arg.res.send(html);
+                //     });
+                // else
+                arg.res.render('tilfojopgaveloser', {
+                    'opgavelosere': arg.data[0].result,
+                    'lokation': arg.data[1].result,
+                    'konsulentProfil': arg.data[2].result,
+                    'opgaveInfo': arg.data[3].result[0],
+                    'deadlines': arg.data[4].result,
+                    'bemandetTimerTotal': bemandetTimerTotal,
+                    'valgteOpgaveloser': arg.data[6].result,
+                })
             }
             else if (arg.origin == 'tilfojopgaveloserTid') {
                 let loopDone = false;

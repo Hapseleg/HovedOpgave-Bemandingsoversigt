@@ -4,17 +4,32 @@ $(document).ready(function () {
     function setup() {
         var now = new Date()
 
-        let month = now.getMonth() + 1
         let year = now.getFullYear()
+        let month = now.getMonth() + 1
         let date = now.getDate()
 
-        $('#startDatoSearch').val(year + '-' + month + '-' + date)
+        let monthString = month
+        let dateString = date
+        if(month < 10)
+            monthString = '0' + month
+        if(date < 10)
+            dateString = '0' + date
+        
+
+        $('#startDatoSearch').val(year + '-' + monthString + '-' + dateString)
         month++
         if (month > 12) {
             month = 1
             year++
         }
-        $('#slutDatoSearch').val(year + '-' + month + '-' + date)
+
+        monthString = month
+        dateString = date
+        if(month < 10)
+            monthString = '0' + month
+        if(date < 10)
+            dateString = '0' + date
+        $('#slutDatoSearch').val(year + '-' + monthString + '-' + dateString)
 
         getWeeksAjax()
     }
@@ -158,9 +173,22 @@ $(document).ready(function () {
         $('.valgtOpgaveloser').children('.timeAntal').each(function () {
             bemandedeTimer += parseFloat($(this).html())
         })
-
-        $('#manglendeTimer').val(estimeretTimetal - bemandedeTimer)
+        let mangelende = estimeretTimetal - bemandedeTimer
+        $('#manglendeTimer').val(mangelende)
         $('#bemandedeTimer').val(bemandedeTimer)
+
+        setManglendeColor()
+    }
+
+    function setManglendeColor() {
+        let manglende = parseFloat($('#manglendeTimer').val())
+
+        if (manglende == 0)
+            $('#manglendeTimer').css("background-color", "#2ecc71")
+        else if (manglende < 0)
+            $('#manglendeTimer').css("background-color", "#e74c3c")
+        else
+            $('#manglendeTimer').css("background-color", "#f1c40f")
     }
 
     //Tilføj opgaveløser til valgte opgaveløsere
@@ -179,11 +207,17 @@ $(document).ready(function () {
                     alert('skal være større end 0')
                     return
                 }
+                let orgTimeTal = parseInt($(this).children('.timeAntal').attr('orgTimeTal'), 10)
+                let orgLedigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigetimer'), 10)
+                
+                if (value > orgLedigeTimer) {
+                    if (!confirm('Det indtastede time antal er større end antal ledige timer, vil du fortsætte?'))
+                        return
+                }
+
                 if (!$(this).hasClass('newOpgaveloser'))
                     $(this).addClass('changedOpgaveloser changed')
 
-                let orgTimeTal = parseInt($(this).children('.timeAntal').attr('orgTimeTal'), 10)
-                let orgLedigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigetimer'), 10)
 
                 $(this).children('.timeAntal').html((value + orgTimeTal))
                 $(this).children('.ledigeTimer').html((orgLedigeTimer - value))
@@ -204,12 +238,18 @@ $(document).ready(function () {
                     alert('skal være større end 0')
                     return
                 }
+                let orgLedigeTimer = parseInt($(this).children('.ledigeTimer').attr('orgledigetimer'), 10)
+                if (value > orgLedigeTimer) {
+                    if (!confirm('Det indtastede time antal er større end antal ledige timer, vil du fortsætte?'))
+                    return
+                }
+                let ledigeTimer = $(this).children('.ledigeTimer').html() - value
                 $(this).removeClass('muligOpgaveloser')
                 $(this).addClass('valgtOpgaveloser newOpgaveloser changed')
 
                 $(this).children('.timeAntal').html(value)
                 $(this).children('.timeAntal').attr('addedTimeTal', value)
-                let ledigeTimer = $(this).children('.ledigeTimer').html() - value
+
                 $(this).children('.ledigeTimer').html(ledigeTimer)
                 //$(this).attr('onclick', "changeValgtOpgaveloser")
 

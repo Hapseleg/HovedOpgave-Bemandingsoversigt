@@ -16,9 +16,9 @@ function initConnection() {
     }
 }
 
-function closeConnection() {
+// function closeConnection() {
 
-}
+// }
 
 function setupColumnsString(array) {
     let query = ''
@@ -61,57 +61,57 @@ function setupValuesArray(array) {
 // }
 
 async function createInDB(arg, createdDone, firstId, earlierResults, callback, errorCallback) {
-    try{
+    try {
         console.log('create in db')
-    //console.log(arg.data)
-    let results = { data: [], origin: arg.origin, type: 'create' }
-    if (earlierResults != undefined)
-        results = earlierResults
+        //console.log(arg.data)
+        let results = { data: [], origin: arg.origin, type: 'create' }
+        if (earlierResults != undefined)
+            results = earlierResults
 
-    let insertId = firstId;
+        let insertId = firstId;
 
-    let data = arg.data[createdDone]
+        let data = arg.data[createdDone]
 
 
-    var tableName = data.table
-    var columns = setupColumnsString(data.columns)
+        var tableName = data.table
+        var columns = setupColumnsString(data.columns)
 
-    for (let i = 0; i < data.values.length; i++)
-        setupValuesArray(data.values[i])
+        for (let i = 0; i < data.values.length; i++)
+            setupValuesArray(data.values[i])
 
-    // console.log(arg.data[0].values[0], 'setupvalues')
-    if (data.useIdFromFirstInsert) {
-        for (let i = 0; i < data.values.length; i++) {
-            data.values[i].push(insertId)
+        // console.log(arg.data[0].values[0], 'setupvalues')
+        if (data.useIdFromFirstInsert) {
+            for (let i = 0; i < data.values.length; i++) {
+                data.values[i].push(insertId)
+            }
         }
-    }
 
-    console.log(data)
-    let duplicateKey = ''
-    if (data.onDupliateKeyUpdate) {
-        duplicateKey = 'ON DUPLICATE KEY UPDATE ' + data.onDupliateKeyUpdate.column + ' = values(' + data.onDupliateKeyUpdate.column + ')'
-        //duplicateKey += createDuplicateKeyString()
-    }
+        console.log(data)
+        let duplicateKey = ''
+        if (data.onDupliateKeyUpdate) {
+            duplicateKey = 'ON DUPLICATE KEY UPDATE ' + data.onDupliateKeyUpdate.column + ' = values(' + data.onDupliateKeyUpdate.column + ')'
+            //duplicateKey += createDuplicateKeyString()
+        }
 
-    // console.log(arg.data[0].values[0],'sql string')
-    var sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES ? " + duplicateKey;
-    console.log(sql)
+        // console.log(arg.data[0].values[0],'sql string')
+        var sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES ? " + duplicateKey;
+        console.log(sql)
 
-    await conn.query(sql, [data.values])
-        .then(function (result) {
-            if (tableName == arg.idFromFirstInsert)
-                insertId = result.insertId
+        await conn.query(sql, [data.values])
+            .then(function (result) {
+                if (tableName == arg.idFromFirstInsert)
+                    insertId = result.insertId
 
-            results.data.push({ result: result, fields: { orgTable: tableName } })
+                results.data.push({ result: result, fields: { orgTable: tableName } })
 
-            if (results.data.length == arg.data.length)
-                callback(Object.assign(arg, results))
-            else
-                createInDB(arg, createdDone + 1, insertId, results, callback, errorCallback)
-        })
-        .catch(function (error) {
-            throw error
-        })
+                if (results.data.length == arg.data.length)
+                    callback(Object.assign(arg, results))
+                else
+                    createInDB(arg, createdDone + 1, insertId, results, callback, errorCallback)
+            })
+            .catch(function (error) {
+                throw error
+            })
     }
     catch (error) {
         errorCallback(Object.assign(arg, { error }))
@@ -119,69 +119,67 @@ async function createInDB(arg, createdDone, firstId, earlierResults, callback, e
 }
 
 async function readFromDB(arg, callback, errorCallback) {
-    try{
+    try {
         console.log('readfromdb')
-    let results = { data: [], origin: arg.origin, type: 'read' }
+        let results = { data: [], origin: arg.origin, type: 'read' }
 
-    for (let i = 0, l = arg.data.length; i < l; i++) {
-        let data = arg.data[i]
+        for (let i = 0, l = arg.data.length; i < l; i++) {
+            let data = arg.data[i]
 
-        var tableName = data.table
-        var columns = setupColumnsStringWithLetter(data.columns, 'a', '')
-        var leftjoin = ''
+            var tableName = data.table
+            var columns = setupColumnsStringWithLetter(data.columns, 'a', '')
+            var leftjoin = ''
 
-        if (data.leftJoins) {
-            // console.log('left join enter')
-            //select a.fornavn, b.lokationNavn from opgaveloser a left join lokation b on a.lokationId = b.lokationId
-            for (let i = 0, l = data.leftJoins.length; i < l; i++) {
-                let leftJoinData = data.leftJoins[i];
-
-                columns += ','
-                columns = setupColumnsStringWithLetter(leftJoinData.selectColumns, joinLetters[i], columns)
-
-                let leftTableLetter = 'a'
-                //find ud af hvilket bogstav lefttable har ved at køre dem igennem
+            if (data.leftJoins) {
                 for (let i = 0, l = data.leftJoins.length; i < l; i++) {
-                    if (leftJoinData.leftTable == data.leftJoins[i].rightTable) {
-                        leftTableLetter = joinLetters[i]
-                        break;
+                    let leftJoinData = data.leftJoins[i];
+
+                    columns += ','
+                    columns = setupColumnsStringWithLetter(leftJoinData.selectColumns, joinLetters[i], columns)
+
+                    let leftTableLetter = 'a'
+                    //find ud af hvilket bogstav lefttable har ved at køre dem igennem
+                    for (let i = 0, l = data.leftJoins.length; i < l; i++) {
+                        if (leftJoinData.leftTable == data.leftJoins[i].rightTable) {
+                            leftTableLetter = joinLetters[i]
+                            break;
+                        }
                     }
+
+                    leftjoin += ' LEFT JOIN ' + leftJoinData.rightTable + ' ' + joinLetters[i] + ' ON ' + leftTableLetter + '.' + leftJoinData.leftColumn + ' = ' + joinLetters[i] + '.' + leftJoinData.rightColumn
                 }
-
-                leftjoin += ' LEFT JOIN ' + leftJoinData.rightTable + ' ' + joinLetters[i] + ' ON ' + leftTableLetter + '.' + leftJoinData.leftColumn + ' = ' + joinLetters[i] + '.' + leftJoinData.rightColumn
             }
+            let whereValues = ''
+            if (data.where) {
+                whereValues = setupWhereString(data.where)
+            }
+
+            let betweenValues = ''
+            if (data.between) {
+                if (whereValues == '')
+                    betweenValues = ' WHERE '
+                else
+                    betweenValues = ' AND '
+
+                for (let i = 0; i < data.between.length; i++)
+                    betweenValues += data.between[i].column + ' BETWEEN ' + data.between[i].start + ' AND ' + data.between[i].slut + ' AND '
+                betweenValues = betweenValues.slice(0, -5)
+            }
+
+            var sql = "SELECT " + columns + " FROM " + tableName + " a" + leftjoin + whereValues + betweenValues;
+            console.log(sql)
+
+            await conn.query(sql)
+                .then(function (result) {
+                    results.data.push({ result: result, fields: { orgTable: tableName } })
+                    if (results.data.length == arg.data.length)
+                        callback(Object.assign(arg, results))
+                    //callback(results)
+                })
+                .catch(function (error) {
+                    throw error
+                })
         }
-        let whereValues = ''
-        if (data.where) {
-            whereValues = setupWhereString(data.where)
-        }
-
-        let betweenValues = ''
-        if (data.between) {
-            if (whereValues == '')
-                betweenValues = ' WHERE '
-            else
-                betweenValues = ' AND '
-
-            for (let i = 0; i < data.between.length; i++)
-                betweenValues += data.between[i].column + ' BETWEEN ' + data.between[i].start + ' AND ' + data.between[i].slut + ' AND '
-            betweenValues = betweenValues.slice(0, -5)
-        }
-
-        var sql = "SELECT " + columns + " FROM " + tableName + " a" + leftjoin + whereValues + betweenValues;
-        console.log(sql)
-
-        await conn.query(sql)
-            .then(function (result) {
-                results.data.push({ result: result, fields: { orgTable: tableName } })
-                if (results.data.length == arg.data.length)
-                    callback(Object.assign(arg, results))
-                //callback(results)
-            })
-            .catch(function (error) {
-                throw error
-            })
-    }
     }
     catch (error) {
         errorCallback(Object.assign(arg, { error }))
@@ -245,7 +243,8 @@ async function updateInDB(arg, callback, errorCallback) {
             await conn.query(sql)
                 .then(function (result) {
                     results.data.push({ result: result, fields: { orgTable: tableName } })
-                    callback(Object.assign(arg, results))
+                    if(results.data.length == arg.data.length)
+                        callback(Object.assign(arg, results))
                 })
                 .catch(function (error) {
                     throw error
@@ -255,19 +254,18 @@ async function updateInDB(arg, callback, errorCallback) {
     catch (error) {
         errorCallback(Object.assign(arg, { error }))
     }
-
 }
 
 async function deleteInDB(arg, callback, errorCallback) {
-    try{
-        console.log('updateInDB')
+    try {
+        console.log('deleteInDB')
         let results = { data: [], origin: arg.origin, type: 'delete' }
-    
+
         for (let i = 0, l = arg.data.length; i < l; i++) {
             let data = arg.data[i]
             let tableName = data.table
             let whereValues = setupWhereString(data.where)
-    
+
             let sql = "DELETE FROM " + tableName + whereValues
             console.log(sql)
             await conn.query(sql)
@@ -285,7 +283,7 @@ async function deleteInDB(arg, callback, errorCallback) {
         errorCallback(Object.assign(arg, { error }))
     }
 
-    
+
 }
 
 module.exports = {

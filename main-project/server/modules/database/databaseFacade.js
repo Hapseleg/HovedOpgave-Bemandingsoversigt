@@ -27,7 +27,7 @@ function returnResult(result){
 function subCreate(){
     mediator.subscribe('createInDB',function(arg){
         try{
-            mysql.createInDB(arg, 0, undefined, undefined, returnResult, throwError)//TODO returnresult skal ikke være her
+            mysql.createInDB(arg, 0, undefined, undefined, returnResult, throwError)
         }
         catch(error){
             //console.log(error)
@@ -35,10 +35,6 @@ function subCreate(){
         }
     })
 }
-
-
-
-
 
 function subRead(){
     mediator.subscribe('readFromDB',function(arg){

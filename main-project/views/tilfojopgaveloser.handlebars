@@ -204,28 +204,26 @@
 
 <script>
     $(document).ready(function () {
-        
+
 
     {{#if bemandetTimerTotal.timeAntal}}
-        $('#bemandedeTimer').val({{bemandetTimerTotal.timeAntal}})
-        $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}} - {{bemandetTimerTotal.timeAntal}})
-
-        {{else}}
-        $('#manglendeTimer').val({{opgaveInfo.estimeretTimetal}})
-    {{/if}}
-
-    //hack til at fjerne valgte opgaveløsere fra mulige tabel
-    $('.valgtOpgaveloser').each(function () {
-        let valgtOpgaveloserId = $(this).children('.opgaveloserId').attr('value')
-
-        $('.muligOpgaveloser').each(function () {
-            let muligOpgaveloserId = $(this).children('.opgaveloserId').attr('value')
-            if (valgtOpgaveloserId == muligOpgaveloserId)
-                $(this).remove()
-        })
-    })
+        $('#bemandedeTimer').val({{ bemandetTimerTotal.timeAntal }})
+        $('#manglendeTimer').val({{ opgaveInfo.estimeretTimetal }} - {{ bemandetTimerTotal.timeAntal }})
+    {{else}}
+        $('#manglendeTimer').val({{ opgaveInfo.estimeretTimetal }})
         
-    })
+    {{/if}}
+            //hack til at fjerne valgte opgaveløsere fra mulige tabel
+            $('.valgtOpgaveloser').each(function () {
+                let valgtOpgaveloserId = $(this).children('.opgaveloserId').attr('value')
+
+                $('.muligOpgaveloser').each(function () {
+                    let muligOpgaveloserId = $(this).children('.opgaveloserId').attr('value')
+                    if (valgtOpgaveloserId == muligOpgaveloserId)
+                        $(this).remove()
+                })
+            })
+        })
 </script>
 
 <script src="/js/clienttilfojopgaveloser.js"></script>

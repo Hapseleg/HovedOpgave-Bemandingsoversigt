@@ -1,10 +1,12 @@
 var name = 'opgave'
 
+//check if its the right path
 function validatePath(path) {
     if (path == name)
         return true
 }
 
+//return view filename if its the right path
 function getView(path) {
     if (validatePath(path))
         return name
@@ -12,6 +14,7 @@ function getView(path) {
         return ''
 }
 
+//get data required for creating a new opgave (for the comboboxes)
 function getData() {
     return {
         data: [
@@ -57,6 +60,7 @@ function getData() {
     }
 }
 
+//get data for getting a specific opgave
 function getOpgaveById(opgaveId) {
     return {
         data: [
@@ -124,27 +128,43 @@ function getOpgaveById(opgaveId) {
                 ],
                 where: [{ column: 'opgaveId', value: opgaveId }]
             },
+            {
+                table: 'OpgaveloserOpgave',
+                columns: ['opgaveId'],
+                leftJoins: [
+                    { leftTable: 'OpgaveloserOpgave', rightTable: 'UgeTimeOpgave', leftColumn: 'opgaveloserOpgaveId', rightColumn: 'opgaveloserOpgaveId', selectColumns: ['timeAntal'] },
+                    { leftTable: 'OpgaveloserOpgave', rightTable: 'OpgaveloserKonsulentprofil', leftColumn: 'opgaveloserKonsulentProfilId', rightColumn: 'opgaveloserKonsulentProfilId', selectColumns: ['opgaveloserId'] },
+                ],
+                where: [{ column: 'opgaveId', value: opgaveId }]
+            },
         ],
         origin: name + 'specific'
     }
 }
 
-
-
+/**
+ * insert data into db json object 
+ * @param {string} table name of the table
+ * @param {string[]} columns name of the columns
+ * @param {Array} values the values that will be inserted into the db, the array holds objects
+ * @param {Array} data the data array from the object that contains origin and idFromFirstInsert etc
+ * @param {boolean} useIdFromFirstInsert Use the id from the first inserted thing? (fx deadlines uses opgaveId)
+ * @param {function} callback callback function
+ */
 function insertData(table, columns, values, data, useIdFromFirstInsert, callback) {
-    let toBeInserted = {
+    let toBeInserted = {//create object that will be inserted into data
         table: table,
         columns: columns,
         values: [],
         useIdFromFirstInsert: useIdFromFirstInsert
     }
 
-    if (values != undefined) {
+    if (values != undefined) {//if values is undefined, don't do anything
         for (let i = 0; i < values.length; i++) {
-            let da = values[i]
+            let da = values[i]//da is a object
             let arr = []
-            for (let i = 0; i < Object.keys(da).length; i++) {
-                arr.push(da[Object.keys(da)[i]])
+            for (let i = 0; i < Object.keys(da).length; i++) {//Object.keys(da).length = how many properties the object has, see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+                arr.push(da[Object.keys(da)[i]])//gets the value of property i in da
             }
             toBeInserted.values.push(arr)
         }

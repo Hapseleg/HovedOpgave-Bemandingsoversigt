@@ -1,5 +1,5 @@
 <form method="POST" id="opgaveform" action="/opgave">
-    <h1>Opret ny opgave</h1>
+    <h1 id="overskrift">Opret ny opgave</h1>
     <div class="row">
         {{!-- col 1 --}}
         <div class="col">
@@ -23,7 +23,7 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="kundeansvarligId">kundeansvarlig</label>
+                <label class="col-sm-3 col-form-label" for="kundeansvarligId">Kundeansvarlig</label>
                 <div class="col-sm-5">
                     <select name="kundeansvarligId" form="opgaveform" class="form-control">
                         <option value=null></option>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="opgavestillerId">opgavestiller</label>
+                <label class="col-sm-3 col-form-label" for="opgavestillerId">Opgavestiller</label>
                 <div class="col-sm-5">
                     <select name="opgavestillerId" form="opgaveform" class="form-control">
                         <option value=null></option>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="lokationId">lokation</label>
+                <label class="col-sm-3 col-form-label" for="lokationId">Lokation</label>
                 <div class="col-sm-5">
                     <select name="lokationId" form="opgaveform">
                         <option value=null></option>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="opgavetypeId">opgavetype</label>
+                <label class="col-sm-3 col-form-label" for="opgavetypeId">Opgave type</label>
                 <div class="col-sm-5">
                     <select name="opgavetypeId" form="opgaveform">
                         <option value=null></option>
@@ -71,35 +71,35 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="startDato">startDato</label>
+                <label class="col-sm-3 col-form-label" for="startDato">Start dato</label>
                 <div class="col-sm-5">
                     <input type="date" class="form-control" id="startDato" name="startDato" value="null">
                     <div class="form-check">
                         <input type="hidden" form="opgaveform" name="fixedStartDato" value="0">
                         <input class="form-check-input" form="opgaveform" type="checkbox" id="fixedStartDato" value="0">
                         <label class="form-check-label" for="fixedStartDato">
-                            fixedStartDato
+                            Fixed start dato
                         </label>
                     </div>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="slutDato">slutDato</label>
+                <label class="col-sm-3 col-form-label" for="slutDato">Slut dato</label>
                 <div class="col-sm-5">
                     <input type="date" class="form-control" id="slutDato" name="slutDato" value="null">
                     <div class="form-check">
                         <input type="hidden" form="opgaveform" name="fixedSlutDato" value="0">
                         <input class="form-check-input" form="opgaveform" type="checkbox" id="fixedSlutDato" value="0">
                         <label class="form-check-label" for="fixedSlutDato">
-                            fixedSlutDato
+                            Fixed slut dato
                         </label>
                     </div>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="opgaveStatusId">opgaveStatus</label>
+                <label class="col-sm-3 col-form-label" for="opgaveStatusId">Opgave status</label>
                 <div class="col-sm-5">
                     <select name="opgaveStatusId" form="opgaveform">
                         <option value=null></option>
@@ -111,7 +111,7 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="kontraktStatusId">kontraktStatus</label>
+                <label class="col-sm-3 col-form-label" for="kontraktStatusId">Kontrakt status</label>
                 <div class="col-sm-5">
                     <select name="kontraktStatusId" form="opgaveform">
                         <option value=null></option>
@@ -128,6 +128,22 @@
                     <input type="number" class="form-control" id="estimeretTimetal" name="estimeretTimetal" value="0">
                 </div>
             </div>
+            {{#if opgaveInfo}}
+        
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="bemandedeTimer">Bemandede timer</label>
+                <div class="col-sm-5">
+                    <input type="number" class="form-control" id="bemandedeTimer" name="bemandedeTimer" disabled value="{{bemandetTimerTotal.timeAntal}}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="manglendeTimer">Manglende timer</label>
+                <div class="col-sm-5">
+                    <input type="number" class="form-control" id="manglendeTimer" name="manglendeTimer" disabled value="">
+                </div>
+            </div>
+            {{/if}}
 
             {{!-- <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="aktiv">Aktiv opgave</label>
@@ -135,28 +151,30 @@
                     <input type="checkbox" class="form-control" id="aktiv" name="aktiv">
                 </div>
             </div> --}}
+            <div class="formArea">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="deadlineDato">Deadline dato</label>
+                    <div class="col-sm-5">
+                        <input type="date" class="form-control" id="deadlineDato">
+                    </div>
+                </div>
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="deadlineDato">deadlineDato</label>
-                <div class="col-sm-5">
-                    <input type="date" class="form-control" id="deadlineDato">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="deadlineKommentar">deadlineKommentar</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="deadlineKommentar">
+
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <button type="button" id="addDeadline">Tilføj deadline</button>
+                    </div>
                 </div>
             </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="deadlineKommentar">deadlineKommentar</label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="deadlineKommentar">
-
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label"></label>
-                <div class="col-sm-5">
-                    <button type="button" id="addDeadline">Tilføj deadline</button>
-                </div>
-            </div>
+            
 
             <div class="form-check">
                 <input type="hidden" form="opgaveform" name="aktiv" value="0">
@@ -176,7 +194,7 @@
 
         {{!-- col 2 --}}
         <div class="col">
-            <div class="muligeOpgavelosere">
+            {{!-- <div class="muligeOpgavelosere">
                 <div class="form-group row">
                     <h2>Mulige opgaveløsere</h2>
                 </div>
@@ -188,18 +206,13 @@
                                     <th scope="col">Navn</th>
                                     <th scope="col">Konsulentprofil</th>
                                     <th scope="col">Lokation</th>
-                                    {{!-- <th scope="col">Status</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#each muligeOpgaveloser}}
                                 <tr id="opgaveloserRow" class="muligOpgaveloser">
                                     <input type="hidden" id="{{@index}}" idName="opgaveloserKonsulentProfilId" value={{this.opgaveloserKonsulentProfilId}}>
-                                    {{!-- <input type="hidden" id="{{@index}}" idName="opgaveloserId" value={{this.opgaveloserId}}>
-                                    --}}
-                                    {{!-- <input type="hidden" id="{{@index}}" idName="konsulentProfilId" value={{this.konsulentProfilId}}>
-                                    <input type="hidden" id="{{@index}}" idName="lokationId" value={{this.lokationId}}>
-                                    --}}
+        
                                     <td value={{this.opgaveloserId}}>{{this.fornavn}} {{this.efternavn}}</td>
                                     <td value={{this.konsulentProfilId}}>{{this.konsulentProfilNavn}}</td>
                                     <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
@@ -209,7 +222,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             
 
             <div class="form-group row">
@@ -291,22 +304,6 @@
 
 
     </div>
-
-
-{{!-- Modal --}}
-<button type="button" class="btn btn-primary" onclick="renderTilfOpgaveloser()"  data-toggle="modal" data-target=".bd-example-modal-full">Large modal</button>
-<div class="modal fade bd-example-modal-full" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-full">
-    <div class="modal-content">
-      <div class="modal-body modal-padding">
-        
-      </div>
-    </div>
-  </div>
-</div>
-{{!-- Modal --}}
-
-
 </form>
 
 <script src="/js/clientopgave.js"></script>
@@ -358,6 +355,7 @@
             //$('.submitButton').append('<button type="button" id="submitDelete" class="btn btn-success">Slet Opgave</button>')
 
             $('form').attr('method', "PUT")
+            $('#overskrift').text('Rediger Opgave')
 
             $('input[name="opgaveNavn"]').val("{{opgaveInfo.opgaveNavn}}")
 
@@ -382,10 +380,12 @@
                 $('#aktiv')[0].checked = true
 
             $('input[name="estimeretTimetal"]').val("{{opgaveInfo.estimeretTimetal}}")
+            let manglende = {{opgaveInfo.estimeretTimetal}} - {{bemandetTimerTotal.timeAntal}}
+            $('input[name="manglendeTimer"]').val(manglende)
 
             $('textarea[name="kommentar"]').val("{{opgaveInfo.kommentar}}")
 
-            $('#opgaveform').append('<input type="hidden" id="opgaverealId" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
+            $('form').append('<input type="hidden" id="opgaveId" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
 
             $('.muligeOpgavelosere').remove()
 

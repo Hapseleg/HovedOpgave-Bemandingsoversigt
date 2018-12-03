@@ -291,6 +291,22 @@
 
 
     </div>
+
+
+{{!-- Modal --}}
+<button type="button" class="btn btn-primary" onclick="renderTilfOpgaveloser()"  data-toggle="modal" data-target=".bd-example-modal-full">Large modal</button>
+<div class="modal fade bd-example-modal-full" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-full">
+    <div class="modal-content">
+      <div class="modal-body modal-padding">
+        
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Modal --}}
+
+
 </form>
 
 <script src="/js/clientopgave.js"></script>
@@ -369,7 +385,7 @@
 
             $('textarea[name="kommentar"]').val("{{opgaveInfo.kommentar}}")
 
-            $('form').append('<input type="hidden" id="opgaveId" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
+            $('#opgaveform').append('<input type="hidden" id="opgaverealId" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
 
             $('.muligeOpgavelosere').remove()
 

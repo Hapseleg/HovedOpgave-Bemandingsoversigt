@@ -35,23 +35,27 @@
             <th>Slut</th>
             <th>Deadlines</th>
             <th>Estimeret-Bemandet</th>
-           
-
+            <th>Aktiv</th>
         </tr>
     </thead>
     <tbody>
         {{#each opgaver}}
         <tr class="opgaveRow centerTextTd">
             <input type="hidden" id="{{@index}}" idName="opgaveId" value={{this.opgaveId}}>
-
             {{!-- <td value={{this.opgaveId}}>{{this.opgaveId}}</td> --}}
             <td class="opgaveTd pointer" value={{this.opgaveId}}>{{this.opgaveNavn}}</td>
             <td value={{this.lokationId}}>{{this.lokationNavn}}</td>
             <td value={{this.opgaveStatusId}}>{{this.kontraktStatusNavn}}</td>
             <td class="date">{{this.startDato}}</td>
             <td class="date">{{this.slutDato}}</td>
-            <td class="seDeadlines">Tryk for at se deadlines</td>
+            <td class="seDeadlines pointer">Tryk for at se deadlines</td>
             <td class="estimeretTimetal" estimeret="{{this.estimeretTimetal}}" usedHours="{{this.timerBrugt}}">{{this.estimeretTimetal}}</td>
+            {{#if this.aktiv }}
+                <td class="aktiv">Aktiv</td>
+            {{else}}
+                <td class="aktiv">Inaktiv</td>
+            {{/if}}
+            {{!-- <td>{{this.aktiv}}</td> --}}
         </tr>
         {{/each}}
     </tbody>
