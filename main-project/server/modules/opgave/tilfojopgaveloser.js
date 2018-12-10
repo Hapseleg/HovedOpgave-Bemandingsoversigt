@@ -156,7 +156,7 @@ function calculateHoursForMonths(timeAntal, months, callback) {
 
                 if (remainingHours > 0) {//hvis der er timer til rådighed i den uge
                     timeAntal -= remainingHours
-                    if (timeAntal < 0) {
+                    if (timeAntal < 0) {//TODO fejl hvis timeantal er større end timer til rådighed total
                         d.timeAntal = parseFloat(we.hours) + timeAntal
                     }
                     else {
