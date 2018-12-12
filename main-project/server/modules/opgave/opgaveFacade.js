@@ -24,17 +24,17 @@ function subGetView() {
                 mediator.publish('readFromDB', Object.assign(arg, opgave.getData()))
             }
         }
-        // else if (arg.req.path == '/tilfojopgaveloser/modal') {
-        //     arg.modalTest = true
-        //     mediator.publish('readFromDB', Object.assign(arg, tilfojopgaveloser.getData(arg.req.query.opgaveId)))
-        // }
-        else if (arg.req.path == '/tilfojopgaveloser') {
+    })
+    mediator.subscribe('getView', function (arg) {
+        if (arg.req.path == '/tilfojopgaveloser') {
             //console.log(arg.req.query)
             //arg.req.query.opgaveId
             mediator.publish('readFromDB', Object.assign(arg, tilfojopgaveloser.getData(arg.req.query.opgaveId)))
             //arg.res.render('tilfojopgaveloser')//TODO
         }
-        else if (arg.req.path == '/tilfojopgaveloserTid') {
+    })
+    mediator.subscribe('getView', function (arg) {
+        if (arg.req.path == '/tilfojopgaveloserTid') {
             //arg.req.query.opgaveId
             console.log(arg.req.query)
 
