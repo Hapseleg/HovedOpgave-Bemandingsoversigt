@@ -3,6 +3,13 @@ var moment = require('moment');
 //1 = mandag, 2 = tirsdag, 3 = onsdag, 4 = torsdag, 5 = fredag
 //6 = lørdag, 7 = søndag
 
+/**
+ * Returner via callback et number array der indeholder alle de ugedage for den bestemte uge, hvor 1 er mandag og 5 er fredag
+ * @param {number} year Året
+ * @param {number} month Måneden (1-12)
+ * @param {number} weekNumber Ugen
+ * @param {function} callback 
+ */
 function getWeekDaysInWeekInSameMonth(year, month, weekNumber, callback) {
     let startOfWeek = moment(year, 'YYYY').month(month).isoWeek(weekNumber).startOf('isoWeek')
     let weekDays = []
@@ -12,7 +19,7 @@ function getWeekDaysInWeekInSameMonth(year, month, weekNumber, callback) {
 
         if (weekDay == 6 || weekDay == 7 || weekDays.length == 5) {
             callback(weekDays)
-            break;
+            return weekDays
         }
         else if (monthOfStart == month) {
             weekDays.push(weekDay)
@@ -28,6 +35,12 @@ function getWeekDaysInWeekInSameMonth(year, month, weekNumber, callback) {
 }
 
 //https://stackoverflow.com/questions/43603604/how-to-get-week-numbers-of-current-month-in-moment-js
+/**
+ * Returner ugetallene for den angiven måned via callback
+ * @param {*} year 
+ * @param {*} month 
+ * @param {*} callback 
+ */
 function getWeeksInMonth(year, month, callback) {
     const firstDayOfMonth = moment(`${year}-${month}`, 'YYYY-MM-DD');
     const numOfDays = firstDayOfMonth.daysInMonth();
@@ -42,6 +55,12 @@ function getWeeksInMonth(year, month, callback) {
     callback(Array.from(weeks))
 }
 
+/**
+ * Returnere via callback hvor mange arbejdsdage der er i den valgte måned
+ * @param {*} year 
+ * @param {*} month 
+ * @param {*} callback 
+ */
 function getWeekdaysInMonth(year, month, callback) {
     getWeeksInMonth(year, month, function (weeks) {
         var weekdays = []
@@ -56,20 +75,29 @@ function getWeekdaysInMonth(year, month, callback) {
     })
 }
 
-function getWorkDaysForOpgavelosere(data) {
+/**
+ * Returnere et array der indeholder objekter med opgaveloserId, arbejdstidPrUge og et arbejdsDage array der indeholder de ugedage den opgaveløser arbejder (mandag = 1)
+ * @param {*} opgaverlosere Array der indeholder objekter med opgaveloserId, arbejdstidPrUge og en dag
+ */
+function getWorkDaysForOpgavelosere(opgaverlosere) {
     let opgavelosereArbejdsDage = []
-    for (let i = 0; i < data.length; i++) {
-        let op = data[i]
-        let currentOpgaveloser = opgavelosereArbejdsDage.find(o => o.opgaveloserId === op.opgaveloserId)
+    for (let i = 0; i < opgaverlosere.length; i++) {
+        let currentOpgaveloser = opgavelosereArbejdsDage.find(o => o.opgaveloserId === opgaverlosere[i].opgaveloserId)
         if (currentOpgaveloser == undefined) {
-            currentOpgaveloser = { 'opgaveloserId': op.opgaveloserId, 'arbejdsDage': [], 'arbejdstidPrUge': op.arbejdstidPrUge }
+            currentOpgaveloser = { 'opgaveloserId': opgaverlosere[i].opgaveloserId, 'arbejdsDage': [], 'arbejdstidPrUge': opgaverlosere[i].arbejdstidPrUge }
             opgavelosereArbejdsDage.push(currentOpgaveloser)
         }
-        currentOpgaveloser.arbejdsDage.push(op.dag)
+        currentOpgaveloser.arbejdsDage.push(opgaverlosere[i].dag)
     }
     return opgavelosereArbejdsDage
 }
 
+/**
+ * Udregner hvor mange timer opgaveløserne max kan have til rådighed i de måneder der er sendt med som parameter
+ * @param {*} data Array der indeholder objekter med opgaveloserId, arbejdstidPrUge og en dag (angivet som 1-5)
+ * @param {*} months Array der består af måneder og ugerne i den måned
+ * @param {*} callback 
+ */
 function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
 
     // console.log(data)
@@ -169,6 +197,12 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
     callback(opgaveloseremaxAvailableWorkTime)
 }
 
+/**
+ * Tilføjer afsatte timer til opgaveløserne i maxAvailableWorkTime og returnere via callback 
+ * @param {*} maxAvailableWorkTime Array fra funktionen calculateMaxAvailableWorkTimeInMonthsAndWeeks
+ * @param {*} workTime Array fra databasen der indeholder afsatte timer
+ * @param {*} callback 
+ */
 function addUsedHours(maxAvailableWorkTime, workTime, callback) {
     //console.log('workTime',workTime)
     for (let i = 0; i < workTime.length; i++) {
