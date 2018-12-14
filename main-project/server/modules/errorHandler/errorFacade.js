@@ -13,7 +13,7 @@ function subErrors(){
         console.error(arg.error)
         if(arg.res != undefined)
             if(arg.origin == 'database')
-            arg.res.send(arg.origin + ' -------- '+ arg.error +'---'+arg.error.sql)
+                arg.res.send(arg.origin + ' -------- '+ arg.error +'---'+arg.error.sql)
             else
                 arg.res.send(arg.origin + ' -------- '+ arg.error)
     })

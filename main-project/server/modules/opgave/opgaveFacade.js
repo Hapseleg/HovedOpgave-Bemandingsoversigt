@@ -60,7 +60,7 @@ function subPostView() {
                 //console.log(opgaveloser.weekdays.months)
                 if (opgaveloser.type == 'newOpgaveloser') {
 
-                    tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
+                    tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays, function (d) {
 
                         tilfojopgaveloser.saveNewOpgavelosere(opgaveloser, d, function (data) {
                             //console.log(data)
@@ -76,7 +76,7 @@ function subPostView() {
 
                     //mediator.publish('deleteInDB', Object.assign(arg, tilfojopgaveloser.deleteUgeTimeOpgave(opgaveloser, startDate, slutDate)))
 
-                    tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays.months, function (d) {
+                    tilfojopgaveloser.calculateHoursForMonths(parseFloat(opgaveloser.timeAntal), opgaveloser.weekdays, function (d) {
                         //console.log(d)
                         tilfojopgaveloser.saveChangedOpgavelosere(opgaveloser, d, function (data) {
                             //console.log(data)

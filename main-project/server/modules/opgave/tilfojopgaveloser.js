@@ -131,11 +131,15 @@ function calculateAverageHoursForMonths(timeAntal, months) {
     }
 }
 
-function calculateHoursForMonths(timeAntal, months, callback) {
+function calculateHoursForMonths(timeAntal, weekdays, callback) {
+    let months = weekdays.months
+    
     if (months.length == 0)
         throw "There are no months"
     if (timeAntal <= 0)
         throw "timeAntal needs to be greater than 0"
+    if (timeAntal > weekdays.availableWorkTime)//TODO fejl hvis timeantal er større end timer til rådighed total (altså man prøver at overbooke)
+        throw "Overbooking er ikke implementeret endnu"
 
     let datesAndHours = []
     //console.log(months)
@@ -156,7 +160,7 @@ function calculateHoursForMonths(timeAntal, months, callback) {
 
                 if (remainingHours > 0) {//hvis der er timer til rådighed i den uge
                     timeAntal -= remainingHours
-                    if (timeAntal < 0) {//TODO fejl hvis timeantal er større end timer til rådighed total
+                    if (timeAntal < 0) {//TODO fejl hvis timeantal er større end timer til rådighed total (altså man prøver at overbooke)
                         d.timeAntal = parseFloat(we.hours) + timeAntal
                     }
                     else {

@@ -113,8 +113,8 @@ values
 INSERT INTO OpgaveloserOpgave (opgaveloserKonsulentProfilId,opgaveId) VALUES (1,1), (3,2), (4,1);
 
 #INSERT INTO UgeTimeOpgave (opgaveloserOpgaveId,year,month,week,timeAntal) VALUES 
-#(1,2018,10,42, 10), 
-#(2,2018,11,46, 10), 
+#(1,2018,12,42, 10), 
+#(2,2018,12,46, 10), 
 #(3,2018,12,50, 5);   
 
 insert into Deadline(opgaveId, deadlineDato, deadlineKommentar)

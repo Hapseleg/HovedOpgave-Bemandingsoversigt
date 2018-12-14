@@ -123,20 +123,29 @@ aktiv BOOLEAN default false,
 FOREIGN KEY (kundeId)
    REFERENCES Kunde(kundeId)
    ON DELETE SET NULL,
+   
 FOREIGN KEY (kundeansvarligId)
    REFERENCES Kundeansvarlig(kundeansvarligId)
    ON DELETE SET NULL,
+   
 FOREIGN KEY (opgavestillerId)
    REFERENCES Opgavestiller(opgavestillerId)
    ON DELETE SET NULL,
+   
 FOREIGN KEY (opgaveStatusId)
-   REFERENCES OpgaveStatus(opgaveStatusId),
+   REFERENCES OpgaveStatus(opgaveStatusId)
+   ON DELETE SET NULL,
+   
 FOREIGN KEY (opgavetypeId)
-   REFERENCES Opgavetype(opgavetypeId),
+   REFERENCES Opgavetype(opgavetypeId)
+   ON DELETE SET NULL,
+   
 FOREIGN KEY (lokationId)
    REFERENCES Lokation(lokationId),
+   
 FOREIGN KEY (kontraktStatusId)
    REFERENCES KontraktStatus(kontraktStatusId)
+   ON DELETE SET NULL
 );
 
 
@@ -182,7 +191,6 @@ CREATE TRIGGER createDate
     FOR EACH ROW
 BEGIN
 	#https://stackoverflow.com/questions/3960049/create-date-from-day-month-year-fields-in-mysql#comment60757399_3960097
-    
     SET NEW.dato = STR_TO_DATE(CONCAT(NEW.year,'-',LPAD(NEW.month,2,'00'),'-',LPAD('01',2,'00')), '%Y-%m-%d');
 END;;
 DELIMITER ;
