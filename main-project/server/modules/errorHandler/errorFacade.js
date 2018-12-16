@@ -2,20 +2,20 @@ var mediator = require('../mediator.js')
 //var res
 var name = 'error';
 
-function setup(){
-    console.log('setting up '+name+' facade')
+function setup() {
+    console.log('setting up ' + name + ' facade')
     subErrors()
 }
 
-function subErrors(){
-    mediator.subscribe('error',function(arg){
+function subErrors() {
+    mediator.subscribe('error', function (arg) {
         console.log('------------ error -----------')
         console.error(arg.error)
-        if(arg.res != undefined)
-            if(arg.origin == 'database')
-                arg.res.send(arg.origin + ' -------- '+ arg.error +'---'+arg.error.sql)
+        if (arg.res != undefined)
+            if (arg.origin == 'database')
+                arg.res.send(arg.origin + ' -------- ' + arg.error + '---' + arg.error.sql)
             else
-                arg.res.send(arg.origin + ' -------- '+ arg.error)
+                arg.res.send(arg.origin + ' -------- ' + arg.error)
     })
 
     //sub to views to get res so it always can send the error to the connected client
@@ -34,5 +34,5 @@ function subErrors(){
 }
 
 module.exports = {
-    setup:setup
+    setup: setup
 }

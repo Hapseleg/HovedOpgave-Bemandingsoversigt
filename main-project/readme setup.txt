@@ -1,4 +1,4 @@
-For at teste systemet burde dette være nok til at installere det
+For at teste systemet burde dette være nok til at installere det (på windows 10)
 
 1. Installer node.js og MySQL (jeg kører node v10.6.0 og MySQL v8.0.13)
 

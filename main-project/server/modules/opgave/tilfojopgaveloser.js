@@ -106,40 +106,52 @@ function getTidData(startDate, slutDate) {
 }
 
 //TODO avanceret version til at fordele timerne, starter med en nemmere udgave
-function calculateAverageHoursForMonths(timeAntal, months) {
-    if (months.length == 0)
-        throw "There are no months"
-    if (timeAntal <= 0)
-        throw "timeAntal needs to be greater than 0"
+// function calculateAverageHoursForMonths(timeAntal, months) {
+//     if (months.length == 0)
+//         throw "There are no months"
+//     if (timeAntal <= 0)
+//         throw "timeAntal needs to be greater than 0"
 
-    //tjek om det er muligt at fordele timerne i samme timetal ud over månederne
-    let averageHours = timeAntal / months.length
-    let averageHoursIsPossible = true
-    let i = 0
-    while (averageHoursIsPossible && i < months.length) {
-        if (months[i].availableWorkTimeInMonth < averageHours)
-            averageHoursIsPossible = false
-        i++
-    }
-    if (averageHoursIsPossible) {//det er muligt at fordele dem gennemsnitligt
-        //er det muligt at fordele timerne udover alle ugerne gennemsnitligt - det er det nok for det meste ikke..
+//     //tjek om det er muligt at fordele timerne i samme timetal ud over månederne
+//     let averageHours = timeAntal / months.length
+//     let averageHoursIsPossible = true
+//     let i = 0
+//     while (averageHoursIsPossible && i < months.length) {
+//         if (months[i].availableWorkTimeInMonth < averageHours)
+//             averageHoursIsPossible = false
+//         i++
+//     }
+//     if (averageHoursIsPossible) {//det er muligt at fordele dem gennemsnitligt
+//         //er det muligt at fordele timerne udover alle ugerne gennemsnitligt - det er det nok for det meste ikke..
 
 
-    }
-    else {
+//     }
+//     else {
 
-    }
-}
+//     }
+// }
 
 function calculateHoursForMonths(timeAntal, weekdays, callback) {
     let months = weekdays.months
-    
+
     if (months.length == 0)
         throw "There are no months"
     if (timeAntal <= 0)
         throw "timeAntal needs to be greater than 0"
     if (timeAntal > weekdays.availableWorkTime)//TODO fejl hvis timeantal er større end timer til rådighed total (altså man prøver at overbooke)
         throw "Overbooking er ikke implementeret endnu"
+
+    // let overbookingHours = timeAntal - weekdays.availableWorkTime
+    // let dividedHours = 0
+
+    // if (overbookingHours > 0) {
+    //     let amountOfWeeks = weekdays.months.reduce((a, b) => (a.weeks.length + b.weeks.length))
+    //     dividedHours = overbookingHours / amountOfWeeks
+
+    //     // for (let i = 0; i < datesAndHours.length; i++) {
+    //     //     datesAndHours[i].timeAntal += dividedHours
+    //     // }
+    // }
 
     let datesAndHours = []
     //console.log(months)
@@ -156,17 +168,30 @@ function calculateHoursForMonths(timeAntal, weekdays, callback) {
                 }
                 let we = months[i].weeks[currentWeek]
                 //console.log(we)
-                let remainingHours = (parseFloat(we.hours) - parseFloat(we.usedHours))
 
-                if (remainingHours > 0) {//hvis der er timer til rådighed i den uge
-                    timeAntal -= remainingHours
-                    if (timeAntal < 0) {//TODO fejl hvis timeantal er større end timer til rådighed total (altså man prøver at overbooke)
-                        d.timeAntal = parseFloat(we.hours) + timeAntal
+                let maxHoursForWeek = parseFloat(we.hours)
+                let usedHoursForWeek = parseFloat(we.usedHours)
+                let remainingHoursForWeek = maxHoursForWeek - usedHoursForWeek
+
+                if (remainingHoursForWeek > 0) {//hvis der er timer til rådighed i den uge
+                    if (remainingHoursForWeek >= timeAntal) {//hvis der er flere timer eller lige præcis nok timer til rådighed der mangler at blive afsat
+                        d.timeAntal = timeAntal + usedHoursForWeek
                     }
                     else {
-                        d.timeAntal = remainingHours
+                        d.timeAntal = remainingHoursForWeek
                     }
 
+                    //timeAntal -= remainingHoursForWeek
+                    // if (timeAntal < 0) {//TODO fejl hvis timeantal er større end timer til rådighed total (altså man prøver at overbooke)
+                    //     d.timeAntal = maxHoursForWeek + timeAntal
+                    // }
+                    // else if (we.hours !== we.usedHours) {
+                    //     d.timeAntal = maxHoursForWeek + timeAntal
+                    // }
+                    // else {
+                    //     d.timeAntal = remainingHoursForWeek
+                    // }
+                    timeAntal -= d.timeAntal
                     d.week = we.week
                     datesAndHours.push(d)
                 }
@@ -260,11 +285,11 @@ module.exports = {
     getView: getView,
     getData: getData,
     getTidData: getTidData,
+    calculateHoursForMonths: calculateHoursForMonths,
+    saveNewOpgavelosere: saveNewOpgavelosere,
+    saveChangedOpgavelosere: saveChangedOpgavelosere,
+    deleteUgeTimeOpgave: deleteUgeTimeOpgave,
     getWeekdaysInMonth: tidsUdregner.getWeekdaysInMonth,
     calculateMaxAvailableWorkTimeInMonthsAndWeeks: tidsUdregner.calculateMaxAvailableWorkTimeInMonthsAndWeeks,
     addUsedHours: tidsUdregner.addUsedHours,
-    calculateHoursForMonths: calculateHoursForMonths,
-    deleteUgeTimeOpgave: deleteUgeTimeOpgave,
-    saveNewOpgavelosere: saveNewOpgavelosere,
-    saveChangedOpgavelosere: saveChangedOpgavelosere
 }

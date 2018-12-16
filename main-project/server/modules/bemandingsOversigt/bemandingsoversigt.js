@@ -84,7 +84,7 @@ function getTidData(){
     }
 }
 
-function saveData(arg, publisher){
+function saveData(arg, callback){
     console.log(arg,'OPGAVE SAVEDATA--')
     
     //opgave
@@ -138,7 +138,7 @@ function saveData(arg, publisher){
         while(true){ //TODO grimt "callback" hack!
             // console.log(data.data.length,'while')
             if(data.data.length == 3){
-                publisher(data)
+                callback(data)
                 break;
             }
                 

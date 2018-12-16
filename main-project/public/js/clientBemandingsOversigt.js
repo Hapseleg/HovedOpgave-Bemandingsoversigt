@@ -22,10 +22,10 @@ $(document).ready(function () {
 	$('#toggleWeeks').click(function () {
 		let t = $(this)
 		if ($(t).hasClass('toggledUsed')) {
-			$(t).text('Se timer brugt')
+			$(t).text('Se timer til rådighed')
 			$(t).removeClass('toggledUsed')
 			$(t).addClass('toggledAvail')
-
+			
 			//maxAvailableWorkTime
 			$('.hoursText').each(function (index) {
 				let text = $(this).attr('usedworkhoursinweek')
@@ -33,7 +33,7 @@ $(document).ready(function () {
 			})
 		}
 		else {
-			$(t).text('Se timer til rådighed for uge')
+			$(t).text('Se timer brugt')
 			$(t).removeClass('toggledAvail')
 			$(t).addClass('toggledUsed')
 

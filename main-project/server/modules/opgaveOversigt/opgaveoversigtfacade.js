@@ -2,7 +2,6 @@ var mediator = require('../mediator.js')
 var opgaveoversigt = require('./opgaveoversigt.js')
 
 var name = 'opgaveoversigt';
-var res;
 
 function setup() {
     console.log('setting up ' + name + ' facade')
@@ -28,8 +27,8 @@ function subDataFromDB() {
                 console.log('render subDataFromDB ' + arg.origin + ' here')
                 if (arg.type == 'read') {
                     //calculate used time
-                    opgaveoversigt.calculateUsedTimeForOpgave(arg.data, function(data){
-                        arg.res.render(name, {opgaver: data})
+                    opgaveoversigt.calculateUsedTimeForOpgave(arg.data, function (data) {
+                        arg.res.render(name, { opgaver: data })
                     })
 
                     // arg.res.render(name, { opgaver: arg.data[0].result, 'usedTimeForOpgaver': opgaveoversigt.calculateUsedTimeForOpgave(arg.data[1].result) })

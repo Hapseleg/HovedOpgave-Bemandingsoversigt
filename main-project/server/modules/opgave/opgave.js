@@ -115,7 +115,7 @@ function getOpgaveById(opgaveId) {
             },
             {
                 table: 'Deadline',
-                columns: ['deadlineId','deadlineDato', 'deadlineKommentar'],
+                columns: ['deadlineId', 'deadlineDato', 'deadlineKommentar'],
                 where: [{ column: 'opgaveId', value: opgaveId }]
             },
             {
@@ -212,7 +212,7 @@ function updateOpgave(arg, callback) {
 
     insertData('Deadline', ['deadlineDato', 'deadlineKommentar', 'opgaveId'], arg.deadlines, data.data, true, function () {
         //insertData('OpgaveloserOpgave', ['opgaveloserKonsulentProfilId', 'opgaveId'], arg.opgaveloser, data.data, true, function () {
-            callback(data)
+        callback(data)
         //})
     })
 }
@@ -235,13 +235,13 @@ function deleteDeadlines(arg) {
         ],
         origin: name
     }
-    for(let i = 0; i< arg.deadlinesToRemove.length; i++){
+    for (let i = 0; i < arg.deadlinesToRemove.length; i++) {
         data.data.push({
             'table': 'Deadline',
             'where': [{ column: 'deadlineId', value: arg.deadlinesToRemove[i] }]
         })
         console.log(data)
-        if(data.data.length == arg.deadlinesToRemove.length)
+        if (data.data.length == arg.deadlinesToRemove.length)
             return data
     }
 }
@@ -253,5 +253,5 @@ module.exports = {
     getOpgaveById: getOpgaveById,
     updateOpgave: updateOpgave,
     deleteOpgave: deleteOpgave,
-    deleteDeadlines:deleteDeadlines
+    deleteDeadlines: deleteDeadlines
 }

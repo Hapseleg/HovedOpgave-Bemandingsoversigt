@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true })) //true makes it possible to s
 app.use(bodyParser.json())//only parse json
 
 //routers
+//når hjemmesiden modtager et HTTP request behandles det her:
 app.use('/', function (req, res) {
     console.log('-------------' + req.path + ' - ' + req.method + '------------')
     switch (req.method) {

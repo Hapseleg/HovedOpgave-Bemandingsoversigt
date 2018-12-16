@@ -55,8 +55,8 @@ function subPostView() {
             else if (arg.req.path == '/tilfojopgaveloser') {
                 //09-11 4 05:40 og 07:45
                 let opgaveloser = arg.req.body
-                console.log(opgaveloser)
-                console.log(parseFloat(opgaveloser.timeAntal))
+                //console.log(opgaveloser)
+                //console.log(parseFloat(opgaveloser.timeAntal))
                 //console.log(opgaveloser.weekdays.months)
                 if (opgaveloser.type == 'newOpgaveloser') {
 

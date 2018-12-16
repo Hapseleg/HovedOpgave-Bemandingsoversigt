@@ -166,7 +166,7 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                         'week': we.week,
                         'hours': fixedMaxWorksHoursInWeek,
                         'usedHours': 0,
-                        'opgaver':[]
+                        'opgaver': []
                     })
                     // }
                     // else {
@@ -185,7 +185,7 @@ function calculateMaxAvailableWorkTimeInMonthsAndWeeks(data, months, callback) {
                         'week': we.week,
                         'hours': 0,
                         'usedHours': 0,
-                        'opgaver':[]
+                        'opgaver': []
                     })
                 }
                 //}
@@ -207,21 +207,21 @@ function addUsedHours(maxAvailableWorkTime, workTime, callback) {
     //console.log('workTime',workTime)
     for (let i = 0; i < workTime.length; i++) {
         let wt = workTime[i]
-        if(wt.opgaveloserOpgaveId != null){
+        if (wt.opgaveloserOpgaveId != null) {
 
             let currentOpgaveloser = maxAvailableWorkTime.find(o => o.opgaveloserId == wt.opgaveloserId)
             if (currentOpgaveloser != undefined) {
                 currentOpgaveloser.availableWorkTime -= wt.timeAntal
-    
+
                 let month = currentOpgaveloser.months.find(o => o.month == wt.month && o.year == wt.year)
                 // if (month != undefined) {
                 if (month != undefined && wt.aktiv == 1) {
                     month.availableWorkTimeInMonth -= wt.timeAntal
-    
+
                     let week = month.weeks.find(o => o.week == wt.week)
                     week.usedHours += wt.timeAntal
                     //if(wt.opgaveId != null)
-                    week.opgaver.push({'opgaveId':wt.opgaveId, 'opgaveNavn':wt.opgaveNavn})
+                    week.opgaver.push({ 'opgaveId': wt.opgaveId, 'opgaveNavn': wt.opgaveNavn })
                 }
             }
         }
