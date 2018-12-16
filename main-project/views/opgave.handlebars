@@ -256,6 +256,7 @@
 
         {{!-- col 3 --}}
         <div class="col">
+            {{#if opgaveInfo}}
             <div class="form-group row">
                 <h2>Valgte opgaveløsere</h2>
             </div>
@@ -285,7 +286,7 @@
 
                 </div>
             </div>
-            {{#if opgaveInfo}}
+            
             <div class="form-group row">
                 <button type="button" id="redigerOpgavelosere">Rediger opgaveløsere</button>
             </div>
@@ -380,12 +381,20 @@
                 $('#aktiv')[0].checked = true
 
             $('input[name="estimeretTimetal"]').val("{{opgaveInfo.estimeretTimetal}}")
-            let manglende = {{opgaveInfo.estimeretTimetal}} - {{bemandetTimerTotal.timeAntal}}
-            $('input[name="manglendeTimer"]').val(manglende)
+
+            {{#if bemandetTimerTotal.timeAntal}}
+                let manglende = {{opgaveInfo.estimeretTimetal}} - {{bemandetTimerTotal.timeAntal}}
+                $('input[name="manglendeTimer"]').val(manglende)
+            {{/if}}
 
             $('textarea[name="kommentar"]').val("{{opgaveInfo.kommentar}}")
 
-            $('form').append('<input type="hidden" id="opgaveId" name="opgaveId" value="{{opgaveInfo.opgaveId}}">')
+            $('<input>', {
+                type:"hidden",
+                id:"opgaveId",
+                name:"opgaveId",
+                value:"{{opgaveInfo.opgaveId}}"
+            }).appendTo('form');
 
             $('.muligeOpgavelosere').remove()
 
@@ -401,6 +410,6 @@
         $('#submitUpdate').remove()
         $('#submitDelete').remove()
         {{/if}}
-            })
+    })
 
 </script>

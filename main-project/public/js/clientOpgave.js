@@ -62,7 +62,8 @@ $(document).ready(function () {
     })
 
     $('#submitDelete').click(function () {
-        let d = $('form').serializeArray()
+        let opgaveId = $('#opgaveId').val()
+        let d = {'opgaveId':opgaveId}
         $.ajax({
             url: '/opgave',
             data: d,
